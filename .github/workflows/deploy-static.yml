@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  pull-requests: write
 
 concurrency:
   group: firebase-hosting
@@ -17,8 +19,17 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WASTEREMOVAL_3276 || secrets.FIREBASE_SERVICE_ACCOUNT }}
 
     steps:
+      - name: Verify Firebase credentials
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error title=Missing Firebase service account secret::Add a repository Actions secret named FIREBASE_SERVICE_ACCOUNT_WASTEREMOVAL_3276 containing the Firebase service account JSON for project wasteremoval-3276. A fallback secret named FIREBASE_SERVICE_ACCOUNT is also supported."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -38,6 +49,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WASTEREMOVAL_3276 }}
+          firebaseServiceAccount: ${{ env.FIREBASE_SERVICE_ACCOUNT }}
           projectId: wasteremoval-3276
           channelId: live
