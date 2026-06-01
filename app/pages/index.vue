@@ -52,6 +52,12 @@ const sellingPoints = [
   "No skip permit needed",
 ];
 
+const trustItems = [
+  { value: "21K+", label: "Properties cleared" },
+  { value: "4.9/5", label: "Customer rating" },
+  { value: "Same day", label: "West London slots" },
+];
+
 const marqueeItems = [
   "Over 21K properties cleared",
   "Same-day availability",
@@ -212,11 +218,12 @@ function openBookingWithPricingSelection() {
         </UiButton>
       </template>
     </UiHero>
+    <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
     <template #visual>
       <img
         src="/images/rubbish-removal.png"
         alt="Rubbish removal illustration"
-        class="h-full w-full rounded-2xl border-2 border-foreground object-cover shadow-[0.5rem_0.5rem_0_0_var(--foreground)] aspect-video"
+        class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)] aspect-video"
       />
     </template>
   </UiSection>
@@ -261,7 +268,7 @@ function openBookingWithPricingSelection() {
         <img
           src="/images/truck.png"
           alt="Rubbish removal truck illustration"
-          class="h-full w-full rounded-2xl border-2 border-foreground object-cover shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+          class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
         />
       </div>
     </template>
@@ -310,7 +317,7 @@ function openBookingWithPricingSelection() {
     <UiFaq :items="faqItems" />
     <template #visual>
       <div
-        class="rounded-2xl border-2 border-foreground bg-primary p-6 text-primary-foreground shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
       >
         <UiHeading :level="3" size="md">Still have questions?</UiHeading>
         <UiText tone="low" class="mt-2">

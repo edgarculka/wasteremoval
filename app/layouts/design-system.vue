@@ -20,6 +20,7 @@ const groups = [
       { label: "Services", href: "/design-system/services" },
       { label: "Skip comparison", href: "/design-system/skip-comparison" },
       { label: "Thank you", href: "/design-system/thank-you" },
+      { label: "Trust strip", href: "/design-system/trust-strip" },
     ],
   },
   {

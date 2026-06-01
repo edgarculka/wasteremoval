@@ -45,7 +45,7 @@ withDefaults(defineProps<Props>(), {
     <aside class="flex flex-col gap-4">
       <div
         v-if="image"
-        class="overflow-hidden rounded-2xl border-2 border-foreground bg-background shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+        class="overflow-hidden rounded-lg border border-border bg-background shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
       >
         <img
           :src="image.src"

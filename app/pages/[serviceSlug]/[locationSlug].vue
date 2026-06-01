@@ -102,6 +102,12 @@ const coverageNotes = [
   ...page.location.serviceNotes,
   `Nearby areas covered: ${page.location.nearbyAreas.join(", ")}`,
 ];
+
+const trustItems = [
+  { value: "Fixed tiers", label: "Pricing" },
+  { value: "2-hour", label: "Arrival windows" },
+  { value: "Licensed", label: "Waste carrier" },
+];
 </script>
 
 <template>
@@ -120,11 +126,12 @@ const coverageNotes = [
         </UiButton>
       </template>
     </UiHero>
+    <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
     <template #visual>
       <img
         :src="page.image.src"
         :alt="page.image.alt"
-        class="aspect-video w-full rounded-2xl border-2 border-foreground object-cover shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
       />
     </template>
   </UiSection>
@@ -220,7 +227,7 @@ const coverageNotes = [
     <UiTickList :items="page.service.sellingPoints" />
     <template #visual>
       <div
-        class="rounded-2xl border-2 border-foreground bg-primary p-6 text-primary-foreground shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
       >
         <UiHeading :level="3" size="md">Useful before booking</UiHeading>
         <UiText tone="low" class="mt-2">

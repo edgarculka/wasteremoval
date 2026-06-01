@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div
-    class="relative w-full rounded-2xl border-2 border-foreground bg-primary p-8 sm:p-10 lg:p-12 shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+    class="relative w-full rounded-lg border border-border bg-primary p-8 shadow-[0_1rem_3rem_rgba(6,53,31,0.14)] sm:p-10 lg:p-12"
   >
     <div class="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-12">
       <div class="flex flex-col">

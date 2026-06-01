@@ -22,11 +22,11 @@ const isExternalHref = computed(() =>
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-primary-foreground border-2 border-foreground shadow-[0.25rem_0.25rem_0_0_var(--foreground)] hover:bg-primary/90",
+    "bg-primary text-primary-foreground border border-foreground shadow-[0_0.35rem_1rem_rgba(6,53,31,0.14)] hover:-translate-y-0.5 hover:bg-primary/90",
   secondary:
-    "bg-secondary text-secondary-foreground border-2 border-foreground shadow-[0.25rem_0.25rem_0_0_var(--foreground)] hover:bg-secondary/80",
+    "bg-secondary text-secondary-foreground border border-border shadow-[0_0.35rem_1rem_rgba(6,53,31,0.08)] hover:-translate-y-0.5 hover:border-foreground",
   ghost:
-    "bg-transparent border-2 border-transparent text-foreground hover:bg-secondary hover:border-2 hover:border-foreground",
+    "bg-transparent border border-transparent text-foreground hover:bg-secondary hover:border-border",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -38,7 +38,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const classes = computed(
   () =>
-    `inline-flex cursor-pointer items-center justify-center rounded-full font-bold transition-colors disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ${variantClasses[props.variant]} ${sizeClasses[props.size]}`,
+    `inline-flex cursor-pointer items-center justify-center rounded-full font-bold transition disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${variantClasses[props.variant]} ${sizeClasses[props.size]}`,
 );
 </script>
 

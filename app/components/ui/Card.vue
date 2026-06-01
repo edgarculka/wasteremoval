@@ -81,16 +81,16 @@ const sizeClasses: Record<CardSize, string> = {
 };
 
 const cardClasses = computed(() => [
-  "relative block w-full rounded-2xl border-2 border-foreground text-left transition-colors disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
+  "relative block w-full rounded-lg border text-left shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)] transition disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
   sizeClasses[props.size],
   props.selected
-    ? "bg-primary text-primary-foreground shadow-[0.25rem_0.25rem_0_0_var(--foreground)]"
-    : toneClasses[props.tone],
+    ? "border-foreground bg-primary text-primary-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.16)]"
+    : `${toneClasses[props.tone]} border-border`,
   props.selectable || props.href ? "cursor-pointer" : "",
   props.selectable || props.href
     ? props.tone === "primary"
-      ? "hover:bg-primary/90"
-      : "hover:bg-secondary/80"
+      ? "hover:-translate-y-0.5 hover:bg-primary/90"
+      : "hover:-translate-y-0.5 hover:border-foreground"
     : "",
 ]);
 

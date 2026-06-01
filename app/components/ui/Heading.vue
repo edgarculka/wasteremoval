@@ -17,9 +17,9 @@ const props = withDefaults(defineProps<Props>(), {
 const sizeClasses: Record<HeadingSize, string> = {
   xs: "text-base",
   sm: "text-lg",
-  md: "text-2xl",
-  lg: "text-3xl",
-  xl: "text-4xl sm:text-5xl",
+  md: "text-2xl leading-tight",
+  lg: "text-3xl leading-tight sm:text-4xl",
+  xl: "text-4xl leading-[1.05] sm:text-5xl lg:text-6xl",
 };
 
 const toneClasses: Record<HeadingTone, string> = {

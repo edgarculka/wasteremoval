@@ -200,6 +200,12 @@ const contactCards: ContactCardLink[] = [
 const { bookingLoads, openBookingWizard } = useBookingWizard();
 const selectedPricingLoadId = ref<string | null>("small");
 
+const trustItems = [
+  { value: "No hidden fees", label: "Standard waste" },
+  { value: "Photos accepted", label: "Fast estimates" },
+  { value: "Loaded for you", label: "No skip hire" },
+];
+
 function openBookingWithPricingSelection() {
   openBookingWizard(selectedPricingLoadId.value);
 }
@@ -217,6 +223,7 @@ function openBookingWithPricingSelection() {
       :selected-tier-id="selectedPricingLoadId"
       @select="selectedPricingLoadId = $event"
     />
+    <UiTrustStrip :items="trustItems" class="mt-8" />
 
     <template #cta>
       <UiButton size="lg" @click="openBookingWithPricingSelection">
@@ -264,7 +271,7 @@ function openBookingWithPricingSelection() {
     <UiFaq :items="faqItems" />
     <template #visual>
       <div
-        class="rounded-2xl border-2 border-foreground bg-secondary p-6 text-secondary-foreground shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+        class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
       >
         <UiHeading :level="3" size="md">Need a hand pricing it?</UiHeading>
         <UiText tone="low" class="mt-2">

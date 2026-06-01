@@ -25,6 +25,7 @@ import ShowcasesTag from "~/components/showcases/Tag.vue";
 import ShowcasesThankYou from "~/components/showcases/ThankYou.vue";
 import ShowcasesTickList from "~/components/showcases/TickList.vue";
 import ShowcasesTimePicker from "~/components/showcases/TimePicker.vue";
+import ShowcasesTrustStrip from "~/components/showcases/TrustStrip.vue";
 import ShowcasesTypography from "~/components/showcases/Typography.vue";
 
 definePageMeta({
@@ -58,6 +59,7 @@ const showcases = {
   "thank-you": ShowcasesThankYou,
   "tick-list": ShowcasesTickList,
   "time-picker": ShowcasesTimePicker,
+  "trust-strip": ShowcasesTrustStrip,
   typography: ShowcasesTypography,
 } as const;
 

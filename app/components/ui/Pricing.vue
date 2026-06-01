@@ -44,10 +44,9 @@ const emit = defineEmits<{
       </UiText>
     </div>
     <div
-      class="mt-9 flex flex-nowrap gap-2 overflow-x-auto px-(--section-px) pt-3 justify-start md:justify-center w-[100dvw] relative"
+      class="mt-9 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5"
     >
       <UiCard
-        class="flex-1"
         v-for="tier in tiers"
         :key="tier.id"
         :selectable="selectable"
