@@ -9,9 +9,64 @@ if (!page) {
   throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
-useSeoMeta({
+usePageSeo({
   title: page.metaTitle,
   description: page.metaDescription,
+  path: page.path,
+  image: page.image,
+  structuredData: [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: page.title,
+      description: page.description,
+      provider: {
+        "@type": "LocalBusiness",
+        name: companyDetails.tradingName,
+      },
+      areaServed: {
+        "@type": "Place",
+        name: page.location.name,
+      },
+      serviceType: page.service.name,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: page.service.faqs.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Services",
+          item: "/services",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: page.title,
+          item: page.path,
+        },
+      ],
+    },
+  ],
 });
 
 const { openBookingWizard } = useBookingWizard();
@@ -38,7 +93,7 @@ const locationLinks = seoLocations.map((location) => ({
     <UiHero :heading="page.heading" :description="page.description">
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
-        <UiButton href="/" variant="ghost" size="lg">
+        <UiButton href="/services" variant="ghost" size="lg">
           See all services
           <template #iconRight>
             <span aria-hidden="true">&gt;</span>

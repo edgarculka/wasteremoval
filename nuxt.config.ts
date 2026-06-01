@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import { serviceLocationSeoPages } from "./app/utils/seo-pages";
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://www.example.com";
 const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "Waste Removal";
@@ -16,6 +17,13 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
+  },
+
+  runtimeConfig: {
+    public: {
+      siteUrl,
+      siteName,
+    },
   },
 
   app: {
@@ -40,10 +48,13 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: [
         "/",
+        "/pricing",
+        "/services",
         "/thank-you",
         "/design-system",
         "/robots.txt",
         "/sitemap.xml",
+        ...serviceLocationSeoPages.map((page) => page.path),
       ],
       ignore: [],
     },

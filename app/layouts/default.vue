@@ -1,5 +1,19 @@
 <script setup lang="ts">
-const headerNav = [{ label: "Pricing", href: "/pricing" }];
+const primaryLocation = seoLocations[0];
+
+const headerNav = [
+  {
+    label: "Services",
+    href: "/services",
+    children: seoServices.map((service) => ({
+      label: service.name,
+      href: primaryLocation
+        ? buildServiceLocationPath(service, primaryLocation)
+        : `/services#${service.slug}`,
+    })),
+  },
+  { label: "Pricing", href: "/pricing" },
+];
 
 const { openBookingWizard } = useBookingWizard();
 </script>

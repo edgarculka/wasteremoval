@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const primaryLinks = [
   { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Design System", href: "/design-system" },
 ];
 
 const route = useRoute();
@@ -25,7 +25,7 @@ const serviceLinkGroups = computed(() =>
 useHead({
   titleTemplate: (title) =>
     title
-      ? `${title} — ${companyDetails.tradingName}`
+      ? `${title} | ${companyDetails.tradingName}`
       : companyDetails.tradingName,
 });
 

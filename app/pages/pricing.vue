@@ -18,12 +18,6 @@ interface ContactCardLink {
   iconLabel: string;
 }
 
-useSeoMeta({
-  title: "Pricing",
-  description:
-    "Clear rubbish removal pricing with load-size tiers, customer reviews, skip hire comparison, and booking support.",
-});
-
 const reviews: ReviewItem[] = [
   {
     author: "Aisha Khan",
@@ -159,6 +153,25 @@ const faqItems: FaqItem[] = [
       "No. The team arrives, loads the waste, and takes it away in one visit, so there is no skip left on the road.",
   },
 ];
+
+usePageSeo({
+  title: "Rubbish Removal Pricing",
+  description:
+    "Clear rubbish removal pricing with load-size tiers, customer reviews, skip hire comparison, and booking support.",
+  path: "/pricing",
+  structuredData: {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  },
+});
 
 const contactCards: ContactCardLink[] = [
   {

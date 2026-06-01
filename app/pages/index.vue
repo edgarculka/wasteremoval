@@ -18,10 +18,32 @@ interface ContactCardLink {
   iconLabel: string;
 }
 
-useSeoMeta({
-  title: "",
+usePageSeo({
+  title: "Same-Day Rubbish Removal in West London",
   description:
     "Same-day rubbish removal and property clearance across West London.",
+  path: "/",
+  image: {
+    src: "/images/rubbish-removal.png",
+    alt: "Rubbish removal illustration",
+    width: 1600,
+    height: 1200,
+  },
+  structuredData: {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: companyDetails.tradingName,
+    url: "/",
+    areaServed: seoLocations.map((location) => location.name),
+    makesOffer: seoServices.map((service) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: service.name,
+        description: service.shortDescription,
+      },
+    })),
+  },
 });
 
 const sellingPoints = [
