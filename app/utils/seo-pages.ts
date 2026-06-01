@@ -278,6 +278,12 @@ export function buildServiceLocationSeoPage(
   service: SeoService,
   location: SeoLocation,
 ): ServiceLocationSeoPage {
+  const primaryServiceNote =
+    location.serviceNotes[0]
+      ?.replace(/^Useful for /i, "")
+      .replace(/^Good fit for /i, "")
+      .toLowerCase() ?? "local clearances";
+
   return {
     slug: `${service.slug}-${location.slug}`,
     path: buildServiceLocationPath(service, location),
@@ -285,7 +291,7 @@ export function buildServiceLocationSeoPage(
     metaTitle: `${service.metaTitle} in ${location.title}`,
     metaDescription: `${service.shortDescription} Available in ${location.name}.`,
     heading: `${service.title} in ${location.title}`,
-    description: `${service.description} In ${location.name}, this is especially useful for ${location.serviceNotes[0]?.toLowerCase() ?? "local clearances"}.`,
+    description: `${service.description} In ${location.name}, this is especially useful for ${primaryServiceNote}.`,
     image: service.image,
     service,
     location,

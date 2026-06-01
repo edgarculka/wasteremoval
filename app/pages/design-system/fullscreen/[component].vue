@@ -16,6 +16,8 @@ import ShowcasesPricing from "~/components/showcases/Pricing.vue";
 import ShowcasesRating from "~/components/showcases/Rating.vue";
 import ShowcasesReviews from "~/components/showcases/Reviews.vue";
 import ShowcasesSection from "~/components/showcases/Section.vue";
+import ShowcasesServiceCoverage from "~/components/showcases/ServiceCoverage.vue";
+import ShowcasesServiceProcess from "~/components/showcases/ServiceProcess.vue";
 import ShowcasesServices from "~/components/showcases/Services.vue";
 import ShowcasesSidebar from "~/components/showcases/Sidebar.vue";
 import ShowcasesSkipComparison from "~/components/showcases/SkipComparison.vue";
@@ -47,6 +49,8 @@ const showcases = {
   rating: ShowcasesRating,
   reviews: ShowcasesReviews,
   section: ShowcasesSection,
+  "service-coverage": ShowcasesServiceCoverage,
+  "service-process": ShowcasesServiceProcess,
   services: ShowcasesServices,
   sidebar: ShowcasesSidebar,
   "skip-comparison": ShowcasesSkipComparison,

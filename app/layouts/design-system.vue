@@ -15,6 +15,8 @@ const groups = [
       { label: "Pricing", href: "/design-system/pricing" },
       { label: "Reviews", href: "/design-system/reviews" },
       { label: "Section", href: "/design-system/section" },
+      { label: "Service coverage", href: "/design-system/service-coverage" },
+      { label: "Service process", href: "/design-system/service-process" },
       { label: "Services", href: "/design-system/services" },
       { label: "Skip comparison", href: "/design-system/skip-comparison" },
       { label: "Thank you", href: "/design-system/thank-you" },

@@ -69,7 +69,12 @@ usePageSeo({
   ],
 });
 
-const { openBookingWizard } = useBookingWizard();
+const { bookingLoads, openBookingWizard } = useBookingWizard();
+const selectedPricingLoadId = ref<string | null>("small");
+
+function openBookingWithPricingSelection() {
+  openBookingWizard(selectedPricingLoadId.value);
+}
 
 const relatedServices = seoServices
   .filter((service) => service.slug !== page.service.slug)
@@ -86,10 +91,24 @@ const locationLinks = seoLocations.map((location) => ({
   label: location.name,
   href: buildServiceLocationPath(page.service, location),
 }));
+
+const marqueeItems = [
+  ...page.service.sellingPoints,
+  ...page.location.localSearchTerms,
+  `${page.location.region} coverage`,
+];
+
+const coverageNotes = [
+  ...page.location.serviceNotes,
+  `Nearby areas covered: ${page.location.nearbyAreas.join(", ")}`,
+];
 </script>
 
 <template>
   <UiSection v-if="page" tone="background" spacing="md" alignment="left">
+    <template #above>
+      <UiRating :value="5">Rated 5 stars by West London customers</UiRating>
+    </template>
     <UiHero :heading="page.heading" :description="page.description">
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
@@ -110,7 +129,68 @@ const locationLinks = seoLocations.map((location) => ({
     </template>
   </UiSection>
 
-  <UiMarquee v-if="page" tone="primary" :items="page.service.sellingPoints" />
+  <UiMarquee v-if="page" tone="primary" :items="marqueeItems" />
+
+  <UiSection
+    v-if="page"
+    tone="background"
+    spacing="md"
+    alignment="center"
+    wide
+    :ribbon="{ label: 'Clear pricing before loading' }"
+  >
+    <UiPricing
+      lead="From"
+      accent="GBP 40"
+      trailing="per clearance"
+      subhead="Choose the closest load size for your job. The final tier is confirmed before anything is removed."
+      selectable
+      :tiers="bookingLoads"
+      :selected-tier-id="selectedPricingLoadId"
+      @select="selectedPricingLoadId = $event"
+    />
+
+    <template #cta>
+      <UiButton size="lg" @click="openBookingWithPricingSelection">
+        Book selected load
+      </UiButton>
+      <UiButton href="/pricing" variant="secondary" size="lg">
+        See full pricing
+      </UiButton>
+    </template>
+  </UiSection>
+
+  <UiSection
+    v-if="page"
+    tone="secondary"
+    spacing="md"
+    wide
+  >
+    <UiServiceCoverage
+      :heading="`What we remove in ${page.location.name}`"
+      :description="page.service.shortDescription"
+      :items="page.service.typicalItems"
+      :notes="coverageNotes"
+      :image="page.image"
+      :meta-label="page.location.region"
+      :meta-value="page.location.county"
+    />
+  </UiSection>
+
+  <UiSection
+    v-if="page"
+    tone="background"
+    spacing="md"
+    alignment="center"
+    wide
+  >
+    <UiServiceProcess
+      eyebrow="How it works"
+      :heading="`${page.service.name} without skip hire delays`"
+      :description="`A simple collection flow for ${page.location.name} homes, landlords and businesses.`"
+      :steps="serviceProcessSteps"
+    />
+  </UiSection>
 
   <UiSection
     v-if="page"
@@ -118,19 +198,13 @@ const locationLinks = seoLocations.map((location) => ({
     spacing="md"
     alignment="center"
     wide
-    :title="`What we remove in ${page.location.name}`"
+    class="border-y-2"
   >
-    <UiText size="lg" tone="low" class="max-w-3xl">
-      {{ page.service.shortDescription }}
-    </UiText>
-    <div class="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <UiCard
-        v-for="item in page.service.typicalItems"
-        :key="item"
-        :title="item"
-        size="sm"
-      />
-    </div>
+    <UiReviews
+      :average="4.9"
+      :average-label="`Average rating for West London clearance work`"
+      :reviews="servicePageReviews"
+    />
   </UiSection>
 
   <UiSection
@@ -138,28 +212,31 @@ const locationLinks = seoLocations.map((location) => ({
     tone="background"
     spacing="md"
     alignment="left"
-    wide
-    :title="`Why ${page.location.name}`"
+    :title="`${page.location.name} collection details`"
   >
-    <UiText size="sm" weight="medium" tone="primary">
-      {{ page.location.region }} - {{ page.location.county }}
-    </UiText>
-    <UiText size="lg" tone="low" class="max-w-2xl">
+    <UiText size="lg" tone="low" class="max-w-3xl">
       {{ page.location.description }}
     </UiText>
-    <div class="grid w-full gap-4 md:grid-cols-2">
-      <UiCard
-        v-for="note in page.location.serviceNotes"
-        :key="note"
-        :description="note"
-      />
-    </div>
-    <UiCard class="max-w-3xl" size="sm">
-      <UiText size="sm" tone="low">Nearby areas covered</UiText>
-      <UiText weight="semibold" class="mt-1">
-        {{ page.location.nearbyAreas.join(", ") }}
-      </UiText>
-    </UiCard>
+    <UiTickList :items="page.service.sellingPoints" />
+    <template #visual>
+      <div
+        class="rounded-2xl border-2 border-foreground bg-primary p-6 text-primary-foreground shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
+      >
+        <UiHeading :level="3" size="md">Useful before booking</UiHeading>
+        <UiText tone="low" class="mt-2">
+          Photos, access notes and parking details help the team quote the job
+          accurately before arriving.
+        </UiText>
+        <div class="mt-5 grid gap-3">
+          <UiCard
+            v-for="term in page.service.searchTerms"
+            :key="term"
+            :title="term"
+            size="sm"
+          />
+        </div>
+      </div>
+    </template>
   </UiSection>
 
   <UiSection
