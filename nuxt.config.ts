@@ -1,8 +1,8 @@
 import tailwindcss from "@tailwindcss/vite";
 import { serviceLocationSeoPages } from "./app/utils/seo-pages";
 
-const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://www.example.com";
-const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "Waste Removal";
+const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://dbs-waste.co.uk";
+const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-11-01",

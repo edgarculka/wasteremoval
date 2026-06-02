@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "wasteremoval-3276",
     "public": ".output/public",
     "ignore": [
       "firebase.json",
