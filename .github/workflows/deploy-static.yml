@@ -1,4 +1,4 @@
-name: Deploy static site
+name: Deploy Firebase app
 
 on:
   push:
@@ -9,8 +9,6 @@ on:
 
 permissions:
   contents: read
-  checks: write
-  pull-requests: write
 
 concurrency:
   group: firebase-hosting
@@ -44,13 +42,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate static site
-        run: npm run generate
+      - name: Install function dependencies
+        run: npm --prefix functions install
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ env.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: wasteremoval-3276
-          channelId: live
+      - name: Validate business details
+        run: npm run validate-business-details
+
+      - name: Verify generated site and SEO
+        run: npm run verify:seo
+
+      - name: Authenticate Firebase service account
+        shell: bash
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
+
+      - name: Deploy Firebase Hosting, Functions, Firestore, and Extensions
+        run: npx -y firebase-tools@latest deploy --only hosting,functions,firestore,extensions --project wasteremoval-3276 --non-interactive

@@ -2,6 +2,8 @@
 export interface HeaderNavImage {
   src: string;
   alt: string;
+  width?: number;
+  height?: number;
 }
 
 export interface HeaderNavItem {
@@ -87,6 +89,8 @@ function closeMenu() {
                     v-if="child.image"
                     :src="child.image.src"
                     :alt="child.image.alt"
+                    :width="child.image.width"
+                    :height="child.image.height"
                     class="aspect-[4/3] w-full object-cover transition group-hover/card:scale-105"
                     data-no-lightbox
                   />
@@ -195,6 +199,8 @@ function closeMenu() {
                 v-if="child.image"
                 :src="child.image.src"
                 :alt="child.image.alt"
+                :width="child.image.width"
+                :height="child.image.height"
                 class="aspect-square w-full rounded-lg object-cover"
                 data-no-lightbox
               />

@@ -14,6 +14,8 @@ const headerNav = computed(() => [
       image: {
         src: service.image.src,
         alt: service.image.alt,
+        width: service.image.width,
+        height: service.image.height,
       },
     })),
   },

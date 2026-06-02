@@ -314,8 +314,8 @@ function openBookingWithPricingSelection() {
     class="!pt-4"
   >
     <UiReviews
-      :average="4.9"
-      average-label="Average from 240+ customer reviews"
+      :average="4.8"
+      average-label="Feedback from recent collections"
       :reviews="reviews"
     />
   </UiSection>

@@ -104,6 +104,10 @@ Run these from the repository root:
 npm run firebase:version
 npm run firebase:login
 npm run firebase:use
+npm run firebase:firestore:list
+npm run firebase:functions:list
+npm run firebase:extensions:list
+npm run firebase:email-secret:check
 npm run firebase:email-secret
 npm run firebase:deploy:email
 ```
@@ -113,12 +117,95 @@ What each command does:
 - `npm run firebase:version` verifies that the Firebase CLI can be downloaded and executed.
 - `npm run firebase:login` signs in with the Google account that has access to Firebase project `wasteremoval-3276`.
 - `npm run firebase:use` selects Firebase project `wasteremoval-3276`.
+- `npm run firebase:firestore:list` checks whether the default Firestore database already exists.
+- `npm run firebase:functions:list` checks whether Cloud Functions API is enabled and whether `createBooking` is deployed.
+- `npm run firebase:extensions:list` checks whether the `firestore-send-email` extension instance is installed.
+- `npm run firebase:email-secret:check` checks metadata for the SMTP password secret without printing the secret value.
 - `npm run firebase:email-secret` creates or updates the Secret Manager value used by the extension for Gmail SMTP. Paste the 16-character Google App Password when prompted.
 - `npm run firebase:deploy:email` deploys Functions, Firestore rules, Hosting rewrites, and Extensions for the email booking flow.
 
 The extension configuration is committed in `extensions/firestore-send-email.env`; the secret value itself is stored in Google Secret Manager.
 
 If `npm run firebase:version` fails with an npm registry or proxy error, Firebase CLI cannot be installed in that environment. Fix the local network/proxy/npm registry access first, then rerun the commands above.
+
+## Current live project status
+
+These checks were last run against Firebase project `wasteremoval-3276` from the Firebase CLI:
+
+- Firebase CLI auth is working for `culkaedgar@gmail.com`.
+- Hosting site `wasteremoval-3276` exists at `https://wasteremoval-3276.web.app`.
+- `/api/bookings` currently returns Firebase Hosting `404`, so the Hosting rewrite/function is not live yet.
+- No Firestore databases exist yet.
+- No Firebase Extensions are installed yet.
+- Cloud Functions API is currently disabled.
+- Secret Manager cannot be enabled yet because the project is not on the Blaze plan.
+
+The required live setup order is:
+
+1. Upgrade Firebase project `wasteremoval-3276` to the Blaze pay-as-you-go plan: <https://console.firebase.google.com/project/wasteremoval-3276/usage/details>.
+2. Create the default Firestore database in London (`europe-west2`). This location is not changeable later. The repo command is:
+
+   ```bash
+   npm run firebase:firestore:create
+   ```
+
+3. Create the Google App Password for the sending mailbox and store it in the Firebase secret:
+
+   ```bash
+   npm run firebase:email-secret
+   ```
+
+4. Deploy the backend, rules, hosting rewrite, and extension:
+
+   ```bash
+   npm run firebase:deploy:email
+   ```
+
+5. Re-check `/api/bookings`. A GET request should return JSON `405 Method not allowed`, proving the Hosting rewrite reaches `createBooking`.
+
+## GitHub Actions deployment setup
+
+The default-branch workflow in `.github/workflows/deploy-static.yml` deploys Hosting, Functions, Firestore rules, and Extensions with the Firebase CLI. It needs a repository secret containing a Google Cloud service account JSON key.
+
+Create or review the service account here:
+
+- Service accounts: <https://console.cloud.google.com/iam-admin/serviceaccounts?project=wasteremoval-3276>
+- IAM permissions: <https://console.cloud.google.com/iam-admin/iam?project=wasteremoval-3276>
+
+Add the JSON key to GitHub here:
+
+- Repository Actions secrets: <https://github.com/edgarculka/wasteremoval/settings/secrets/actions>
+
+Use this secret name:
+
+```text
+FIREBASE_SERVICE_ACCOUNT_WASTEREMOVAL_3276
+```
+
+The workflow supports `FIREBASE_SERVICE_ACCOUNT` as a fallback, but the project-specific name is preferred.
+
+The service account must be able to deploy the same Firebase targets as the manual command:
+
+- Firebase Hosting;
+- Cloud Functions for Firebase;
+- Firestore rules;
+- Firebase Extensions;
+- extension configuration that references Secret Manager.
+
+For initial setup, a project Owner can run the first manual deploy. For CI, grant only the roles required by the deployed targets. Firebase's current docs call out:
+
+- Firebase Extensions install/manage access: Owner, Editor, or Firebase Admin.
+- Cloud Functions deployment: Cloud Functions Admin plus Service Account User, or a project Owner.
+- Firebase CLI deploy support for Hosting, Functions, Firestore rules, and other configured Firebase resources.
+
+Useful console links for this project:
+
+- Firebase project: <https://console.firebase.google.com/project/wasteremoval-3276/overview>
+- Firebase Hosting: <https://console.firebase.google.com/project/wasteremoval-3276/hosting/sites>
+- Cloud Functions: <https://console.firebase.google.com/project/wasteremoval-3276/functions>
+- Firestore: <https://console.firebase.google.com/project/wasteremoval-3276/firestore>
+- Extensions: <https://console.firebase.google.com/project/wasteremoval-3276/extensions>
+- Secret Manager: <https://console.cloud.google.com/security/secret-manager?project=wasteremoval-3276>
 
 ## Credentials needed to finish live setup
 
@@ -145,6 +232,9 @@ After deployment, submit `/quote/` with a real email address. Confirm that:
 ## Official references
 
 - Firebase Trigger Email extension usage: <https://firebase.google.com/docs/extensions/official/firestore-send-email>
+- Firebase Extensions manifest deployment: <https://firebase.google.com/docs/extensions/manifest>
+- Firebase CLI deploy reference: <https://firebase.google.com/docs/cli>
+- Firebase IAM permissions: <https://firebase.google.com/docs/projects/iam/permissions>
 - Google App Passwords: <https://support.google.com/mail/answer/185833>
 - Google Workspace SMTP relay: <https://support.google.com/a/answer/176600>
 
