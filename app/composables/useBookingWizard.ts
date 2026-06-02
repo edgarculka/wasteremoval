@@ -98,7 +98,9 @@ export function useBookingWizard() {
   }
 
   async function submitBookingWizard(_data: BookingFormData) {
-    closeBookingWizard();
+    // Give the wizard's submitting state a beat to show before routing away,
+    // simulating the booking request being processed.
+    await new Promise((resolve) => setTimeout(resolve, 900));
     await navigateTo("/thank-you/");
   }
 

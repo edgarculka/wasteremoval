@@ -5,6 +5,7 @@ import IconsExpand from "~/components/icons/Expand.vue";
 import IconsMail from "~/components/icons/Mail.vue";
 import IconsMinimize from "~/components/icons/Minimize.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
+import IconsSpinner from "~/components/icons/Spinner.vue";
 import IconsStar from "~/components/icons/Star.vue";
 import IconsTick from "~/components/icons/Tick.vue";
 import IconsVan from "~/components/icons/Van.vue";
@@ -53,6 +54,11 @@ const icons = [
     name: "IconsPhone",
     importPath: "Auto-imported as <IconsPhone />",
     component: IconsPhone,
+  },
+  {
+    name: "IconsSpinner",
+    importPath: "Auto-imported as <IconsSpinner />",
+    component: IconsSpinner,
   },
   {
     name: "IconsStar",

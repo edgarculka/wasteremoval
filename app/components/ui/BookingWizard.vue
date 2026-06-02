@@ -64,6 +64,7 @@ const emit = defineEmits<{
 }>();
 
 const stepIndex = ref(0);
+const isSubmitting = ref(false);
 const scrollContainer = ref<HTMLElement | null>(null);
 const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
@@ -135,6 +136,10 @@ const stepValid = computed(() => {
 
 const isLastStep = computed(() => stepIndex.value === questions.value.length - 1);
 
+const primaryLabel = computed(() =>
+  isSubmitting.value ? "Submitting…" : isLastStep.value ? "Submit" : "Continue",
+);
+
 const selectedDateLabel = computed(() => {
   if (!selectedDate.value) return null;
   const [y, m, d] = selectedDate.value.split("-").map(Number);
@@ -150,6 +155,7 @@ function close() {
 }
 
 function reset() {
+  isSubmitting.value = false;
   const initialLoadId = props.initialLoadId ?? null;
   const hasInitialLoad = props.loads.some((load) => load.id === initialLoadId);
   selectedLoadId.value = hasInitialLoad ? initialLoadId : null;
@@ -174,10 +180,12 @@ function goBack() {
 }
 
 function goNext() {
-  if (!stepValid.value) return;
+  if (!stepValid.value || isSubmitting.value) return;
   if (isLastStep.value) {
     if (!selectedLoad.value || !selectedDate.value || !selectedTime.value)
       return;
+    // Lock the form so the submit can't be fired twice while it's in flight.
+    isSubmitting.value = true;
     emit("submit", {
       load: selectedLoad.value,
       date: selectedDate.value,
@@ -196,8 +204,11 @@ function goNext() {
 function scrollToStepTop() {
   if (typeof window === "undefined") return;
 
-  scrollContainer.value?.scrollTo({ top: 0, behavior: "auto" });
-  window.scrollTo({ top: 0, behavior: "auto" });
+  // "instant" overrides the global `scroll-behavior: smooth`, which would
+  // otherwise turn each step jump into an interruptible animated scroll that
+  // often never reaches the top.
+  scrollContainer.value?.scrollTo({ top: 0, behavior: "instant" });
+  window.scrollTo({ top: 0, behavior: "instant" });
 }
 
 function focusFirstField() {
@@ -328,7 +339,7 @@ onScopeDispose(() => {
             <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
               <div class="flex flex-col text-start">
                 <UiText as="span" size="xs" tone="low">Estimated total</UiText>
-                <UiText as="span" weight="bold" size="xl">
+                <UiText as="span" weight="bold" size="lg">
                   {{ priceLabel }}
                 </UiText>
               </div>
@@ -499,7 +510,7 @@ onScopeDispose(() => {
           <UiButton
             variant="secondary"
             size="md"
-            :disabled="stepIndex === 0"
+            :disabled="stepIndex === 0 || isSubmitting"
             @click="goBack"
           >
             Back
@@ -508,10 +519,13 @@ onScopeDispose(() => {
             variant="primary"
             size="md"
             class="flex-1"
-            :disabled="!stepValid"
+            :disabled="!stepValid || isSubmitting"
             @click="goNext"
           >
-            {{ isLastStep ? "Submit" : "Continue" }}
+            <template v-if="isSubmitting" #iconLeft>
+              <IconsSpinner />
+            </template>
+            {{ primaryLabel }}
           </UiButton>
         </div>
         <div
@@ -521,7 +535,7 @@ onScopeDispose(() => {
           <UiButton
             variant="secondary"
             size="md"
-            :disabled="stepIndex === 0"
+            :disabled="stepIndex === 0 || isSubmitting"
             @click="goBack"
           >
             Back
@@ -535,10 +549,13 @@ onScopeDispose(() => {
           <UiButton
             variant="primary"
             size="md"
-            :disabled="!stepValid"
+            :disabled="!stepValid || isSubmitting"
             @click="goNext"
           >
-            {{ isLastStep ? "Submit" : "Continue" }}
+            <template v-if="isSubmitting" #iconLeft>
+              <IconsSpinner />
+            </template>
+            {{ primaryLabel }}
           </UiButton>
         </div>
       </footer>
