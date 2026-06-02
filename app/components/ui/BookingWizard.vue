@@ -223,6 +223,7 @@ onScopeDispose(() => {
       :aria-label="`${brandName} booking`"
     >
       <header
+        v-if="mode === 'dialog'"
         class="border-foreground bg-secondary text-secondary-foreground border-b-2"
       >
         <div
@@ -256,8 +257,42 @@ onScopeDispose(() => {
         </div>
       </header>
 
+      <div
+        v-else
+        class="fixed right-4 top-4 z-20 sm:right-6 sm:top-6"
+      >
+        <UiButton
+          size="icon"
+          variant="secondary"
+          aria-label="Close booking"
+          @click="close"
+        >
+          <IconsClose />
+        </UiButton>
+      </div>
+
       <div class="flex-1 overflow-y-auto">
-        <div class="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 lg:px-16">
+        <div
+          class="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 lg:px-16"
+          :class="mode === 'page' ? 'pt-20 sm:pt-24' : ''"
+        >
+          <div v-if="mode === 'page'" class="mb-8 pr-16 sm:pr-20">
+            <UiText as="span" size="sm" tone="low">
+              Step {{ stepIndex + 1 }} of {{ questions.length }}
+            </UiText>
+            <div
+              class="mt-3 h-1.5 w-full rounded bg-border"
+              role="progressbar"
+              :aria-valuenow="stepIndex + 1"
+              :aria-valuemin="1"
+              :aria-valuemax="questions.length"
+            >
+              <div
+                class="h-full rounded bg-foreground transition-[width] duration-300"
+                :style="{ width: `${((stepIndex + 1) / questions.length) * 100}%` }"
+              />
+            </div>
+          </div>
           <UiHeading :level="2" size="lg">
             {{ currentQuestion.title }}
           </UiHeading>

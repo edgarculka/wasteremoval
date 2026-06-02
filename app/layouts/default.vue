@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const selectedLocation = useSelectedSeoLocation();
+const route = useRoute();
+const showHeader = computed(() => !route.path.startsWith("/quote"));
 
 const headerNav = computed(() => [
   {
@@ -18,7 +20,12 @@ const { openBookingWizard } = useBookingWizard();
 
 <template>
   <div class="flex flex-1 flex-col">
-    <UiHeader :nav="headerNav" phone="020 1234 5678" @cta="openBookingWizard" />
+    <UiHeader
+      v-if="showHeader"
+      :nav="headerNav"
+      phone="020 1234 5678"
+      @cta="openBookingWizard"
+    />
     <slot />
   </div>
 </template>
