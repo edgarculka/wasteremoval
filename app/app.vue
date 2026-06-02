@@ -6,21 +6,36 @@ const primaryLinks = [
 ];
 
 const route = useRoute();
+const selectedLocation = useSelectedSeoLocation();
+const selectedService = computed(() => {
+  const serviceSlug = route.params.serviceSlug;
+
+  if (typeof serviceSlug === "string") {
+    return getSeoServiceBySlug(serviceSlug) ?? seoServices[0];
+  }
+
+  return seoServices[0];
+});
+
 const isFullscreenDesignSystem = computed(() =>
   route.path.startsWith("/design-system/fullscreen/"),
 );
 
-const serviceLinkGroups = computed(() =>
+const footerServiceLinks = computed(() =>
   seoServices.map((service) => ({
-    heading: service.title,
-    links: serviceLocationSeoPages
-      .filter((page) => page.service.slug === service.slug)
-      .map((page) => ({
-        label: page.location.title,
-        href: page.path,
-      })),
+    label: service.title,
+    href: buildServiceLocationPath(service, selectedLocation.value),
   })),
 );
+
+const footerLocationLinks = computed(() => {
+  const service = selectedService.value ?? seoServices[0];
+
+  return seoLocations.map((location) => ({
+    label: location.title,
+    href: service ? buildServiceLocationPath(service, location) : "/services",
+  }));
+});
 
 useHead({
   titleTemplate: (title) =>
@@ -45,7 +60,9 @@ const {
   <UiFooter
     v-if="!isFullscreenDesignSystem"
     :primary-links="primaryLinks"
-    :service-groups="serviceLinkGroups"
+    :service-links="footerServiceLinks"
+    :location-links="footerLocationLinks"
+    :selected-location-label="selectedLocation.title"
     :brand-name="companyDetails.tradingName"
   />
   <UiBookingWizard

@@ -20,31 +20,17 @@
             { label: 'Contact', href: '#' },
             { label: 'Design System', href: '#' },
           ]"
-          :service-groups="[
-            {
-              heading: 'End of Tenancy Rubbish Removal',
-              links: [
-                { label: 'Brentford', href: '#' },
-                { label: 'Chiswick', href: '#' },
-                { label: 'Ealing', href: '#' },
-              ],
-            },
-            {
-              heading: 'House Clearance',
-              links: [
-                { label: 'Brentford', href: '#' },
-                { label: 'Chiswick', href: '#' },
-                { label: 'Ealing', href: '#' },
-              ],
-            },
-            {
-              heading: 'Garden Waste Removal',
-              links: [
-                { label: 'Brentford', href: '#' },
-                { label: 'Chiswick', href: '#' },
-                { label: 'Ealing', href: '#' },
-              ],
-            },
+          selected-location-label="London"
+          :service-links="[
+            { label: 'End of Tenancy Rubbish Removal', href: '#' },
+            { label: 'House Clearance', href: '#' },
+            { label: 'Garden Waste Removal', href: '#' },
+          ]"
+          :location-links="[
+            { label: 'London', href: '#' },
+            { label: 'Brentford', href: '#' },
+            { label: 'Chiswick', href: '#' },
+            { label: 'Ealing', href: '#' },
           ]"
         />
       </div>
@@ -55,14 +41,14 @@
       <div class="mt-4 overflow-hidden rounded-md border border-border">
         <UiFooter
           :primary-links="[{ label: 'Home', href: '#' }]"
-          :service-groups="[
-            {
-              heading: 'House Clearance',
-              links: [
-                { label: 'Brentford', href: '#' },
-                { label: 'Chiswick', href: '#' },
-              ],
-            },
+          selected-location-label="Brentford"
+          :service-links="[
+            { label: 'House Clearance', href: '#' },
+            { label: 'Garden Waste Removal', href: '#' },
+          ]"
+          :location-links="[
+            { label: 'London', href: '#' },
+            { label: 'Brentford', href: '#' },
           ]"
         />
       </div>

@@ -174,6 +174,36 @@ export const seoServices: SeoService[] = [
 
 export const seoLocations: SeoLocation[] = [
   {
+    slug: "london",
+    name: "London",
+    title: "London",
+    metaTitle: "Waste Removal in London",
+    metaDescription:
+      "Rubbish removal and property clearance services across London for homes, landlords and businesses.",
+    shortDescription:
+      "Waste removal services across London, including homes, flats, gardens and rental properties.",
+    description:
+      "London pages cover flexible rubbish removal for homes, landlords and businesses that need licensed collection without arranging skip hire.",
+    image: {
+      src: "/images/rubbish-removal.png",
+      alt: "Waste removal service across London",
+      width: 1600,
+      height: 1200,
+    },
+    county: "Greater London",
+    region: "London",
+    nearbyAreas: ["Brentford", "Chiswick", "Ealing"],
+    localSearchTerms: [
+      "rubbish removal London",
+      "waste clearance London",
+      "property clearance London",
+    ],
+    serviceNotes: [
+      "Useful for London homes, flats, gardens and business clearances",
+      "Share photos, access notes and parking details for an accurate quote",
+    ],
+  },
+  {
     slug: "brentford",
     name: "Brentford",
     title: "Brentford",
@@ -266,6 +296,9 @@ export function getSeoServiceBySlug(slug: string) {
 export function getSeoLocationBySlug(slug: string) {
   return seoLocations.find((location) => location.slug === slug);
 }
+
+export const defaultSeoLocation: SeoLocation =
+  getSeoLocationBySlug("london") ?? seoLocations[0]!;
 
 export function buildServiceLocationPath(
   service: SeoService,

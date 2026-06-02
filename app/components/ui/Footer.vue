@@ -11,7 +11,9 @@ export interface FooterLinkGroup {
 
 interface Props {
   primaryLinks: FooterLink[];
-  serviceGroups: FooterLinkGroup[];
+  serviceLinks: FooterLink[];
+  locationLinks: FooterLink[];
+  selectedLocationLabel?: string;
   brandName?: string;
   logoHref?: string;
   ariaLabel?: string;
@@ -51,17 +53,29 @@ withDefaults(defineProps<Props>(), {
       </div>
 
       <div class="space-y-4">
-        <div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-          <section
-            v-for="group in serviceGroups"
-            :key="group.heading"
-            class="space-y-3"
-          >
+        <div class="grid gap-8 sm:grid-cols-2">
+          <section class="space-y-3">
             <UiText :level="2" size="xs" tone="low">
-              {{ group.heading }}
+              Services
             </UiText>
             <ul class="space-y-2">
-              <li v-for="link in group.links" :key="link.href">
+              <li v-for="link in serviceLinks" :key="link.href">
+                <UiLink :href="link.href" treatment="subtle" class="text-sm">
+                  {{ link.label }}
+                  <span v-if="selectedLocationLabel" class="text-current/60">
+                    in {{ selectedLocationLabel }}
+                  </span>
+                </UiLink>
+              </li>
+            </ul>
+          </section>
+
+          <section class="space-y-3">
+            <UiText :level="2" size="xs" tone="low">
+              Locations
+            </UiText>
+            <ul class="space-y-2">
+              <li v-for="link in locationLinks" :key="link.href">
                 <UiLink :href="link.href" treatment="subtle" class="text-sm">
                   {{ link.label }}
                 </UiLink>
