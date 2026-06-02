@@ -92,7 +92,6 @@ const contactCards: ContactCardLink[] = [
     spacing="md"
     alignment="left"
     title="Frequently asked questions"
-    class="border-t-2"
   >
     <UiFaq :items="faqItems" />
     <template #visual>

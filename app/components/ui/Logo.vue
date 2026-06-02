@@ -1,7 +1,7 @@
 <script setup lang="ts">
 type LogoSize = "xs" | "sm" | "md" | "lg";
 type LogoTone = "primary" | "foreground" | "background";
-type LogoMark = "brand" | "design-system";
+type LogoMark = "brand" | "brand-icon" | "design-system";
 
 interface Props {
   size?: LogoSize;
@@ -32,6 +32,10 @@ const marks: Record<LogoMark, { aspectRatio: string; maskImage: string }> = {
   brand: {
     aspectRatio: "2252 / 400",
     maskImage: 'url("/images/waste-logo.svg")',
+  },
+  "brand-icon": {
+    aspectRatio: "1 / 1",
+    maskImage: 'url("/images/waste-logo-icon.svg")',
   },
   "design-system": {
     aspectRatio: "4179 / 474",

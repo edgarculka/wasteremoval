@@ -258,7 +258,7 @@ function openBookingWithPricingSelection() {
     title="Last minute bookings available"
     spacing="sm"
     tone="secondary"
-    class="border-t-2 !pb-2"
+    class="!pb-2"
   >
     <template #default>
       <UiTickList :items="sellingPoints"> </UiTickList>
@@ -288,7 +288,7 @@ function openBookingWithPricingSelection() {
     tone="secondary"
     alignment="center"
     wide
-    class="border-b-2 !pt-4"
+    class="!pt-4"
   >
     <UiReviews
       :average="4.9"
@@ -336,7 +336,7 @@ function openBookingWithPricingSelection() {
     </template>
   </UiSection>
 
-  <UiSection tone="secondary" spacing="md" alignment="left" class="border-t-2">
+  <UiSection tone="secondary" spacing="md" alignment="left">
     <UiCallToAction
       heading="Book your clearance — same day, fixed price."
       :points="sellingPoints"

@@ -38,7 +38,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const classes = computed(
   () =>
-    `inline-flex cursor-pointer items-center justify-center rounded-full font-bold transition disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${variantClasses[props.variant]} ${sizeClasses[props.size]}`,
+    `inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-full font-bold transition disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${variantClasses[props.variant]} ${sizeClasses[props.size]}`,
 );
 </script>
 
