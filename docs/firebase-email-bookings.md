@@ -1,45 +1,135 @@
 # Firebase booking email setup
 
-This project uses the official Firebase **Trigger Email from Firestore** extension (`firebase/firestore-send-email`) for booking confirmations.
+This project uses the official Firebase **Trigger Email from Firestore** extension (`firebase/firestore-send-email`) for booking confirmations and internal booking notifications.
 
-## Flow
+## What is implemented
 
 1. The quote page submits the booking form to `/api/bookings`.
 2. Firebase Hosting rewrites `/api/bookings` to the `createBooking` Cloud Function in `europe-west2`.
 3. The function validates the booking payload, stores a private `bookings/{bookingId}` document, and creates two `mail` documents:
    - one confirmation email to the customer email from the form;
    - one internal notification email to `contact@dbs-waste.co.uk`.
-4. The Trigger Email extension watches the `mail` collection and sends the email documents through Gmail Workspace SMTP.
+4. The Trigger Email extension watches the `mail` collection in the default Firestore database and sends those email documents through Google Workspace SMTP.
+5. Replies are handled by Google Workspace inboxes:
+   - customer confirmation emails use `contact@dbs-waste.co.uk` as `replyTo`;
+   - internal notification emails use the customer's submitted email as `replyTo`, so replying from the internal mailbox replies directly to the customer.
 
-## Gmail Workspace credentials
+> The Firebase extension sends outbound email. It does not ingest inbound email into Firestore. “Receiving emails” for this booking flow means receiving replies and internal notifications in the configured Google Workspace mailbox.
 
-Use a dedicated Workspace mailbox or alias for `contact@dbs-waste.co.uk`.
+## Google Workspace credentials
 
-Recommended SMTP settings:
+A Google Account by itself is not enough for a deployed Firebase extension to send mail. The extension needs a non-interactive SMTP credential for the Workspace mailbox because there is no browser login during Cloud Function execution.
+
+Use a dedicated Workspace mailbox or alias for `contact@dbs-waste.co.uk`. For this project, the simplest fully functional path is **Google Workspace Gmail SMTP + a Google App Password**. The app password is the only email password Firebase needs.
+
+### Passwords and secrets checklist
+
+| Item | Where it comes from | Where it goes | Commit it? |
+| --- | --- | --- | --- |
+| Google Account password | The normal password for the Workspace user that owns `contact@dbs-waste.co.uk` | Only used by the owner to sign in to Google and enable 2-Step Verification | No |
+| Google App Password | Google Account security page for the `contact@dbs-waste.co.uk` Workspace user, after 2-Step Verification is enabled | Paste into the Firebase secret named `firestore-send-email-SMTP_PASSWORD` | No |
+| Firebase secret resource path | Firebase/Google Secret Manager after the secret is created | Already referenced by `SMTP_PASSWORD` in `extensions/firestore-send-email.env` | Yes, only the resource path |
+
+### Create the Google App Password
+
+1. Sign in as the Google Workspace user that will send booking emails: `contact@dbs-waste.co.uk`.
+2. Open the Google Account security page: <https://myaccount.google.com/security>.
+3. Enable **2-Step Verification** for that user if it is not already enabled. Google requires 2-Step Verification before app passwords can be created.
+4. Open **App passwords** directly: <https://myaccount.google.com/apppasswords>.
+5. Create an app password named `Firebase Trigger Email` or `DBS Waste Firebase SMTP`.
+6. Copy the generated 16-character app password immediately. Google only shows it once. This is the value to paste into Firebase Secret Manager.
+
+If **App passwords** is missing, check these first:
+
+- The signed-in user is the actual sending mailbox user, not only a personal/admin account.
+- 2-Step Verification is enabled for that user.
+- The Google Workspace admin has not disabled app passwords for the organisation or organisational unit.
+- The account is not configured in a way that blocks app passwords, such as security-key-only 2-Step Verification.
+
+Recommended SMTP settings for the app-password path:
 
 - SMTP host: `smtp.gmail.com`
 - Port/security: `465` with `smtps://`
 - Username: `contact@dbs-waste.co.uk`
-- Password: a Google app password or SMTP relay credential stored in Secret Manager
+- Authentication type: `UsernamePassword`
+- Password: the 16-character Google App Password stored in Firebase Secret Manager
 
-Create or update the secret before deploying the extension:
+Create or update the Firebase secret before deploying the extension:
+
+```bash
+npm run firebase:email-secret
+```
+
+That script runs:
 
 ```bash
 npx -y firebase-tools@latest functions:secrets:set firestore-send-email-SMTP_PASSWORD --project wasteremoval-3276
 ```
 
-Paste the Gmail Workspace app password when prompted. Do not commit the password.
+When prompted, paste the 16-character Google App Password. Do not paste your normal Google Account password, and do not commit the app password.
 
-## Deploy
+The committed extension config already points to that secret:
 
-After authenticating with Firebase CLI, deploy the function, Firestore rules, Hosting rewrite, and extension manifest:
-
-```bash
-npx -y firebase-tools@latest login --no-localhost
-npx -y firebase-tools@latest deploy --only functions,firestore,hosting,extensions --project wasteremoval-3276
+```env
+SMTP_PASSWORD=projects/${param:PROJECT_NUMBER}/secrets/firestore-send-email-SMTP_PASSWORD/versions/latest
 ```
 
+### If Google App Passwords are unavailable
+
+Use one of these alternatives instead of the app-password path:
+
+1. **Google Workspace SMTP relay** — configure SMTP relay in Google Admin for your Workspace, then update `SMTP_CONNECTION_URI` and the secret value to match the relay/auth settings. This is usually the best Workspace-admin-managed alternative.
+2. **OAuth2 for the Firebase extension** — change `AUTH_TYPE` to `OAuth2`, then provide OAuth2 credentials/secrets required by the extension (`CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN`) in Secret Manager.
+3. **Transactional email provider** — use SendGrid, Mailgun, Postmark, or a similar provider, then replace `SMTP_CONNECTION_URI`, `DEFAULT_FROM`, and the stored secret with the provider's SMTP settings.
+
+## Extension configuration
+
+The extension manifest is pinned in `firebase.json` and the parameter values live in `extensions/firestore-send-email.env`.
+
+Important committed parameters:
+
+- `DATABASE=(default)` — watches the default Firestore database.
+- `DATABASE_REGION=europe-west2` — matches the London Firestore/function region used by the booking API.
+- `MAIL_COLLECTION=mail` — must match the `MAIL_COLLECTION` constant in `functions/index.js`.
+- `AUTH_TYPE=UsernamePassword` — uses the SMTP URI plus the Secret Manager password.
+- `DEFAULT_FROM=contact@dbs-waste.co.uk` and `DEFAULT_REPLY_TO=contact@dbs-waste.co.uk` — default sender/reply settings for generated email.
+
+## Firebase CLI setup and deployment
+
+The repo has npm scripts for the Firebase CLI commands needed to connect the booking form, Cloud Function, Firestore rules, Hosting rewrite, and Trigger Email extension.
+
+Run these from the repository root:
+
+```bash
+npm run firebase:version
+npm run firebase:login
+npm run firebase:use
+npm run firebase:email-secret
+npm run firebase:deploy:email
+```
+
+What each command does:
+
+- `npm run firebase:version` verifies that the Firebase CLI can be downloaded and executed.
+- `npm run firebase:login` signs in with the Google account that has access to Firebase project `wasteremoval-3276`.
+- `npm run firebase:use` selects Firebase project `wasteremoval-3276`.
+- `npm run firebase:email-secret` creates or updates the Secret Manager value used by the extension for Gmail SMTP. Paste the 16-character Google App Password when prompted.
+- `npm run firebase:deploy:email` deploys Functions, Firestore rules, Hosting rewrites, and Extensions for the email booking flow.
+
 The extension configuration is committed in `extensions/firestore-send-email.env`; the secret value itself is stored in Google Secret Manager.
+
+If `npm run firebase:version` fails with an npm registry or proxy error, Firebase CLI cannot be installed in that environment. Fix the local network/proxy/npm registry access first, then rerun the commands above.
+
+## Credentials needed to finish live setup
+
+To finish the live Firebase connection, the person running the commands needs:
+
+1. **Firebase project access** — a Google account with permission to deploy Hosting, Cloud Functions, Firestore rules, Extensions, and Secret Manager secrets for project `wasteremoval-3276`.
+2. **Sending mailbox access** — ability to sign in as the Google Workspace mailbox that sends email, currently configured as `contact@dbs-waste.co.uk`.
+3. **A Google App Password for that mailbox** — generated after enabling 2-Step Verification on `contact@dbs-waste.co.uk`; this is pasted into `npm run firebase:email-secret`.
+4. **Workspace admin access if app passwords are unavailable** — needed only to enable app passwords, configure Workspace SMTP relay, or approve OAuth2/SMTP alternatives.
+
+Never paste the normal Google Account password into Firebase, and never commit any email password or app password.
 
 ## Smoke test
 
@@ -48,4 +138,20 @@ After deployment, submit `/quote/` with a real email address. Confirm that:
 - a `bookings/{bookingId}` document exists;
 - two `mail` documents are created;
 - the customer receives the confirmation email;
-- `contact@dbs-waste.co.uk` receives the internal notification email.
+- `contact@dbs-waste.co.uk` receives the internal notification email;
+- replying to the customer confirmation goes to `contact@dbs-waste.co.uk`;
+- replying to the internal notification goes to the customer's submitted email.
+
+## Official references
+
+- Firebase Trigger Email extension usage: <https://firebase.google.com/docs/extensions/official/firestore-send-email>
+- Google App Passwords: <https://support.google.com/mail/answer/185833>
+- Google Workspace SMTP relay: <https://support.google.com/a/answer/176600>
+
+## Troubleshooting
+
+- If `mail` documents are created but no emails arrive, open the `mail/{id}` document and inspect the extension's `delivery` field for SMTP errors.
+- If deployment prompts for required extension values, confirm `DATABASE`, `DATABASE_REGION`, `MAIL_COLLECTION`, and `AUTH_TYPE` are present in `extensions/firestore-send-email.env`.
+- If Gmail rejects authentication, confirm the secret contains the 16-character Google App Password, not the normal Google Account password, then rotate `firestore-send-email-SMTP_PASSWORD` and redeploy extensions.
+- If Google does not show **App passwords**, use the checklist above to enable 2-Step Verification and confirm Workspace admin policy allows app passwords, or switch to Workspace SMTP relay/OAuth2.
+- If Firestore TTL cleanup is desired, configure a Firestore TTL policy for the `delivery.expireAt` field on the `mail` collection group. The extension writes this field because `TTL_EXPIRE_TYPE=month` and `TTL_EXPIRE_VALUE=1` are configured.

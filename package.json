@@ -16,7 +16,12 @@
     "verify:seo": "npm run generate && npm run audit:seo",
     "validate-business-details": "node scripts/validate-business-details.mjs",
     "fetch-image": "node --env-file=.env scripts/fetch-pexels-image.mjs",
-    "deploy": "npm run validate-business-details && npm run verify:seo && npx -y firebase-tools@latest deploy --only hosting,functions,firestore,extensions"
+    "deploy": "npm run validate-business-details && npm run verify:seo && npx -y firebase-tools@latest deploy --only hosting,functions,firestore,extensions",
+    "firebase:version": "npx -y firebase-tools@latest --version",
+    "firebase:login": "npx -y firebase-tools@latest login --no-localhost",
+    "firebase:use": "npx -y firebase-tools@latest use wasteremoval-3276",
+    "firebase:email-secret": "npx -y firebase-tools@latest functions:secrets:set firestore-send-email-SMTP_PASSWORD --project wasteremoval-3276",
+    "firebase:deploy:email": "npx -y firebase-tools@latest deploy --only functions,firestore,hosting,extensions --project wasteremoval-3276"
   },
   "dependencies": {
     "@nuxtjs/robots": "^5.0.0",
