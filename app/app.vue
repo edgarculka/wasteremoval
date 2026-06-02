@@ -14,6 +14,10 @@ const isFullscreenDesignSystem = computed(() =>
   route.path.startsWith("/design-system/fullscreen/"),
 );
 
+const showFooter = computed(
+  () => !isFullscreenDesignSystem.value && !route.path.startsWith("/quote"),
+);
+
 const footerServiceLinks = computed(() =>
   seoServices.map((service) => ({
     label: service.title,
@@ -40,7 +44,7 @@ useHead({
     <NuxtPage />
   </NuxtLayout>
   <UiFooter
-    v-if="!isFullscreenDesignSystem"
+    v-if="showFooter"
     :primary-links="primaryLinks"
     :service-links="footerServiceLinks"
     :location-links="footerLocationLinks"

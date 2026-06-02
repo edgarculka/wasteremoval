@@ -303,14 +303,22 @@ onScopeDispose(() => {
       <div ref="scrollContainer" class="flex-1 overflow-y-auto">
         <div
           class="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 lg:px-16"
-          :class="mode === 'page' ? 'pt-20 sm:pt-24' : ''"
+          :class="mode === 'page' ? 'pt-20 pb-36 sm:pt-24' : ''"
         >
           <div v-if="mode === 'page'" class="mb-8 pr-16 sm:pr-20">
-            <UiText as="span" size="sm" tone="low">
-              Step {{ stepIndex + 1 }} of {{ questions.length }}
-            </UiText>
+            <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
+              <div class="flex flex-col text-start">
+                <UiText as="span" size="xs" tone="low">Estimated total</UiText>
+                <UiText as="span" weight="bold" size="xl">
+                  {{ priceLabel }}
+                </UiText>
+              </div>
+              <UiText as="span" size="sm" tone="low">
+                Step {{ stepIndex + 1 }} of {{ questions.length }}
+              </UiText>
+            </div>
             <div
-              class="mt-3 h-1.5 w-full rounded bg-border"
+              class="mt-4 h-1.5 w-full rounded bg-border"
               role="progressbar"
               :aria-valuenow="stepIndex + 1"
               :aria-valuemin="1"
@@ -458,9 +466,37 @@ onScopeDispose(() => {
       </div>
 
       <footer
-        class="border-y-2 border-foreground bg-secondary text-secondary-foreground"
+        class="border-foreground bg-secondary text-secondary-foreground"
+        :class="
+          mode === 'page'
+            ? 'fixed inset-x-0 bottom-0 z-20 border-t-2'
+            : 'border-y-2'
+        "
       >
         <div
+          v-if="mode === 'page'"
+          class="mx-auto flex w-full max-w-4xl items-center gap-3 px-6 py-4 sm:px-10 lg:px-16"
+        >
+          <UiButton
+            variant="secondary"
+            size="md"
+            :disabled="stepIndex === 0"
+            @click="goBack"
+          >
+            Back
+          </UiButton>
+          <UiButton
+            variant="primary"
+            size="md"
+            class="flex-1"
+            :disabled="!stepValid"
+            @click="goNext"
+          >
+            {{ isLastStep ? "Submit" : "Continue" }}
+          </UiButton>
+        </div>
+        <div
+          v-else
           class="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-6 py-4 sm:px-10 lg:px-16"
         >
           <UiButton

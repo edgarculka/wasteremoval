@@ -60,26 +60,10 @@ usePageSeo({
 </script>
 
 <template>
-  <UiSection tone="background" spacing="sm" alignment="center">
-    <UiHeading :level="1" size="lg">Get a Waste Removal Quote</UiHeading>
-    <UiText size="lg" tone="low" class="mt-4 max-w-2xl">
-      Choose the closest load size, pick a collection slot and share the
-      collection details. The team confirms the final price before anything is
-      removed.
-    </UiText>
-    <UiButton
-      href="/recycling-and-disposal/"
-      variant="secondary"
-      size="sm"
-      class="mt-6"
-    >
-      Check restricted items
-    </UiButton>
-  </UiSection>
-
   <UiBookingWizard
     :open="true"
     mode="page"
+    :heading-level="1"
     :brand-name="companyDetails.tradingName"
     :loads="bookingLoads"
     :times="bookingTimes"
