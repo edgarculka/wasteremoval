@@ -49,6 +49,7 @@ export default defineNuxtConfig({
       routes: [
         "/",
         "/pricing",
+        "/quote",
         "/services",
         "/thank-you",
         "/design-system",

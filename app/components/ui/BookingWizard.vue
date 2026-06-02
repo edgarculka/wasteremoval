@@ -30,6 +30,7 @@ interface Props {
   open: boolean;
   loads: BookingLoad[];
   times: BookingTimeSlot[];
+  mode?: "dialog" | "page";
   questions?: BookingQuestion[];
   brandName?: string;
   defaultPriceLabel?: string;
@@ -41,6 +42,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   brandName: "Booking",
+  mode: "dialog",
   defaultPriceLabel: "From £40",
   minDaysAhead: 1,
   monthsToShow: 3,
@@ -185,13 +187,14 @@ watch(
   () => props.open,
   (open, prev) => {
     if (typeof document === "undefined") return;
-    if (open) {
+    if (open && props.mode === "dialog") {
       document.body.style.overflow = "hidden";
-      if (!prev) reset();
     } else {
       document.body.style.overflow = "";
     }
+    if (open && !prev) reset();
   },
+  { immediate: true },
 );
 
 watchEffect((onCleanup) => {
@@ -210,12 +213,13 @@ onScopeDispose(() => {
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="body" :disabled="mode === 'page'">
     <div
       v-if="open"
-      class="fixed inset-0 z-50 flex flex-col bg-background text-foreground"
-      role="dialog"
-      aria-modal="true"
+      class="flex flex-col bg-background text-foreground"
+      :class="mode === 'dialog' ? 'fixed inset-0 z-50' : 'min-h-screen'"
+      :role="mode === 'dialog' ? 'dialog' : undefined"
+      :aria-modal="mode === 'dialog' ? true : undefined"
       :aria-label="`${brandName} booking`"
     >
       <header

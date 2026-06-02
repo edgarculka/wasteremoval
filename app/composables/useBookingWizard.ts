@@ -74,19 +74,17 @@ const bookingTimes: BookingTimeSlot[] = [
 ];
 
 export function useBookingWizard() {
-  const open = useState<boolean>("booking-wizard-open", () => false);
-  const preselectedLoadId = useState<string | null>(
-    "booking-wizard-preselected-load-id",
-    () => null,
-  );
-
   function openBookingWizard(loadId?: string | null | Event) {
-    preselectedLoadId.value = typeof loadId === "string" ? loadId : null;
-    open.value = true;
+    const selectedLoadId = typeof loadId === "string" ? loadId : null;
+
+    return navigateTo({
+      path: "/quote",
+      query: selectedLoadId ? { load: selectedLoadId } : undefined,
+    });
   }
 
   function closeBookingWizard() {
-    open.value = false;
+    return navigateTo("/");
   }
 
   async function submitBookingWizard(_data: BookingFormData) {
@@ -95,8 +93,6 @@ export function useBookingWizard() {
   }
 
   return {
-    bookingWizardOpen: open,
-    bookingWizardPreselectedLoadId: preselectedLoadId,
     bookingLoads,
     bookingTimes,
     openBookingWizard,

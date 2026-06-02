@@ -44,13 +44,6 @@ useHead({
       : companyDetails.tradingName,
 });
 
-const {
-  bookingWizardOpen,
-  bookingWizardPreselectedLoadId,
-  bookingLoads,
-  bookingTimes,
-  submitBookingWizard,
-} = useBookingWizard();
 </script>
 
 <template>
@@ -64,14 +57,5 @@ const {
     :location-links="footerLocationLinks"
     :selected-location-label="selectedLocation.title"
     :brand-name="companyDetails.tradingName"
-  />
-  <UiBookingWizard
-    v-if="!isFullscreenDesignSystem"
-    v-model:open="bookingWizardOpen"
-    brand-name="Big Van Men"
-    :loads="bookingLoads"
-    :times="bookingTimes"
-    :initial-load-id="bookingWizardPreselectedLoadId"
-    @submit="submitBookingWizard"
   />
 </template>
