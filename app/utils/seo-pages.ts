@@ -307,6 +307,10 @@ export function buildServiceLocationPath(
   return `/${service.slug}/${location.slug}/`;
 }
 
+export function buildServicePath(service: SeoService) {
+  return `/${service.slug}/`;
+}
+
 export function buildServiceLocationSeoPage(
   service: SeoService,
   location: SeoLocation,
@@ -347,3 +351,7 @@ export const serviceLocationSeoPages: ServiceLocationSeoPage[] =
       buildServiceLocationSeoPage(service, location),
     ),
   );
+
+export const serviceSeoPaths = seoServices.map((service) =>
+  buildServicePath(service),
+);

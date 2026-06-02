@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { serviceLocationSeoPages } from "./app/utils/seo-pages";
+import { serviceLocationSeoPages, serviceSeoPaths } from "./app/utils/seo-pages";
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://dbs-waste.co.uk";
 const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
@@ -54,6 +54,7 @@ export default defineNuxtConfig({
         "/design-system",
         "/robots.txt",
         "/sitemap.xml",
+        ...serviceSeoPaths,
         ...serviceLocationSeoPages.map((page) => page.path),
       ],
       ignore: [],

@@ -1,24 +1,27 @@
 <script setup lang="ts">
 const route = useRoute();
 const serviceSlug = route.params.serviceSlug as string;
-const locationSlug = route.params.locationSlug as string;
+const service = getSeoServiceBySlug(serviceSlug);
 
-const page = getServiceLocationSeoPage(serviceSlug, locationSlug);
-
-if (!page) {
+if (!service) {
   throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
-const rememberSeoLocation = useRememberSeoLocation();
+const page = buildServiceLocationSeoPage(service, defaultSeoLocation);
+const selectedLocation = useSelectedSeoLocation();
 
-onMounted(() => {
-  rememberSeoLocation(page.location);
+onMounted(async () => {
+  if (selectedLocation.value.slug === defaultSeoLocation.slug) return;
+
+  await navigateTo(buildServiceLocationPath(service, selectedLocation.value), {
+    replace: true,
+  });
 });
 
 usePageSeo({
   title: page.metaTitle,
   description: page.metaDescription,
-  path: page.path,
+  path: buildServicePath(service),
   image: page.image,
   structuredData: [
     {
@@ -67,8 +70,8 @@ usePageSeo({
         {
           "@type": "ListItem",
           position: 3,
-          name: page.title,
-          item: page.path,
+          name: page.service.title,
+          item: buildServicePath(service),
         },
       ],
     },
@@ -83,14 +86,14 @@ function openBookingWithPricingSelection() {
 }
 
 const relatedServices = seoServices
-  .filter((service) => service.slug !== page.service.slug)
-  .map((service) => ({
-    title: service.name,
-    description: service.shortDescription,
-    href: buildServiceLocationPath(service, page.location),
-    image: service.image,
-    meta: service.searchTerms[0],
-    highlights: service.sellingPoints.slice(0, 2),
+  .filter((item) => item.slug !== page.service.slug)
+  .map((item) => ({
+    title: item.name,
+    description: item.shortDescription,
+    href: buildServiceLocationPath(item, page.location),
+    image: item.image,
+    meta: item.searchTerms[0],
+    highlights: item.sellingPoints.slice(0, 2),
   }));
 
 const locationLinks = seoLocations.map((location) => ({
@@ -117,9 +120,9 @@ const trustItems = [
 </script>
 
 <template>
-  <UiSection v-if="page" tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left">
     <template #above>
-      <UiRating :value="5">Rated 5 stars by West London customers</UiRating>
+      <UiRating :value="5">Rated 5 stars by London customers</UiRating>
     </template>
     <UiHero :heading="page.heading" :description="page.description">
       <template #actions>
@@ -142,10 +145,9 @@ const trustItems = [
     </template>
   </UiSection>
 
-  <UiMarquee v-if="page" tone="primary" :items="marqueeItems" />
+  <UiMarquee tone="primary" :items="marqueeItems" />
 
   <UiSection
-    v-if="page"
     tone="background"
     spacing="md"
     alignment="center"
@@ -173,12 +175,7 @@ const trustItems = [
     </template>
   </UiSection>
 
-  <UiSection
-    v-if="page"
-    tone="secondary"
-    spacing="md"
-    wide
-  >
+  <UiSection tone="secondary" spacing="md" wide>
     <UiServiceCoverage
       :heading="`What we remove in ${page.location.name}`"
       :description="page.service.shortDescription"
@@ -190,13 +187,7 @@ const trustItems = [
     />
   </UiSection>
 
-  <UiSection
-    v-if="page"
-    tone="background"
-    spacing="md"
-    alignment="center"
-    wide
-  >
+  <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServiceProcess
       eyebrow="How it works"
       :heading="`${page.service.name} without skip hire delays`"
@@ -206,7 +197,6 @@ const trustItems = [
   </UiSection>
 
   <UiSection
-    v-if="page"
     tone="secondary"
     spacing="md"
     alignment="center"
@@ -215,13 +205,12 @@ const trustItems = [
   >
     <UiReviews
       :average="4.9"
-      :average-label="`Average rating for West London clearance work`"
+      average-label="Average rating for London clearance work"
       :reviews="servicePageReviews"
     />
   </UiSection>
 
   <UiSection
-    v-if="page"
     tone="background"
     spacing="md"
     alignment="left"
@@ -253,7 +242,6 @@ const trustItems = [
   </UiSection>
 
   <UiSection
-    v-if="page"
     tone="secondary"
     spacing="md"
     alignment="center"
@@ -263,7 +251,7 @@ const trustItems = [
   </UiSection>
 
   <UiSection
-    v-if="page && relatedServices.length"
+    v-if="relatedServices.length"
     tone="background"
     spacing="md"
     alignment="center"
@@ -279,7 +267,7 @@ const trustItems = [
     />
   </UiSection>
 
-  <UiSection v-if="page" tone="secondary" spacing="md">
+  <UiSection tone="secondary" spacing="md">
     <UiCallToAction
       :heading="`Book ${page.service.name.toLowerCase()} in ${page.location.name}`"
       :points="page.service.sellingPoints"
@@ -287,9 +275,9 @@ const trustItems = [
       :image-alt="page.image.alt"
     >
       <template #cta>
-        <UiButton size="lg" variant="secondary" @click="openBookingWizard"
-          >Get a quote</UiButton
-        >
+        <UiButton size="lg" variant="secondary" @click="openBookingWizard">
+          Get a quote
+        </UiButton>
       </template>
     </UiCallToAction>
   </UiSection>
