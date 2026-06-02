@@ -150,11 +150,18 @@ function close() {
 }
 
 function reset() {
-  stepIndex.value = 0;
   const initialLoadId = props.initialLoadId ?? null;
-  selectedLoadId.value = props.loads.some((load) => load.id === initialLoadId)
-    ? initialLoadId
-    : null;
+  const hasInitialLoad = props.loads.some((load) => load.id === initialLoadId);
+  selectedLoadId.value = hasInitialLoad ? initialLoadId : null;
+  // When a load is already chosen (e.g. picked from the pricing page), skip the
+  // load-size step and open directly on the following step (collection date).
+  const loadStepIndex = questions.value.findIndex((q) => q.type === "load");
+  stepIndex.value =
+    hasInitialLoad &&
+    loadStepIndex !== -1 &&
+    loadStepIndex + 1 < questions.value.length
+      ? loadStepIndex + 1
+      : 0;
   selectedDate.value = null;
   selectedTimeId.value = null;
   for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
