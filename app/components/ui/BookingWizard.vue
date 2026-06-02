@@ -200,6 +200,23 @@ function scrollToStepTop() {
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
+function focusFirstField() {
+  if (typeof document === "undefined") return;
+  if (currentQuestion.value.type !== "fields") return;
+
+  const input = scrollContainer.value?.querySelector<HTMLElement>(
+    "input, textarea, select",
+  );
+  // preventScroll keeps the step pinned to the top we just scrolled to.
+  input?.focus({ preventScroll: true });
+}
+
+async function settleStep() {
+  await nextTick();
+  scrollToStepTop();
+  focusFirstField();
+}
+
 watch(
   () => questions.value.length,
   (length) => {
@@ -216,14 +233,16 @@ watch(
     } else {
       document.body.style.overflow = "";
     }
-    if (open && !prev) reset();
+    if (open && !prev) {
+      reset();
+      void settleStep();
+    }
   },
   { immediate: true },
 );
 
-watch(stepIndex, async () => {
-  await nextTick();
-  scrollToStepTop();
+watch(stepIndex, () => {
+  void settleStep();
 });
 
 watchEffect((onCleanup) => {
