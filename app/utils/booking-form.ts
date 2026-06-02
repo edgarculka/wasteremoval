@@ -87,21 +87,22 @@ export const bookingFormConfig: BookingFormConfig = {
     {
       id: "date",
       type: "date",
-      title: "Pick a collection date",
-      description: "Same-day if you book before 1pm, next-day everywhere else.",
-      selectedLabelPrefix: "Booked for",
+      title: "Pick a preferred collection date",
+      description:
+        "Choose the date you want and we’ll confirm availability when you contact us.",
+      selectedLabelPrefix: "Preferred date",
     },
     {
       id: "time",
       type: "time",
-      title: "Pick a time",
-      description: "We'll text 30 minutes before we arrive.",
+      title: "Pick a preferred time",
+      description: "We’ll confirm the exact arrival window before the team is dispatched.",
     },
     {
       id: "address",
       type: "fields",
       title: "Where are we going?",
-      description: "Tell us where to collect from.",
+      description: "Tell us where to collect from so we can quote accurately.",
       fields: [
         {
           id: "postcode",
@@ -126,7 +127,8 @@ export const bookingFormConfig: BookingFormConfig = {
       id: "contact",
       type: "fields",
       title: "Your details",
-      description: "We'll send confirmation by SMS and email.",
+      description:
+        "Add your details so you can copy the request into a call, WhatsApp message, or email.",
       fields: [
         {
           id: "name",
@@ -159,8 +161,9 @@ export const bookingFormConfig: BookingFormConfig = {
     {
       id: "review",
       type: "review",
-      title: "Review your booking",
-      description: "Check everything looks right before you submit.",
+      title: "Review your quote request",
+      description:
+        "Check everything looks right, then contact us using one of the working options below.",
     },
   ],
 };
