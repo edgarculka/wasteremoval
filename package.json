@@ -16,7 +16,7 @@
     "verify:seo": "npm run generate && npm run audit:seo",
     "validate-business-details": "node scripts/validate-business-details.mjs",
     "fetch-image": "node --env-file=.env scripts/fetch-pexels-image.mjs",
-    "deploy": "npm run validate-business-details && npm run verify:seo && firebase deploy --only hosting"
+    "deploy": "npm run validate-business-details && npm run verify:seo && npx -y firebase-tools@latest deploy --only hosting,functions,firestore,extensions"
   },
   "dependencies": {
     "@nuxtjs/robots": "^5.0.0",

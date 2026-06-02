@@ -1,5 +1,6 @@
 import type {
   BookingFormData,
+  BookingSubmitControls,
   BookingLoad,
   BookingTimeSlot,
 } from "~/components/ui/BookingWizard.vue";
@@ -97,11 +98,29 @@ export function useBookingWizard() {
     return navigateTo("/");
   }
 
-  async function submitBookingWizard(_data: BookingFormData) {
-    // Give the wizard's submitting state a beat to show before routing away,
-    // simulating the booking request being processed.
-    await new Promise((resolve) => setTimeout(resolve, 900));
-    await navigateTo("/thank-you/");
+  async function submitBookingWizard(
+    data: BookingFormData,
+    controls?: BookingSubmitControls,
+  ) {
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        await navigateTo("/thank-you/");
+        return;
+      }
+    } catch {
+      // The failure UI below covers both network errors and non-2xx responses.
+    }
+
+    controls?.fail();
+    window.alert(
+      "Sorry, we couldn't submit your booking. Please try again or contact DBS Waste directly.",
+    );
   }
 
   return {
