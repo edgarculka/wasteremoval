@@ -4,6 +4,7 @@ import IconsMail from "~/components/icons/Mail.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
 import IconsWhatsApp from "~/components/icons/WhatsApp.vue";
 import type { FaqItem } from "~/components/ui/Faq.vue";
+import type { ReviewItem } from "~/components/ui/Reviews.vue";
 import type {
   ServicesLocation,
   ServicesService,
@@ -85,6 +86,46 @@ const marqueeItems = [
   "Team loads the items",
   "West London coverage",
   "Photo estimates accepted",
+];
+
+const reviews: ReviewItem[] = [
+  {
+    author: "Aisha Khan",
+    meta: "House clearance",
+    rating: 5,
+    quote: "Booked in minutes, arrived on time, and left the place spotless.",
+  },
+  {
+    author: "Tom Bradley",
+    meta: "Sofa removal",
+    rating: 5,
+    quote:
+      "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
+  },
+  {
+    author: "Maya Roberts",
+    meta: "Garden waste",
+    rating: 4.5,
+    quote: "Fast collection and they swept up after loading everything.",
+  },
+  {
+    author: "Daniel Green",
+    meta: "Office clear-out",
+    rating: 5,
+    quote: "Professional from quote to pickup. Exactly what we needed.",
+  },
+  {
+    author: "Nina Patel",
+    meta: "Garage clearance",
+    rating: 5,
+    quote: "They handled years of clutter in one visit and kept me updated.",
+  },
+  {
+    author: "George Wilson",
+    meta: "Appliance removal",
+    rating: 4.5,
+    quote: "Simple, tidy, and much easier than hiring a skip.",
+  },
 ];
 
 const faqItems: FaqItem[] = [
@@ -234,7 +275,7 @@ function openBookingWithPricingSelection() {
     title="Last minute bookings available"
     spacing="sm"
     tone="secondary"
-    class="border-t-2 !pb-2"
+    class="!pb-2"
   >
     <template #default>
       <UiTickList :items="sellingPoints"> </UiTickList>
@@ -263,6 +304,20 @@ function openBookingWithPricingSelection() {
         </template>
       </UiButton>
     </template>
+  </UiSection>
+
+  <UiSection
+    spacing="md"
+    tone="secondary"
+    alignment="center"
+    wide
+    class="!pt-4"
+  >
+    <UiReviews
+      :average="4.9"
+      average-label="Average from 240+ customer reviews"
+      :reviews="reviews"
+    />
   </UiSection>
 
   <UiSection tone="background" spacing="md" alignment="center" wide>
@@ -304,7 +359,7 @@ function openBookingWithPricingSelection() {
     </template>
   </UiSection>
 
-  <UiSection tone="secondary" spacing="md" alignment="left" class="border-t-2">
+  <UiSection tone="secondary" spacing="md" alignment="left">
     <UiCallToAction
       heading="Book your clearance — same day, fixed price."
       :points="sellingPoints"

@@ -221,7 +221,6 @@ function openBookingWithPricingSelection() {
     spacing="md"
     alignment="left"
     title="Pricing questions"
-    class="border-t-2"
   >
     <UiFaq :items="faqItems" />
     <template #visual>

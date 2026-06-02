@@ -3,7 +3,7 @@
     <header>
       <UiHeading size="lg">Logo</UiHeading>
       <UiText tone="low" class="mt-3">
-        Brand and design-system logo marks rendered from SVG files via a CSS
+        Brand, icon and design-system logo marks rendered from SVG files via a CSS
         mask, so any brand colour token can paint through. Use
         <code>mark</code> to choose the artwork, <code>tone</code> for the
         colour and <code>size</code> for the height. Aspect ratio stays fixed.
@@ -20,11 +20,13 @@
     <section>
       <UiHeading :level="2" size="sm">Marks</UiHeading>
       <UiText size="sm" tone="low" class="mt-2">
-        <code>brand</code> is the default. <code>design-system</code> uses
-        <code>/images/design-system-logo.svg</code>.
+        <code>brand</code> is the default. <code>brand-icon</code> uses
+        <code>/images/waste-logo-icon.svg</code> for compact mobile placements,
+        and <code>design-system</code> uses <code>/images/design-system-logo.svg</code>.
       </UiText>
       <div class="mt-4 space-y-4 rounded-md border border-border p-6">
         <UiLogo mark="brand" />
+        <UiLogo mark="brand-icon" />
         <UiLogo mark="design-system" />
       </div>
     </section>

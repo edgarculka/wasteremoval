@@ -10,6 +10,11 @@ const headerNav = computed(() => [
     children: seoServices.map((service) => ({
       label: service.name,
       href: buildServiceLocationPath(service, selectedLocation.value),
+      description: service.shortDescription,
+      image: {
+        src: service.image.src,
+        alt: service.image.alt,
+      },
     })),
   },
   { label: "Pricing", href: "/pricing/" },

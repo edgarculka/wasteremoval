@@ -89,7 +89,6 @@ usePageSeo({
     spacing="md"
     alignment="left"
     wide
-    class="border-t-2"
     :title="group.service.name"
   >
     <UiText size="lg" tone="low" class="max-w-3xl">
