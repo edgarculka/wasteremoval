@@ -45,8 +45,12 @@ function closeMenu() {
     >
       <slot name="logo">
         <NuxtLink to="/" class="inline-flex shrink-0" aria-label="Home">
-          <UiLogo size="sm" class="hidden sm:inline-block" />
-          <UiLogo mark="brand-icon" size="sm" class="sm:hidden" />
+          <span class="hidden sm:inline-flex">
+            <UiLogo size="sm" />
+          </span>
+          <span class="inline-flex sm:hidden">
+            <UiLogo mark="brand-icon" size="sm" />
+          </span>
         </NuxtLink>
       </slot>
 
