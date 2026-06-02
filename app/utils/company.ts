@@ -12,8 +12,12 @@ export interface UkAddress {
 
 export interface CompanyContactDetails {
   primaryPhone: string;
+  primaryPhoneDisplay: string;
+  primaryPhoneHref: string;
   secondaryPhone: string;
+  whatsappHref: string;
   email: string;
+  emailHref: string;
   website: string;
 }
 
@@ -23,27 +27,39 @@ export interface CompanyDetails {
   shortName: string;
   address: UkAddress;
   contact: CompanyContactDetails;
+  serviceAreas: string[];
+  openingHours: string[];
+  priceRange: string;
+  wasteCarrierRegistration: string;
 }
 
 export const companyDetails: CompanyDetails = {
-  legalName: "Waste Removal Ltd",
-  tradingName: "Waste Removal",
-  shortName: "Waste Removal",
+  legalName: "DBS Waste Ltd",
+  tradingName: "DBS Waste",
+  shortName: "DBS Waste",
   address: {
     buildingName: "",
     buildingNumber: "",
     street: "",
     addressLine2: "",
-    townOrCity: "",
-    county: "",
+    townOrCity: "London",
+    county: "Greater London",
     postcode: "",
     country: "United Kingdom",
     countryCode: "GB",
   },
   contact: {
-    primaryPhone: "",
+    primaryPhone: "+442012345678",
+    primaryPhoneDisplay: "020 1234 5678",
+    primaryPhoneHref: "tel:+442012345678",
     secondaryPhone: "",
-    email: "",
-    website: "",
+    whatsappHref: "https://wa.me/442012345678",
+    email: "hello@dbs-waste.co.uk",
+    emailHref: "mailto:hello@dbs-waste.co.uk",
+    website: "https://dbs-waste.co.uk",
   },
+  serviceAreas: ["London", "Brentford", "Chiswick", "Ealing", "West London"],
+  openingHours: ["Mo-Fr 07:00-19:00"],
+  priceRange: "GBP 40+",
+  wasteCarrierRegistration: "",
 };

@@ -50,23 +50,23 @@ const faqItems: FaqItem[] = [
 
 const contactCards: ContactCardLink[] = [
   {
-    title: "020 1234 5678",
+    title: companyDetails.contact.primaryPhoneDisplay,
     description: "Mon-Fri, 7am-7pm",
-    href: "tel:+442012345678",
+    href: companyDetails.contact.primaryPhoneHref,
     icon: IconsPhone,
     iconLabel: "Phone",
   },
   {
     title: "Chat on WhatsApp",
     description: "Fastest response - usually under 5 minutes",
-    href: "https://wa.me/442012345678",
+    href: companyDetails.contact.whatsappHref,
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },
   {
-    title: "hello@bigvanmen.com",
+    title: companyDetails.contact.email,
     description: "We reply within the hour",
-    href: "mailto:hello@bigvanmen.com",
+    href: companyDetails.contact.emailHref,
     icon: IconsMail,
     iconLabel: "Email",
   },

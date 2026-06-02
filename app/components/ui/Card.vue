@@ -12,6 +12,8 @@ interface Props {
   tag?: string;
   imageSrc?: string;
   imageAlt?: string;
+  imageWidth?: number | string;
+  imageHeight?: number | string;
   href?: string;
   icon?: Component;
   iconLabel?: string;
@@ -139,6 +141,10 @@ function handleClick() {
             v-if="imageSrc"
             :src="imageSrc"
             :alt="imageAlt ?? ''"
+            :width="imageWidth"
+            :height="imageHeight"
+            loading="lazy"
+            decoding="async"
             class="h-12 w-auto"
           />
           <span

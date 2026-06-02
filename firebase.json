@@ -2,6 +2,26 @@
   "hosting": {
     "site": "wasteremoval-3276",
     "public": ".output/public",
+    "headers": [
+      {
+        "source": "/_nuxt/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/images/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",

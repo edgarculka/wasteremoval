@@ -7,42 +7,47 @@ if (!service) {
   throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
-const page = buildServiceLocationSeoPage(service, defaultSeoLocation);
-const selectedLocation = useSelectedSeoLocation();
-
-onMounted(async () => {
-  if (selectedLocation.value.slug === defaultSeoLocation.slug) return;
-
-  await navigateTo(buildServiceLocationPath(service, selectedLocation.value), {
-    replace: true,
-  });
-});
+const servicePath = buildServicePath(service);
+const serviceAreaNames = seoLocations.map((location) => location.name);
+const serviceHubTitle = `${service.metaTitle} Services in West London`;
+const serviceHubDescription = `${service.metaDescription} Serving ${serviceAreaNames.join(", ")}.`;
 
 usePageSeo({
-  title: page.metaTitle,
-  description: page.metaDescription,
-  path: buildServicePath(service),
-  image: page.image,
+  title: serviceHubTitle,
+  description: serviceHubDescription,
+  path: servicePath,
+  image: service.image,
   structuredData: [
     {
       "@context": "https://schema.org",
       "@type": "Service",
-      name: page.title,
-      description: page.description,
+      "@id": `${servicePath}#service`,
+      name: service.name,
+      description: service.description,
+      url: servicePath,
+      image: service.image.src,
       provider: {
         "@type": "LocalBusiness",
+        "@id": "/#business",
         name: companyDetails.tradingName,
       },
-      areaServed: {
+      areaServed: seoLocations.map((location) => ({
         "@type": "Place",
-        name: page.location.name,
+        name: location.name,
+      })),
+      serviceType: service.name,
+      offers: {
+        "@type": "Offer",
+        price: "40",
+        priceCurrency: "GBP",
+        url: "/quote/",
+        availability: "https://schema.org/InStock",
       },
-      serviceType: page.service.name,
     },
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: page.service.faqs.map((item) => ({
+      mainEntity: service.faqs.map((item) => ({
         "@type": "Question",
         name: item.question,
         acceptedAnswer: {
@@ -65,13 +70,13 @@ usePageSeo({
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: "/services",
+          item: "/services/",
         },
         {
           "@type": "ListItem",
           position: 3,
-          name: page.service.title,
-          item: buildServicePath(service),
+          name: service.title,
+          item: servicePath,
         },
       ],
     },
@@ -86,11 +91,11 @@ function openBookingWithPricingSelection() {
 }
 
 const relatedServices = seoServices
-  .filter((item) => item.slug !== page.service.slug)
+  .filter((item) => item.slug !== service.slug)
   .map((item) => ({
     title: item.name,
     description: item.shortDescription,
-    href: buildServiceLocationPath(item, page.location),
+    href: buildServicePath(item),
     image: item.image,
     meta: item.searchTerms[0],
     highlights: item.sellingPoints.slice(0, 2),
@@ -98,36 +103,40 @@ const relatedServices = seoServices
 
 const locationLinks = seoLocations.map((location) => ({
   label: location.name,
-  href: buildServiceLocationPath(page.service, location),
+  href: buildServiceLocationPath(service, location),
 }));
 
 const marqueeItems = [
-  ...page.service.sellingPoints,
-  ...page.location.localSearchTerms,
-  `${page.location.region} coverage`,
+  ...service.sellingPoints,
+  ...service.searchTerms,
+  "West London coverage",
 ];
 
 const coverageNotes = [
-  ...page.location.serviceNotes,
-  `Nearby areas covered: ${page.location.nearbyAreas.join(", ")}`,
+  `Available across ${serviceAreaNames.join(", ")}.`,
+  "Share photos, access notes and parking details for an accurate quote.",
+  "The crew confirms the final load size before removing anything.",
 ];
 
 const trustItems = [
   { value: "Fixed tiers", label: "Pricing" },
   { value: "2-hour", label: "Arrival windows" },
-  { value: "Licensed", label: "Waste carrier" },
+  { value: "Photos", label: "Fast estimates" },
 ];
+
+const workerSrcset =
+  "/images/waste-removal-service-worker-640.webp 640w, /images/waste-removal-service-worker-960.webp 960w, /images/waste-removal-service-worker.webp 1200w";
 </script>
 
 <template>
   <UiSection tone="background" spacing="md" alignment="left">
-    <template #above>
-      <UiRating :value="5">Rated 5 stars by London customers</UiRating>
-    </template>
-    <UiHero :heading="page.heading" :description="page.description">
+    <UiHero
+      :heading="`${service.title} in West London`"
+      :description="service.description"
+    >
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
-        <UiButton href="/services" variant="ghost" size="lg">
+        <UiButton href="/services/" variant="ghost" size="lg">
           See all services
           <template #iconRight>
             <span aria-hidden="true">&gt;</span>
@@ -138,8 +147,14 @@ const trustItems = [
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
     <template #visual>
       <img
-        :src="page.image.src"
-        :alt="page.image.alt"
+        :src="service.image.src"
+        :alt="service.image.alt"
+        :width="service.image.width"
+        :height="service.image.height"
+        :srcset="service.image.srcset"
+        :sizes="service.image.sizes"
+        fetchpriority="high"
+        decoding="async"
         class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
       />
     </template>
@@ -169,7 +184,7 @@ const trustItems = [
       <UiButton size="lg" @click="openBookingWithPricingSelection">
         Book selected load
       </UiButton>
-      <UiButton href="/pricing" variant="secondary" size="lg">
+      <UiButton href="/pricing/" variant="secondary" size="lg">
         See full pricing
       </UiButton>
     </template>
@@ -177,36 +192,22 @@ const trustItems = [
 
   <UiSection tone="secondary" spacing="md" wide>
     <UiServiceCoverage
-      :heading="`What we remove in ${page.location.name}`"
-      :description="page.service.shortDescription"
-      :items="page.service.typicalItems"
+      :heading="`What we remove for ${service.name.toLowerCase()}`"
+      :description="service.shortDescription"
+      :items="service.typicalItems"
       :notes="coverageNotes"
-      :image="page.image"
-      :meta-label="page.location.region"
-      :meta-value="page.location.county"
+      :image="service.image"
+      meta-label="Service area"
+      meta-value="West London"
     />
   </UiSection>
 
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServiceProcess
       eyebrow="How it works"
-      :heading="`${page.service.name} without skip hire delays`"
-      :description="`A simple collection flow for ${page.location.name} homes, landlords and businesses.`"
+      :heading="`${service.name} without skip hire delays`"
+      description="A simple collection flow for West London homes, landlords and businesses."
       :steps="serviceProcessSteps"
-    />
-  </UiSection>
-
-  <UiSection
-    tone="secondary"
-    spacing="md"
-    alignment="center"
-    wide
-    class="border-y-2"
-  >
-    <UiReviews
-      :average="4.9"
-      average-label="Average rating for London clearance work"
-      :reviews="servicePageReviews"
     />
   </UiSection>
 
@@ -214,12 +215,13 @@ const trustItems = [
     tone="background"
     spacing="md"
     alignment="left"
-    :title="`${page.location.name} collection details`"
+    :title="`${service.name} details`"
   >
     <UiText size="lg" tone="low" class="max-w-3xl">
-      {{ page.location.description }}
+      {{ service.shortDescription }} DBS Waste covers this service across West
+      London, including {{ serviceAreaNames.join(", ") }}.
     </UiText>
-    <UiTickList :items="page.service.sellingPoints" />
+    <UiTickList :items="service.sellingPoints" />
     <template #visual>
       <div
         class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
@@ -231,7 +233,7 @@ const trustItems = [
         </UiText>
         <div class="mt-5 grid gap-3">
           <UiCard
-            v-for="term in page.service.searchTerms"
+            v-for="term in service.searchTerms"
             :key="term"
             :title="term"
             size="sm"
@@ -247,7 +249,7 @@ const trustItems = [
     alignment="center"
     title="Common questions"
   >
-    <UiFaq :items="page.service.faqs" />
+    <UiFaq :items="service.faqs" />
   </UiSection>
 
   <UiSection
@@ -259,20 +261,24 @@ const trustItems = [
   >
     <UiServices
       heading="Other clearance services"
-      :description="`More rubbish removal options available in ${page.location.name}.`"
+      description="More rubbish removal options available across West London."
       :services="relatedServices"
       :locations="locationLinks"
-      location-label="Also available in"
-      cta-label="View local page"
+      location-label="Available in"
+      cta-label="View service"
     />
   </UiSection>
 
   <UiSection tone="secondary" spacing="md">
     <UiCallToAction
-      :heading="`Book ${page.service.name.toLowerCase()} in ${page.location.name}`"
-      :points="page.service.sellingPoints"
-      :image-src="'/images/waste-removal-service-worker.png'"
-      :image-alt="page.image.alt"
+      :heading="`Book ${service.name.toLowerCase()} in West London`"
+      :points="service.sellingPoints"
+      image-src="/images/waste-removal-service-worker.webp"
+      image-width="1200"
+      image-height="800"
+      :image-srcset="workerSrcset"
+      image-sizes="(min-width: 1024px) 20rem, calc(100vw - 96px)"
+      :image-alt="service.image.alt"
     >
       <template #cta>
         <UiButton size="lg" variant="secondary" @click="openBookingWizard">

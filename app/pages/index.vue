@@ -4,7 +4,6 @@ import IconsMail from "~/components/icons/Mail.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
 import IconsWhatsApp from "~/components/icons/WhatsApp.vue";
 import type { FaqItem } from "~/components/ui/Faq.vue";
-import type { ReviewItem } from "~/components/ui/Reviews.vue";
 import type {
   ServicesLocation,
   ServicesService,
@@ -18,25 +17,46 @@ interface ContactCardLink {
   iconLabel: string;
 }
 
+const homeHeroSrcset =
+  "/images/rubbish-removal-640.webp 640w, /images/rubbish-removal-960.webp 960w, /images/rubbish-removal.webp 1200w";
+const truckSrcset =
+  "/images/truck-640.webp 640w, /images/truck-960.webp 960w, /images/truck.webp 1200w";
+const workerSrcset =
+  "/images/waste-removal-service-worker-640.webp 640w, /images/waste-removal-service-worker-960.webp 960w, /images/waste-removal-service-worker.webp 1200w";
+const halfWidthImageSizes =
+  "(min-width: 1024px) 50vw, calc(100vw - 48px)";
+const ctaImageSizes = "(min-width: 1024px) 20rem, calc(100vw - 96px)";
+
 usePageSeo({
   title: "Same-Day Rubbish Removal in West London",
   description:
-    "Same-day rubbish removal and property clearance across West London.",
+    "Book same-day rubbish removal and property clearance across West London with fixed load-size pricing and responsible disposal routes.",
   path: "/",
   image: {
-    src: "/images/rubbish-removal.png",
+    src: "/images/rubbish-removal.webp",
     alt: "Rubbish removal illustration",
-    width: 1600,
-    height: 1200,
+    width: 1200,
+    height: 900,
   },
   structuredData: {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": "/#business",
     name: companyDetails.tradingName,
+    legalName: companyDetails.legalName,
     url: "/",
-    areaServed: seoLocations.map((location) => location.name),
+    telephone: companyDetails.contact.primaryPhone,
+    email: companyDetails.contact.email,
+    image: "/images/rubbish-removal.webp",
+    priceRange: companyDetails.priceRange,
+    openingHours: companyDetails.openingHours,
+    areaServed: companyDetails.serviceAreas.map((area) => ({
+      "@type": "Place",
+      name: area,
+    })),
     makesOffer: seoServices.map((service) => ({
       "@type": "Offer",
+      url: buildServicePath(service),
       itemOffered: {
         "@type": "Service",
         name: service.name,
@@ -48,63 +68,23 @@ usePageSeo({
 
 const sellingPoints = [
   "Same-day availability",
-  "5-star Google rating",
+  "Clear load-size pricing",
   "No skip permit needed",
 ];
 
 const trustItems = [
-  { value: "21K+", label: "Properties cleared" },
-  { value: "4.9/5", label: "Customer rating" },
+  { value: "Fixed tiers", label: "Pricing" },
+  { value: "Photos", label: "Fast estimates" },
   { value: "Same day", label: "West London slots" },
 ];
 
 const marqueeItems = [
-  "Over 21K properties cleared",
   "Same-day availability",
-  "5-star Google rating",
+  "Clear pricing before loading",
   "No skip permit needed",
-  "Fully licensed waste carriers",
-  "0 missed pickups",
-];
-
-const reviews: ReviewItem[] = [
-  {
-    author: "Aisha Khan",
-    meta: "House clearance",
-    rating: 5,
-    quote: "Booked in minutes, arrived on time, and left the place spotless.",
-  },
-  {
-    author: "Tom Bradley",
-    meta: "Sofa removal",
-    rating: 5,
-    quote:
-      "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
-  },
-  {
-    author: "Maya Roberts",
-    meta: "Garden waste",
-    rating: 4.5,
-    quote: "Fast collection and they swept up after loading everything.",
-  },
-  {
-    author: "Daniel Green",
-    meta: "Office clear-out",
-    rating: 5,
-    quote: "Professional from quote to pickup. Exactly what we needed.",
-  },
-  {
-    author: "Nina Patel",
-    meta: "Garage clearance",
-    rating: 5,
-    quote: "They handled years of clutter in one visit and kept me updated.",
-  },
-  {
-    author: "George Wilson",
-    meta: "Appliance removal",
-    rating: 4.5,
-    quote: "Simple, tidy, and much easier than hiring a skip.",
-  },
+  "Team loads the items",
+  "West London coverage",
+  "Photo estimates accepted",
 ];
 
 const faqItems: FaqItem[] = [
@@ -116,7 +96,7 @@ const faqItems: FaqItem[] = [
   {
     question: "What items can't you take?",
     answer:
-      "We're licensed for general household and business waste. We can't take asbestos, hazardous chemicals, paint tins with liquid inside, or clinical waste — those need a specialist carrier.",
+      "We can collect standard household and business waste. We can't take asbestos, hazardous chemicals, paint tins with liquid inside, or clinical waste - those need a specialist carrier.",
   },
   {
     question: "How quickly can you come out?",
@@ -124,14 +104,14 @@ const faqItems: FaqItem[] = [
       "Same-day across West London if you book before 1pm. Next-day everywhere else, with a guaranteed 2-hour arrival window.",
   },
   {
-    question: "Are you fully licensed?",
+    question: "How do you handle disposal?",
     answer:
-      "Yes — we're registered upper-tier waste carriers with the Environment Agency (CBDU number on every receipt). 95%+ of what we collect is recycled or reused.",
+      "Items are taken through appropriate disposal routes, with reusable and recyclable material separated where practical. Ask for transfer-note details before booking if you need them for your records.",
   },
   {
     question: "How is the price worked out?",
     answer:
-      "By load size, not by the hour. The five tiers above cover everything we do — labour, transport, and licensed disposal included. The price you see is the price you pay.",
+      "By load size, not by the hour. The five tiers above cover labour, transport and standard disposal handling. The price you see is the price you pay.",
   },
   {
     question: "What areas do you cover?",
@@ -142,37 +122,32 @@ const faqItems: FaqItem[] = [
 
 const contactCards: ContactCardLink[] = [
   {
-    title: "020 1234 5678",
+    title: companyDetails.contact.primaryPhoneDisplay,
     description: "Mon–Fri, 7am–7pm",
-    href: "tel:+442012345678",
+    href: companyDetails.contact.primaryPhoneHref,
     icon: IconsPhone,
     iconLabel: "Phone",
   },
   {
     title: "Chat on WhatsApp",
     description: "Fastest response — usually under 5 minutes",
-    href: "https://wa.me/442012345678",
+    href: companyDetails.contact.whatsappHref,
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },
   {
-    title: "hello@bigvanmen.com",
+    title: companyDetails.contact.email,
     description: "We reply within the hour",
-    href: "mailto:hello@bigvanmen.com",
+    href: companyDetails.contact.emailHref,
     icon: IconsMail,
     iconLabel: "Email",
   },
 ];
 
-const primaryLocation = seoLocations[0];
-const primaryService = seoServices[0];
-
 const homeServices: ServicesService[] = seoServices.map((service) => ({
   title: service.name,
   description: service.shortDescription,
-  href: primaryLocation
-    ? buildServiceLocationPath(service, primaryLocation)
-    : `/${service.slug}/`,
+  href: buildServicePath(service),
   image: service.image,
   meta: service.searchTerms[0],
   highlights: service.sellingPoints.slice(0, 2),
@@ -181,9 +156,7 @@ const homeServices: ServicesService[] = seoServices.map((service) => ({
 const homeServiceLocations: ServicesLocation[] = seoLocations.map(
   (location) => ({
     label: location.name,
-    href: primaryService
-      ? buildServiceLocationPath(primaryService, location)
-      : `/${location.slug}/`,
+    href: buildAreaPath(location),
   }),
 );
 
@@ -197,9 +170,6 @@ function openBookingWithPricingSelection() {
 
 <template>
   <UiSection tone="background" spacing="md" alignment="left">
-    <template #above>
-      <UiRating :value="5">Five star rating</UiRating>
-    </template>
     <UiHero
       heading="Waste removal, on your schedule."
       description="Same-day rubbish removal and property clearance for tenants, landlords, and businesses. No skip permit, no hassle."
@@ -207,7 +177,7 @@ function openBookingWithPricingSelection() {
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
         <UiButton
-          href="/end-of-tenancy-rubbish-removal/brentford/"
+          href="/services/"
           variant="ghost"
           size="lg"
         >
@@ -221,8 +191,14 @@ function openBookingWithPricingSelection() {
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
     <template #visual>
       <img
-        src="/images/rubbish-removal.png"
+        src="/images/rubbish-removal.webp"
         alt="Rubbish removal illustration"
+        width="1200"
+        height="900"
+        :srcset="homeHeroSrcset"
+        :sizes="halfWidthImageSizes"
+        fetchpriority="high"
+        decoding="async"
         class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)] aspect-video"
       />
     </template>
@@ -237,9 +213,9 @@ function openBookingWithPricingSelection() {
     wide
     :ribbon="{ label: 'Pricing with no hidden fees' }"
   >
-    <UiPricing
-      lead="From"
-      accent="£40"
+      <UiPricing
+        lead="From"
+        accent="GBP 40"
       trailing="per clearance"
       selectable
       :tiers="bookingLoads"
@@ -266,35 +242,27 @@ function openBookingWithPricingSelection() {
     <template #visual>
       <div class="max-w-180 aspect-[4/3] mx-auto">
         <img
-          src="/images/truck.png"
+          src="/images/truck.webp"
           alt="Rubbish removal truck illustration"
+          width="1200"
+          height="900"
+          :srcset="truckSrcset"
+          :sizes="halfWidthImageSizes"
+          loading="lazy"
+          decoding="async"
           class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
         />
       </div>
     </template>
     <template #cta>
       <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
-      <UiButton variant="secondary" size="lg">
+      <UiButton href="/services/" variant="secondary" size="lg">
         See services
         <template #iconRight>
           <span aria-hidden="true">›</span>
         </template>
       </UiButton>
     </template>
-  </UiSection>
-
-  <UiSection
-    spacing="md"
-    tone="secondary"
-    alignment="center"
-    wide
-    class="border-b-2 !pt-4"
-  >
-    <UiReviews
-      :average="4.9"
-      average-label="Average from 240+ customer reviews"
-      :reviews="reviews"
-    />
   </UiSection>
 
   <UiSection tone="background" spacing="md" alignment="center" wide>
@@ -340,10 +308,12 @@ function openBookingWithPricingSelection() {
     <UiCallToAction
       heading="Book your clearance — same day, fixed price."
       :points="sellingPoints"
-      :rating-value="5"
-      rating-label="Rated 5 stars by 500+ West London customers"
-      image-src="/images/waste-removal-service-worker.png"
-      image-alt=""
+      image-src="/images/waste-removal-service-worker.webp"
+      image-width="1200"
+      image-height="800"
+      :image-srcset="workerSrcset"
+      :image-sizes="ctaImageSizes"
+      image-alt="Waste removal worker ready for a booked collection"
     >
       <template #cta>
         <UiButton size="lg" variant="secondary" @click="openBookingWizard">

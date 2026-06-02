@@ -24,21 +24,42 @@ usePageSeo({
     {
       "@context": "https://schema.org",
       "@type": "Service",
+      "@id": `${page.path}#service`,
       name: page.title,
+      url: page.path,
+      image: page.image.src,
       description: page.description,
       provider: {
         "@type": "LocalBusiness",
+        "@id": "/#business",
         name: companyDetails.tradingName,
+        legalName: companyDetails.legalName,
+        telephone: companyDetails.contact.primaryPhone,
+        email: companyDetails.contact.email,
+        url: "/",
       },
       areaServed: {
         "@type": "Place",
         name: page.location.name,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: page.location.name,
+          addressRegion: page.location.region,
+          addressCountry: "GB",
+        },
       },
       serviceType: page.service.name,
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "GBP",
+        availability: "https://schema.org/InStock",
+        url: "/quote/",
+      },
     },
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "@id": `${page.path}#faq`,
       mainEntity: page.service.faqs.map((item) => ({
         "@type": "Question",
         name: item.question,
@@ -62,7 +83,7 @@ usePageSeo({
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: "/services",
+          item: "/services/",
         },
         {
           "@type": "ListItem",
@@ -106,25 +127,26 @@ const marqueeItems = [
 
 const coverageNotes = [
   ...page.location.serviceNotes,
+  ...page.location.accessNotes,
   `Nearby areas covered: ${page.location.nearbyAreas.join(", ")}`,
 ];
 
 const trustItems = [
   { value: "Fixed tiers", label: "Pricing" },
   { value: "2-hour", label: "Arrival windows" },
-  { value: "Licensed", label: "Waste carrier" },
+  { value: "Photos", label: "Fast estimates" },
 ];
+
+const workerSrcset =
+  "/images/waste-removal-service-worker-640.webp 640w, /images/waste-removal-service-worker-960.webp 960w, /images/waste-removal-service-worker.webp 1200w";
 </script>
 
 <template>
   <UiSection v-if="page" tone="background" spacing="md" alignment="left">
-    <template #above>
-      <UiRating :value="5">Rated 5 stars by West London customers</UiRating>
-    </template>
     <UiHero :heading="page.heading" :description="page.description">
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
-        <UiButton href="/services" variant="ghost" size="lg">
+        <UiButton href="/services/" variant="ghost" size="lg">
           See all services
           <template #iconRight>
             <span aria-hidden="true">&gt;</span>
@@ -137,6 +159,12 @@ const trustItems = [
       <img
         :src="page.image.src"
         :alt="page.image.alt"
+        :width="page.image.width"
+        :height="page.image.height"
+        :srcset="page.image.srcset"
+        :sizes="page.image.sizes"
+        fetchpriority="high"
+        decoding="async"
         class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
       />
     </template>
@@ -167,7 +195,7 @@ const trustItems = [
       <UiButton size="lg" @click="openBookingWithPricingSelection">
         Book selected load
       </UiButton>
-      <UiButton href="/pricing" variant="secondary" size="lg">
+      <UiButton href="/pricing/" variant="secondary" size="lg">
         See full pricing
       </UiButton>
     </template>
@@ -202,21 +230,6 @@ const trustItems = [
       :heading="`${page.service.name} without skip hire delays`"
       :description="`A simple collection flow for ${page.location.name} homes, landlords and businesses.`"
       :steps="serviceProcessSteps"
-    />
-  </UiSection>
-
-  <UiSection
-    v-if="page"
-    tone="secondary"
-    spacing="md"
-    alignment="center"
-    wide
-    class="border-y-2"
-  >
-    <UiReviews
-      :average="4.9"
-      :average-label="`Average rating for West London clearance work`"
-      :reviews="servicePageReviews"
     />
   </UiSection>
 
@@ -283,7 +296,11 @@ const trustItems = [
     <UiCallToAction
       :heading="`Book ${page.service.name.toLowerCase()} in ${page.location.name}`"
       :points="page.service.sellingPoints"
-      :image-src="'/images/waste-removal-service-worker.png'"
+      image-src="/images/waste-removal-service-worker.webp"
+      image-width="1200"
+      image-height="800"
+      :image-srcset="workerSrcset"
+      image-sizes="(min-width: 1024px) 20rem, calc(100vw - 96px)"
       :image-alt="page.image.alt"
     >
       <template #cta>

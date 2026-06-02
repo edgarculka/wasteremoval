@@ -2,6 +2,10 @@
 export interface ServicesImage {
   src: string;
   alt: string;
+  width?: number;
+  height?: number;
+  srcset?: string;
+  sizes?: string;
 }
 
 export interface ServicesService {
@@ -23,6 +27,7 @@ interface Props {
   heading: string;
   description?: string;
   services: ServicesService[];
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   locations?: ServicesLocation[];
   locationLabel?: string;
   ctaLabel?: string;
@@ -38,7 +43,11 @@ withDefaults(defineProps<Props>(), {
   <div class="flex w-full flex-col items-center">
     <div class="max-w-3xl text-center">
       <UiTag v-if="eyebrow" variant="accent">{{ eyebrow }}</UiTag>
-      <UiHeading :level="2" size="xl" :class="eyebrow ? 'mt-4' : ''">
+      <UiHeading
+        :level="headingLevel ?? 2"
+        size="xl"
+        :class="eyebrow ? 'mt-4' : ''"
+      >
         {{ heading }}
       </UiHeading>
       <UiText v-if="description" size="lg" tone="low" class="mt-4">
@@ -58,6 +67,12 @@ withDefaults(defineProps<Props>(), {
             <img
               :src="service.image.src"
               :alt="service.image.alt"
+              :width="service.image.width"
+              :height="service.image.height"
+              :srcset="service.image.srcset"
+              :sizes="service.image.sizes"
+              loading="lazy"
+              decoding="async"
               class="h-full w-full object-cover"
             />
           </div>

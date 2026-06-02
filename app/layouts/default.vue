@@ -6,13 +6,13 @@ const showHeader = computed(() => !route.path.startsWith("/quote"));
 const headerNav = computed(() => [
   {
     label: "Services",
-    href: "/services",
+    href: "/services/",
     children: seoServices.map((service) => ({
       label: service.name,
       href: buildServiceLocationPath(service, selectedLocation.value),
     })),
   },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Pricing", href: "/pricing/" },
 ]);
 
 const { openBookingWizard } = useBookingWizard();
@@ -23,7 +23,7 @@ const { openBookingWizard } = useBookingWizard();
     <UiHeader
       v-if="showHeader"
       :nav="headerNav"
-      phone="020 1234 5678"
+      :phone="companyDetails.contact.primaryPhoneDisplay"
       @cta="openBookingWizard"
     />
     <slot />

@@ -2,6 +2,8 @@
 import type { Component } from "vue";
 import type { BookingLoad } from "~/utils/booking-form";
 
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface PricingTier extends BookingLoad {
   tag?: string;
   icon?: Component;
@@ -14,6 +16,7 @@ interface Props {
   trailing?: string;
   subhead?: string;
   tiers: PricingTier[];
+  headingLevel?: HeadingLevel;
   selectable?: boolean;
   selectedTierId?: string | null;
 }
@@ -29,15 +32,14 @@ const emit = defineEmits<{
   <div class="flex w-full flex-col items-center">
     <div class="max-w-3xl">
       <UiHeading
-        :level="2"
+        :level="headingLevel ?? 2"
         size="xl"
         class="flex flex-wrap justify-center gap-2"
       >
-        <template v-if="lead">{{ lead }} </template>
+        <span v-if="lead">{{ lead }}</span>
+        {{ " " }}
         <span class="text-accent">{{ accent }}</span>
-        <template v-if="trailing">
-          <span class="italic"> {{ trailing }}</span>
-        </template>
+        <template v-if="trailing"> {{ " " }}<span class="italic">{{ trailing }}</span> </template>
       </UiHeading>
       <UiText v-if="subhead" size="lg" tone="low" class="mt-4 italic">
         {{ subhead }}
@@ -60,6 +62,8 @@ const emit = defineEmits<{
         :icon-props="tier.iconProps"
         :image-src="tier.imageSrc"
         :image-alt="tier.imageAlt"
+        :image-width="tier.imageWidth"
+        :image-height="tier.imageHeight"
         @select="emit('select', tier.id)"
       />
     </div>

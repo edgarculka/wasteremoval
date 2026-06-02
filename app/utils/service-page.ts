@@ -1,33 +1,4 @@
-import type { ReviewItem } from "~/components/ui/Reviews.vue";
 import type { ServiceProcessStep } from "~/components/ui/ServiceProcess.vue";
-
-export const servicePageReviews: ReviewItem[] = [
-  {
-    author: "Aisha Khan",
-    meta: "House clearance",
-    rating: 5,
-    quote: "Booked in minutes, arrived on time, and left the place spotless.",
-  },
-  {
-    author: "Tom Bradley",
-    meta: "Sofa removal",
-    rating: 5,
-    quote:
-      "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
-  },
-  {
-    author: "Maya Roberts",
-    meta: "Garden waste",
-    rating: 4.5,
-    quote: "Fast collection and they swept up after loading everything.",
-  },
-  {
-    author: "Daniel Green",
-    meta: "Office clear-out",
-    rating: 5,
-    quote: "Professional from quote to pickup. Exactly what we needed.",
-  },
-];
 
 export const serviceProcessSteps: ServiceProcessStep[] = [
   {
@@ -46,8 +17,8 @@ export const serviceProcessSteps: ServiceProcessStep[] = [
       "Items are lifted from the agreed location, swept up where practical and removed in one visit.",
   },
   {
-    title: "Licensed disposal",
+    title: "Responsible disposal",
     description:
-      "Waste is taken to licensed facilities, with reusable and recyclable material separated where possible.",
+      "Waste is taken through appropriate disposal routes, with reusable and recyclable material separated where practical.",
   },
 ];

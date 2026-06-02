@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import type { ServicesLocation, ServicesService } from "~/components/ui/Services.vue";
 
-const primaryLocation = seoLocations[0];
-
 const services: ServicesService[] = seoServices.map((service) => ({
   title: service.name,
   description: service.shortDescription,
-  href: primaryLocation
-    ? buildServiceLocationPath(service, primaryLocation)
-    : `/${service.slug}/`,
+  href: buildServicePath(service),
   image: service.image,
   meta: service.searchTerms.join(", "),
   highlights: service.sellingPoints.slice(0, 2),
@@ -30,18 +26,21 @@ usePageSeo({
   title: "Waste Removal Services in West London",
   description:
     "Browse rubbish removal, house clearance, garden waste removal and end of tenancy clearance services across West London.",
-  path: "/services",
+  path: "/services/",
   image: seoServices[0]?.image,
   structuredData: [
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
+      "@id": "/services/#collection",
       name: "Waste Removal Services",
+      url: "/services/",
       description:
         "Waste removal service pages for West London homes, landlords and businesses.",
       hasPart: seoServices.map((service) => ({
         "@type": "Service",
         name: service.name,
+        url: buildServicePath(service),
         description: service.shortDescription,
         areaServed: seoLocations.map((location) => location.name),
       })),
@@ -60,7 +59,7 @@ usePageSeo({
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: "/services",
+          item: "/services/",
         },
       ],
     },
@@ -72,6 +71,7 @@ usePageSeo({
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
       eyebrow="Services"
+      :heading-level="1"
       heading="Waste removal services across West London"
       description="Choose a clearance service, then pick the local area page that matches where the job is. Each page has service-specific details for that location."
       :services="services"

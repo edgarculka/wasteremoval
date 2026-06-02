@@ -39,6 +39,7 @@ interface Props {
   loads: BookingLoad[];
   times: BookingTimeSlot[];
   mode?: "dialog" | "page";
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   questions?: BookingQuestion[];
   brandName?: string;
   defaultPriceLabel?: string;
@@ -314,7 +315,7 @@ onScopeDispose(() => {
               />
             </div>
           </div>
-          <UiHeading :level="2" size="lg">
+          <UiHeading :level="headingLevel ?? 2" size="lg">
             {{ currentQuestion.title }}
           </UiHeading>
           <UiText tone="low" class="mt-3">
@@ -337,6 +338,8 @@ onScopeDispose(() => {
               :tag="load.tag"
               :image-src="load.imageSrc"
               :image-alt="load.imageAlt"
+              :image-width="load.imageWidth"
+              :image-height="load.imageHeight"
               @select="selectedLoadId = load.id"
             />
           </div>

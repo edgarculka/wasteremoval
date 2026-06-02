@@ -6,7 +6,7 @@ const points = [
   "Fixed price quote in under 5 minutes",
 ];
 
-const workerImage = "/images/waste-removal-service-worker.png";
+const workerImage = "/images/waste-removal-service-worker.webp";
 const workerAlt = "Waste removal worker holding a black bin bag";
 </script>
 

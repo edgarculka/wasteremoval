@@ -1,21 +1,14 @@
 <script setup lang="ts">
 const primaryLinks = [
   { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Services", href: "/services/" },
+  { label: "Areas", href: "/areas/" },
+  { label: "Disposal", href: "/recycling-and-disposal/" },
+  { label: "Pricing", href: "/pricing/" },
 ];
 
 const route = useRoute();
 const selectedLocation = useSelectedSeoLocation();
-const selectedService = computed(() => {
-  const serviceSlug = route.params.serviceSlug;
-
-  if (typeof serviceSlug === "string") {
-    return getSeoServiceBySlug(serviceSlug) ?? seoServices[0];
-  }
-
-  return seoServices[0];
-});
 
 const isFullscreenDesignSystem = computed(() =>
   route.path.startsWith("/design-system/fullscreen/"),
@@ -28,14 +21,10 @@ const footerServiceLinks = computed(() =>
   })),
 );
 
-const footerLocationLinks = computed(() => {
-  const service = selectedService.value ?? seoServices[0];
-
-  return seoLocations.map((location) => ({
-    label: location.title,
-    href: service ? buildServiceLocationPath(service, location) : "/services",
-  }));
-});
+const footerLocationLinks = seoLocations.map((location) => ({
+  label: location.title,
+  href: buildAreaPath(location),
+}));
 
 useHead({
   titleTemplate: (title) =>

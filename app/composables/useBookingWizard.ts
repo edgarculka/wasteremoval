@@ -16,6 +16,8 @@ const bookingLoads: BookingLoad[] = [
     tag: "Minimum price",
     imageSrc: "/images/0van.svg",
     imageAlt: "Single item",
+    imageWidth: 88,
+    imageHeight: 41,
   },
   {
     id: "mini",
@@ -24,6 +26,8 @@ const bookingLoads: BookingLoad[] = [
     price: "£100",
     imageSrc: "/images/1van.svg",
     imageAlt: "Quarter-load van",
+    imageWidth: 88,
+    imageHeight: 41,
   },
   {
     id: "small",
@@ -33,6 +37,8 @@ const bookingLoads: BookingLoad[] = [
     tag: "Most popular",
     imageSrc: "/images/2van.svg",
     imageAlt: "Half-load van",
+    imageWidth: 88,
+    imageHeight: 41,
   },
   {
     id: "large",
@@ -41,6 +47,8 @@ const bookingLoads: BookingLoad[] = [
     price: "£240",
     imageSrc: "/images/3van.svg",
     imageAlt: "Three-quarter-load van",
+    imageWidth: 88,
+    imageHeight: 41,
   },
   {
     id: "full",
@@ -49,6 +57,8 @@ const bookingLoads: BookingLoad[] = [
     price: "£300",
     imageSrc: "/images/4van.svg",
     imageAlt: "Full-load van",
+    imageWidth: 88,
+    imageHeight: 41,
   },
 ];
 
@@ -78,7 +88,7 @@ export function useBookingWizard() {
     const selectedLoadId = typeof loadId === "string" ? loadId : null;
 
     return navigateTo({
-      path: "/quote",
+      path: "/quote/",
       query: selectedLoadId ? { load: selectedLoadId } : undefined,
     });
   }
@@ -89,7 +99,7 @@ export function useBookingWizard() {
 
   async function submitBookingWizard(_data: BookingFormData) {
     closeBookingWizard();
-    await navigateTo("/thank-you");
+    await navigateTo("/thank-you/");
   }
 
   return {

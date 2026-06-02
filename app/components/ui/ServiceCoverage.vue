@@ -2,6 +2,10 @@
 export interface ServiceCoverageImage {
   src: string;
   alt: string;
+  width?: number;
+  height?: number;
+  srcset?: string;
+  sizes?: string;
 }
 
 interface Props {
@@ -50,6 +54,12 @@ withDefaults(defineProps<Props>(), {
         <img
           :src="image.src"
           :alt="image.alt"
+          :width="image.width"
+          :height="image.height"
+          :srcset="image.srcset"
+          :sizes="image.sizes"
+          loading="lazy"
+          decoding="async"
           class="aspect-[4/3] h-full w-full object-cover"
         />
       </div>

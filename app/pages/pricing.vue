@@ -4,7 +4,6 @@ import IconsMail from "~/components/icons/Mail.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
 import IconsWhatsApp from "~/components/icons/WhatsApp.vue";
 import type { FaqItem } from "~/components/ui/Faq.vue";
-import type { ReviewItem } from "~/components/ui/Reviews.vue";
 import type {
   SkipComparisonColumn,
   SkipComparisonFeature,
@@ -17,46 +16,6 @@ interface ContactCardLink {
   icon: Component;
   iconLabel: string;
 }
-
-const reviews: ReviewItem[] = [
-  {
-    author: "Aisha Khan",
-    meta: "House clearance",
-    rating: 5,
-    quote: "Booked in minutes, arrived on time, and left the place spotless.",
-  },
-  {
-    author: "Tom Bradley",
-    meta: "Sofa removal",
-    rating: 5,
-    quote:
-      "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
-  },
-  {
-    author: "Maya Roberts",
-    meta: "Garden waste",
-    rating: 4.5,
-    quote: "Fast collection and they swept up after loading everything.",
-  },
-  {
-    author: "Daniel Green",
-    meta: "Office clear-out",
-    rating: 5,
-    quote: "Professional from quote to pickup. Exactly what we needed.",
-  },
-  {
-    author: "Nina Patel",
-    meta: "Garage clearance",
-    rating: 5,
-    quote: "They handled years of clutter in one visit and kept me updated.",
-  },
-  {
-    author: "George Wilson",
-    meta: "Appliance removal",
-    rating: 4.5,
-    quote: "Simple, tidy, and much easier than hiring a skip.",
-  },
-];
 
 const comparisonColumns: SkipComparisonColumn[] = [
   {
@@ -117,7 +76,7 @@ const comparisonFeatures: SkipComparisonFeature[] = [
     },
   },
   {
-    label: "Licensed disposal included",
+    label: "Disposal handling included",
     values: {
       "waste-removal": true,
       "skip-hire": true,
@@ -130,7 +89,7 @@ const faqItems: FaqItem[] = [
   {
     question: "How is the price worked out?",
     answer:
-      "Pricing is based on load size. Labour, transport, and licensed disposal are included, so you can choose the closest tier before booking.",
+      "Pricing is based on load size. Labour, transport, and standard disposal handling are included, so you can choose the closest tier before booking.",
   },
   {
     question: "What happens if my load is smaller or larger on the day?",
@@ -157,8 +116,14 @@ const faqItems: FaqItem[] = [
 usePageSeo({
   title: "Rubbish Removal Pricing",
   description:
-    "Clear rubbish removal pricing with load-size tiers, customer reviews, skip hire comparison, and booking support.",
-  path: "/pricing",
+    "Clear rubbish removal pricing with load-size tiers, skip hire comparison, photo estimates and booking support.",
+  path: "/pricing/",
+  image: {
+    src: "/images/truck.webp",
+    alt: "Rubbish removal truck used for priced load-size collections",
+    width: 1200,
+    height: 900,
+  },
   structuredData: {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -175,23 +140,23 @@ usePageSeo({
 
 const contactCards: ContactCardLink[] = [
   {
-    title: "020 1234 5678",
+    title: companyDetails.contact.primaryPhoneDisplay,
     description: "Call for help choosing a load size",
-    href: "tel:+442012345678",
+    href: companyDetails.contact.primaryPhoneHref,
     icon: IconsPhone,
     iconLabel: "Phone",
   },
   {
     title: "Chat on WhatsApp",
     description: "Send photos for a fast estimate",
-    href: "https://wa.me/442012345678",
+    href: companyDetails.contact.whatsappHref,
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },
   {
-    title: "hello@bigvanmen.com",
+    title: companyDetails.contact.email,
     description: "Email photos or access notes",
-    href: "mailto:hello@bigvanmen.com",
+    href: companyDetails.contact.emailHref,
     icon: IconsMail,
     iconLabel: "Email",
   },
@@ -214,6 +179,7 @@ function openBookingWithPricingSelection() {
 <template>
   <UiSection tone="background" spacing="sm" alignment="center" wide>
     <UiPricing
+      :heading-level="1"
       lead="From"
       accent="GBP 40"
       trailing="per clearance"
@@ -232,21 +198,10 @@ function openBookingWithPricingSelection() {
       <UiButton variant="secondary" size="lg" href="#pricing-faq">
         Ask a pricing question
       </UiButton>
+      <UiButton variant="ghost" size="lg" href="/recycling-and-disposal/">
+        Disposal process
+      </UiButton>
     </template>
-  </UiSection>
-
-  <UiSection
-    tone="secondary"
-    spacing="md"
-    alignment="center"
-    wide
-    class="border-y-2"
-  >
-    <UiReviews
-      :average="4.9"
-      average-label="Average from 240+ customer reviews"
-      :reviews="reviews"
-    />
   </UiSection>
 
   <UiSection tone="background" spacing="md" wide>
@@ -286,6 +241,14 @@ function openBookingWithPricingSelection() {
             size="sm"
           />
         </div>
+        <UiButton
+          href="/recycling-and-disposal/"
+          variant="secondary"
+          size="sm"
+          class="mt-5"
+        >
+          Read disposal guidance
+        </UiButton>
       </div>
     </template>
   </UiSection>

@@ -10,6 +10,10 @@ type IconAlignment = "left" | "center" | "right";
 interface SectionImage {
   src: string;
   alt?: string;
+  width?: number;
+  height?: number;
+  srcset?: string;
+  sizes?: string;
 }
 
 export interface SectionRibbon {
@@ -146,6 +150,12 @@ const isHorizontal = computed(
               <img
                 :src="image.src"
                 :alt="image.alt ?? ''"
+                :width="image.width"
+                :height="image.height"
+                :srcset="image.srcset"
+                :sizes="image.sizes"
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full"
               />
             </div>
@@ -194,7 +204,17 @@ const isHorizontal = computed(
           <slot v-if="$slots.visual" name="visual" />
         </div>
         <div v-else-if="image" class="aspect-video w-full">
-          <img :src="image.src" :alt="image.alt ?? ''" class="w-full h-full" />
+          <img
+            :src="image.src"
+            :alt="image.alt ?? ''"
+            :width="image.width"
+            :height="image.height"
+            :srcset="image.srcset"
+            :sizes="image.sizes"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full"
+          />
         </div>
         <div
           v-if="$slots.cta"

@@ -32,7 +32,7 @@
           </UiHero>
           <template #visual>
             <img
-              src="/images/rubbish-removal.png"
+              src="/images/rubbish-removal.webp"
               alt="Rubbish removal illustration"
               class="aspect-square w-full rounded-2xl border-2 border-foreground object-cover shadow-[0.5rem_0.5rem_0_0_var(--foreground)]"
             />

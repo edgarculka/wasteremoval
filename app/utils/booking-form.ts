@@ -8,6 +8,8 @@ export interface BookingLoad {
   tag?: string;
   imageSrc?: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export interface BookingTimeSlot {

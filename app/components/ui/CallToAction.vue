@@ -6,6 +6,10 @@ interface Props {
   ratingLabel?: string;
   imageSrc?: string;
   imageAlt?: string;
+  imageWidth?: number | string;
+  imageHeight?: number | string;
+  imageSrcset?: string;
+  imageSizes?: string;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -30,6 +34,12 @@ withDefaults(defineProps<Props>(), {
           v-if="imageSrc"
           :src="imageSrc"
           :alt="imageAlt ?? ''"
+          :width="imageWidth"
+          :height="imageHeight"
+          :srcset="imageSrcset"
+          :sizes="imageSizes"
+          loading="lazy"
+          decoding="async"
           class="block h-auto w-full max-w-[20rem] object-contain"
         />
         <div

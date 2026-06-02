@@ -1,8 +1,34 @@
 import tailwindcss from "@tailwindcss/vite";
-import { serviceLocationSeoPages, serviceSeoPaths } from "./app/utils/seo-pages";
+import {
+  areaSeoPaths,
+  serviceLocationSeoPages,
+  serviceSeoPaths,
+} from "./app/utils/seo-pages";
+import { normalizeCanonicalPath } from "./app/utils/seo-url";
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://dbs-waste.co.uk";
 const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
+const enableDesignSystem = process.env.NUXT_PUBLIC_ENABLE_DESIGN_SYSTEM === "true";
+
+const commercialSitemapPaths = [
+  "/",
+  "/pricing/",
+  "/quote/",
+  "/services/",
+  "/areas/",
+  "/recycling-and-disposal/",
+  ...areaSeoPaths,
+  ...serviceSeoPaths,
+  ...serviceLocationSeoPages.map((page) => page.path),
+].map(normalizeCanonicalPath);
+
+const prerenderRoutes = [
+  ...commercialSitemapPaths,
+  "/thank-you/",
+  "/robots.txt",
+  "/sitemap.xml",
+  ...(enableDesignSystem ? ["/design-system/"] : []),
+];
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-11-01",
@@ -23,13 +49,15 @@ export default defineNuxtConfig({
     public: {
       siteUrl,
       siteName,
+      enableDesignSystem,
     },
   },
 
   app: {
     head: {
       htmlAttrs: { lang: "en" },
-      titleTemplate: `%s | ${siteName}`,
+      title: siteName,
+      titleTemplate: "%s",
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -40,31 +68,27 @@ export default defineNuxtConfig({
   site: {
     url: siteUrl,
     name: siteName,
+    trailingSlash: true,
   },
 
   nitro: {
     preset: "static",
     prerender: {
-      crawlLinks: true,
-      routes: [
-        "/",
-        "/pricing",
-        "/quote",
-        "/services",
-        "/thank-you",
-        "/design-system",
-        "/robots.txt",
-        "/sitemap.xml",
-        ...serviceSeoPaths,
-        ...serviceLocationSeoPages.map((page) => page.path),
-      ],
-      ignore: [],
+      crawlLinks: false,
+      routes: prerenderRoutes,
+      ignore: enableDesignSystem ? [] : [/^\/design-system(?:\/|$)/],
     },
+  },
+
+  sitemap: {
+    excludeAppSources: true,
+    discoverImages: false,
+    urls: commercialSitemapPaths.map((loc) => ({ loc })),
   },
 
   robots: {
     allow: "/",
-    disallow: ["/design-system"],
+    disallow: [],
     sitemap: `${siteUrl}/sitemap.xml`,
   },
 });

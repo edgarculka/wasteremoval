@@ -1,14 +1,19 @@
+import type { SeoImage } from "~/utils/seo-pages";
+import {
+  absolutizeStructuredData,
+  getAbsoluteAssetUrl,
+  getAbsoluteCanonicalUrl,
+  normalizeCanonicalPath,
+} from "~/utils/seo-url";
+
 interface PageSeoOptions {
   title: string;
   description: string;
   path?: string;
   image?: SeoImage;
   type?: "website" | "article";
+  robots?: string;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
-}
-
-function getAbsoluteUrl(siteUrl: string, path: string) {
-  return new URL(path, siteUrl.endsWith("/") ? siteUrl : `${siteUrl}/`).href;
 }
 
 export function usePageSeo(options: PageSeoOptions) {
@@ -18,15 +23,19 @@ export function usePageSeo(options: PageSeoOptions) {
     (config.public.siteUrl as string | undefined) || "https://www.example.com";
   const siteName =
     (config.public.siteName as string | undefined) || companyDetails.tradingName;
-  const canonicalPath = options.path || route.path;
-  const canonicalUrl = getAbsoluteUrl(siteUrl, canonicalPath);
+  const canonicalPath = normalizeCanonicalPath(options.path || route.path);
+  const canonicalUrl = getAbsoluteCanonicalUrl(siteUrl, canonicalPath);
   const imageUrl = options.image?.src
-    ? getAbsoluteUrl(siteUrl, options.image.src)
+    ? getAbsoluteAssetUrl(siteUrl, options.image.src)
+    : undefined;
+  const structuredData = options.structuredData
+    ? absolutizeStructuredData(options.structuredData, siteUrl)
     : undefined;
 
   useSeoMeta({
     title: options.title,
     description: options.description,
+    robots: options.robots,
     ogTitle: options.title,
     ogDescription: options.description,
     ogUrl: canonicalUrl,
@@ -41,11 +50,11 @@ export function usePageSeo(options: PageSeoOptions) {
 
   useHead({
     link: [{ rel: "canonical", href: canonicalUrl }],
-    script: options.structuredData
+    script: structuredData
       ? [
           {
             type: "application/ld+json",
-            innerHTML: JSON.stringify(options.structuredData),
+            innerHTML: JSON.stringify(structuredData),
           },
         ]
       : [],
