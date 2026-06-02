@@ -26,6 +26,24 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/bookings",
+        "function": {
+          "functionId": "createBooking",
+          "region": "europe-west2"
+        }
+      }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "functions": {
+    "source": "functions"
+  },
+  "extensions": {
+    "firestore-send-email": "firebase/firestore-send-email@latest"
   }
 }

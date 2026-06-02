@@ -23,6 +23,10 @@ export type {
   BookingTimeSlot,
 } from "~/utils/booking-form";
 
+export interface BookingSubmitControls {
+  fail: () => void;
+}
+
 export interface BookingFormData {
   load: BookingLoad;
   date: string;
@@ -60,7 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   "update:open": [value: boolean];
-  submit: [data: BookingFormData];
+  submit: [data: BookingFormData, controls: BookingSubmitControls];
 }>();
 
 const stepIndex = ref(0);
@@ -186,16 +190,24 @@ function goNext() {
       return;
     // Lock the form so the submit can't be fired twice while it's in flight.
     isSubmitting.value = true;
-    emit("submit", {
-      load: selectedLoad.value,
-      date: selectedDate.value,
-      time: selectedTime.value,
-      postcode: fieldValues.postcode.trim().toUpperCase(),
-      addressLine1: fieldValues.addressLine1.trim(),
-      name: fieldValues.name.trim(),
-      phone: fieldValues.phone.trim(),
-      email: fieldValues.email.trim(),
-    });
+    emit(
+      "submit",
+      {
+        load: selectedLoad.value,
+        date: selectedDate.value,
+        time: selectedTime.value,
+        postcode: fieldValues.postcode.trim().toUpperCase(),
+        addressLine1: fieldValues.addressLine1.trim(),
+        name: fieldValues.name.trim(),
+        phone: fieldValues.phone.trim(),
+        email: fieldValues.email.trim(),
+      },
+      {
+        fail: () => {
+          isSubmitting.value = false;
+        },
+      },
+    );
     return;
   }
   stepIndex.value += 1;
