@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed, onScopeDispose, reactive, ref, watch, watchEffect } from "vue";
+import {
+  computed,
+  nextTick,
+  onScopeDispose,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from "vue";
 import { bookingFormConfig } from "~/utils/booking-form";
 import type {
   BookingLoad,
@@ -55,6 +63,7 @@ const emit = defineEmits<{
 }>();
 
 const stepIndex = ref(0);
+const scrollContainer = ref<HTMLElement | null>(null);
 const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
@@ -176,6 +185,13 @@ function goNext() {
   stepIndex.value += 1;
 }
 
+function scrollToStepTop() {
+  if (typeof window === "undefined") return;
+
+  scrollContainer.value?.scrollTo({ top: 0, behavior: "auto" });
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 watch(
   () => questions.value.length,
   (length) => {
@@ -196,6 +212,11 @@ watch(
   },
   { immediate: true },
 );
+
+watch(stepIndex, async () => {
+  await nextTick();
+  scrollToStepTop();
+});
 
 watchEffect((onCleanup) => {
   if (typeof window === "undefined") return;
@@ -271,7 +292,7 @@ onScopeDispose(() => {
         </UiButton>
       </div>
 
-      <div class="flex-1 overflow-y-auto">
+      <div ref="scrollContainer" class="flex-1 overflow-y-auto">
         <div
           class="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 lg:px-16"
           :class="mode === 'page' ? 'pt-20 sm:pt-24' : ''"
