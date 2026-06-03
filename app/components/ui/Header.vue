@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ cta: [] }>();
 const isMenuOpen = ref(false);
+const expandedMobileItems = ref<Record<string, boolean>>({});
 
 const phoneHref = computed(() =>
   props.phone ? `tel:${props.phone.replace(/\s+/g, "")}` : undefined,
@@ -35,6 +36,14 @@ const phoneHref = computed(() =>
 
 function closeMenu() {
   isMenuOpen.value = false;
+  expandedMobileItems.value = {};
+}
+
+function toggleMobileChildren(href: string) {
+  expandedMobileItems.value = {
+    ...expandedMobileItems.value,
+    [href]: !expandedMobileItems.value[href],
+  };
 }
 </script>
 
@@ -174,20 +183,50 @@ function closeMenu() {
       v-if="nav.length"
       id="mobile-navigation"
       :class="[
-        'bg-secondary px-4 pb-4 pt-2 shadow-[inset_0_1px_0_var(--border),0_1rem_2rem_rgba(6,53,31,0.12)] md:hidden',
+        'fixed inset-x-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto bg-secondary px-4 pb-4 pt-2 shadow-[inset_0_1px_0_var(--border),0_1rem_2rem_rgba(6,53,31,0.12)] md:hidden',
         isMenuOpen ? 'block' : 'hidden',
       ]"
     >
       <nav class="mx-auto flex max-w-7xl flex-col gap-3" aria-label="Mobile">
         <div v-for="item in nav" :key="item.href" class="grid gap-2">
+          <div
+            v-if="item.children?.length"
+            class="grid grid-cols-[minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-border bg-background shadow-[0_0.35rem_1rem_rgba(6,53,31,0.06)]"
+          >
+            <NuxtLink
+              :to="item.href"
+              class="min-w-0 px-4 py-3 text-sm font-bold transition hover:bg-primary/20"
+              @click="closeMenu"
+            >
+              {{ item.label }}
+            </NuxtLink>
+            <button
+              type="button"
+              class="grid h-full w-12 place-items-center border-l border-border text-lg transition hover:bg-primary/20"
+              :aria-expanded="Boolean(expandedMobileItems[item.href])"
+              :aria-label="`${expandedMobileItems[item.href] ? 'Hide' : 'Show'} ${item.label} links`"
+              @click="toggleMobileChildren(item.href)"
+            >
+              <IconsChevronDown
+                :class="[
+                  'transition',
+                  expandedMobileItems[item.href] ? 'rotate-180' : '',
+                ]"
+              />
+            </button>
+          </div>
           <NuxtLink
+            v-else
             :to="item.href"
             class="rounded-xl border border-border bg-background px-4 py-3 text-sm font-bold shadow-[0_0.35rem_1rem_rgba(6,53,31,0.06)] transition hover:bg-primary/20"
             @click="closeMenu"
           >
             {{ item.label }}
           </NuxtLink>
-          <div v-if="item.children?.length" class="grid gap-2">
+          <div
+            v-if="item.children?.length && expandedMobileItems[item.href]"
+            class="grid max-h-[60dvh] gap-2 overflow-y-auto rounded-xl border border-border bg-secondary p-2"
+          >
             <NuxtLink
               v-for="child in item.children"
               :key="child.href"
