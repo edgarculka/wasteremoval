@@ -53,14 +53,18 @@ withDefaults(defineProps<Props>(), {
       </div>
 
       <div class="space-y-4">
-        <div class="grid gap-8 sm:grid-cols-2">
-          <section class="space-y-3">
+        <div class="grid gap-6 sm:grid-cols-2 sm:gap-8">
+          <section class="space-y-2">
             <UiText :level="2" size="xs" tone="low">
               Services
             </UiText>
-            <ul class="space-y-2">
+            <ul class="space-y-1.5">
               <li v-for="link in serviceLinks" :key="link.href">
-                <UiLink :href="link.href" treatment="subtle" class="text-sm">
+                <UiLink
+                  :href="link.href"
+                  treatment="subtle"
+                  class="text-sm leading-snug"
+                >
                   {{ link.label }}
                   <span v-if="selectedLocationLabel" class="text-current/60">
                     in {{ selectedLocationLabel }}
@@ -70,13 +74,17 @@ withDefaults(defineProps<Props>(), {
             </ul>
           </section>
 
-          <section class="space-y-3">
+          <section class="space-y-2">
             <UiText :level="2" size="xs" tone="low">
               Locations
             </UiText>
-            <ul class="space-y-2">
+            <ul class="grid grid-cols-2 gap-x-5 gap-y-1.5 lg:block lg:space-y-1.5">
               <li v-for="link in locationLinks" :key="link.href">
-                <UiLink :href="link.href" treatment="subtle" class="text-sm">
+                <UiLink
+                  :href="link.href"
+                  treatment="subtle"
+                  class="text-sm leading-snug"
+                >
                   {{ link.label }}
                 </UiLink>
               </li>
