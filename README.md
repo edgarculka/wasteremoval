@@ -38,6 +38,7 @@ The workflow requires a repository Actions secret named `FIREBASE_SERVICE_ACCOUN
 Before the workflow can complete successfully:
 
 - create the Firebase secret `firestore-send-email-SMTP_PASSWORD` with the sending mailbox app password;
+- enable the Cloud Billing API (`cloudbilling.googleapis.com`) for Firebase project `wasteremoval-3276`;
 - grant the service account enough Firebase/Google Cloud IAM permissions to deploy Hosting, Functions, Firestore rules, Extensions, and Secret Manager-backed extension configuration.
 
 For the current CI account, `github-action-deploy@wasteremoval-3276.iam.gserviceaccount.com`, the required project roles are:

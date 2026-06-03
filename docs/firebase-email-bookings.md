@@ -139,9 +139,15 @@ These checks were last run against Firebase project `wasteremoval-3276` from the
 - Secret `firestore-send-email-SMTP_PASSWORD` exists with version `1` enabled.
 - Extension function `ext-firestore-send-email-processqueue` is deployed in `us-central1`.
 - The custom booking function `createBooking` is deployed in `us-central1`.
+- Cloud Billing API (`cloudbilling.googleapis.com`) is enabled for the project.
 - Firebase Hosting rewrites `/api/bookings` to `createBooking` on both `https://wasteremoval-3276.web.app` and `https://dbs-waste.co.uk`.
 - Smoke test booking `8995F8FC` returned `201` from `/api/bookings`.
 - The Trigger Email extension delivered both generated `mail` documents for booking `8995F8FC`; Cloud Function logs showed `accepted: 1 rejected: 0 pending: 0` for both SMTP sends.
+- GitHub Actions run `26856235801` completed successfully for commit `add3d4c820d8c087adbfb8fca6776739b6e29dc3`, deploying Hosting, Functions, Firestore rules, and the `firestore-send-email` extension from CI.
+- Post-CI smoke test booking `90082A54` returned `201` from `https://dbs-waste.co.uk/api/bookings`.
+- The Trigger Email extension delivered both generated `mail` documents for booking `90082A54`:
+  - `mail/VlHTtFqr4FGUFiBcInI2` sent the customer confirmation to `contact+firebase-ci-smoke@dbs-waste.co.uk` with delivery state `SUCCESS`, Gmail SMTP response `250 OK`, and no rejected recipients.
+  - `mail/QIp4bLhCdQQruaHP4HpN` sent the internal notification to `contact@dbs-waste.co.uk` with delivery state `SUCCESS`, Gmail SMTP response `250 OK`, and no rejected recipients.
 
 The required live setup order is:
 
@@ -158,13 +164,17 @@ The required live setup order is:
    npm run firebase:email-secret
    ```
 
-4. Deploy the backend, rules, hosting rewrite, and extension:
+4. Enable the Cloud Billing API. The Firebase CLI checks project billing state while deploying extensions:
+
+   <https://console.cloud.google.com/apis/library/cloudbilling.googleapis.com?project=wasteremoval-3276>
+
+5. Deploy the backend, rules, hosting rewrite, and extension:
 
    ```bash
    npm run firebase:deploy:email
    ```
 
-5. Re-check `/api/bookings`. A GET request should return JSON `405 Method not allowed`, proving the Hosting rewrite reaches `createBooking`.
+6. Re-check `/api/bookings`. A GET request should return JSON `405 Method not allowed`, proving the Hosting rewrite reaches `createBooking`.
 
 ## GitHub Actions deployment setup
 
@@ -225,6 +235,7 @@ Useful console links for this project:
 - Firestore: <https://console.firebase.google.com/project/wasteremoval-3276/firestore>
 - Extensions: <https://console.firebase.google.com/project/wasteremoval-3276/extensions>
 - Secret Manager: <https://console.cloud.google.com/security/secret-manager?project=wasteremoval-3276>
+- Cloud Billing API: <https://console.cloud.google.com/apis/library/cloudbilling.googleapis.com?project=wasteremoval-3276>
 
 ## Credentials needed to finish live setup
 
@@ -248,12 +259,14 @@ After deployment, submit `/quote/` with a real email address. Confirm that:
 - replying to the customer confirmation goes to `contact@dbs-waste.co.uk`;
 - replying to the internal notification goes to the customer's submitted email.
 
-Latest smoke test evidence from 2026-06-03:
+Latest smoke test evidence from 2026-06-03 after the successful GitHub Actions deployment:
 
 - `GET https://wasteremoval-3276.web.app/api/bookings` returned JSON `405 Method not allowed`.
 - `GET https://dbs-waste.co.uk/api/bookings` returned JSON `405 Method not allowed`.
-- `POST https://wasteremoval-3276.web.app/api/bookings` with a valid booking payload returned `201` and booking reference `8995F8FC`.
-- Extension logs showed two successful SMTP deliveries for the generated `mail` documents: `mail/12SJfqEYLPdHKYGFnHK4` and `mail/bQ4hLAp4dXopIzVXfCOR`.
+- `POST https://dbs-waste.co.uk/api/bookings` with a valid booking payload returned `201` and booking reference `90082A54`.
+- Firestore `mail/VlHTtFqr4FGUFiBcInI2` delivered the customer confirmation to `contact+firebase-ci-smoke@dbs-waste.co.uk`.
+- Firestore `mail/QIp4bLhCdQQruaHP4HpN` delivered the internal notification to `contact@dbs-waste.co.uk`.
+- Both `mail` documents have `delivery.state` set to `SUCCESS`, Gmail SMTP response `250 OK`, `attempts: 1`, and empty `rejected` arrays.
 
 ## Official references
 
