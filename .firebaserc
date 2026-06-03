@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "wasteremoval-3276"
+  },
+  "targets": {},
+  "etags": {
+    "wasteremoval-3276": {
+      "extensionInstances": {
+        "firestore-send-email": "5ef8e30eb7997b6221037effdc37f13fa1c0e4300a81b5985a8d7c875aa51023"
+      }
+    }
   }
 }

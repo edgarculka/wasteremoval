@@ -5,7 +5,7 @@ This project uses the official Firebase **Trigger Email from Firestore** extensi
 ## What is implemented
 
 1. The quote page submits the booking form to `/api/bookings`.
-2. Firebase Hosting rewrites `/api/bookings` to the `createBooking` Cloud Function in `europe-west2`.
+2. Firebase Hosting rewrites `/api/bookings` to the `createBooking` Cloud Function in `us-central1`.
 3. The function validates the booking payload, stores a private `bookings/{bookingId}` document, and creates two `mail` documents:
    - one confirmation email to the customer email from the form;
    - one internal notification email to `contact@dbs-waste.co.uk`.
@@ -89,7 +89,7 @@ The extension manifest is pinned in `firebase.json` and the parameter values liv
 Important committed parameters:
 
 - `DATABASE=(default)` — watches the default Firestore database.
-- `DATABASE_REGION=europe-west2` — matches the London Firestore/function region used by the booking API.
+- `DATABASE_REGION=us-central1` — matches the existing Firestore database location for project `wasteremoval-3276`.
 - `MAIL_COLLECTION=mail` — must match the `MAIL_COLLECTION` constant in `functions/index.js`.
 - `AUTH_TYPE=UsernamePassword` — uses the SMTP URI plus the Secret Manager password.
 - `DEFAULT_FROM=contact@dbs-waste.co.uk` and `DEFAULT_REPLY_TO=contact@dbs-waste.co.uk` — default sender/reply settings for generated email.
@@ -130,20 +130,23 @@ If `npm run firebase:version` fails with an npm registry or proxy error, Firebas
 
 ## Current live project status
 
-These checks were last run against Firebase project `wasteremoval-3276` from the Firebase CLI:
+These checks were last run against Firebase project `wasteremoval-3276` from the Firebase CLI on 2026-06-03:
 
 - Firebase CLI auth is working for `culkaedgar@gmail.com`.
 - Hosting site `wasteremoval-3276` exists at `https://wasteremoval-3276.web.app`.
-- `/api/bookings` currently returns Firebase Hosting `404`, so the Hosting rewrite/function is not live yet.
-- No Firestore databases exist yet.
-- No Firebase Extensions are installed yet.
-- Cloud Functions API is currently disabled.
-- Secret Manager cannot be enabled yet because the project is not on the Blaze plan.
+- The default Firestore database exists in native mode at `us-central1`.
+- Firebase extension `firebase/firestore-send-email` is installed as instance `firestore-send-email`, version `0.2.9`, and is `ACTIVE`.
+- Secret `firestore-send-email-SMTP_PASSWORD` exists with version `1` enabled.
+- Extension function `ext-firestore-send-email-processqueue` is deployed in `us-central1`.
+- The custom booking function `createBooking` is deployed in `us-central1`.
+- Firebase Hosting rewrites `/api/bookings` to `createBooking` on both `https://wasteremoval-3276.web.app` and `https://dbs-waste.co.uk`.
+- Smoke test booking `8995F8FC` returned `201` from `/api/bookings`.
+- The Trigger Email extension delivered both generated `mail` documents for booking `8995F8FC`; Cloud Function logs showed `accepted: 1 rejected: 0 pending: 0` for both SMTP sends.
 
 The required live setup order is:
 
 1. Upgrade Firebase project `wasteremoval-3276` to the Blaze pay-as-you-go plan: <https://console.firebase.google.com/project/wasteremoval-3276/usage/details>.
-2. Create the default Firestore database in London (`europe-west2`). This location is not changeable later. The repo command is:
+2. Create the default Firestore database in `us-central1`. This location is not changeable later. The repo command is:
 
    ```bash
    npm run firebase:firestore:create
@@ -229,6 +232,13 @@ After deployment, submit `/quote/` with a real email address. Confirm that:
 - replying to the customer confirmation goes to `contact@dbs-waste.co.uk`;
 - replying to the internal notification goes to the customer's submitted email.
 
+Latest smoke test evidence from 2026-06-03:
+
+- `GET https://wasteremoval-3276.web.app/api/bookings` returned JSON `405 Method not allowed`.
+- `GET https://dbs-waste.co.uk/api/bookings` returned JSON `405 Method not allowed`.
+- `POST https://wasteremoval-3276.web.app/api/bookings` with a valid booking payload returned `201` and booking reference `8995F8FC`.
+- Extension logs showed two successful SMTP deliveries for the generated `mail` documents: `mail/12SJfqEYLPdHKYGFnHK4` and `mail/bQ4hLAp4dXopIzVXfCOR`.
+
 ## Official references
 
 - Firebase Trigger Email extension usage: <https://firebase.google.com/docs/extensions/official/firestore-send-email>
@@ -244,4 +254,4 @@ After deployment, submit `/quote/` with a real email address. Confirm that:
 - If deployment prompts for required extension values, confirm `DATABASE`, `DATABASE_REGION`, `MAIL_COLLECTION`, and `AUTH_TYPE` are present in `extensions/firestore-send-email.env`.
 - If Gmail rejects authentication, confirm the secret contains the 16-character Google App Password, not the normal Google Account password, then rotate `firestore-send-email-SMTP_PASSWORD` and redeploy extensions.
 - If Google does not show **App passwords**, use the checklist above to enable 2-Step Verification and confirm Workspace admin policy allows app passwords, or switch to Workspace SMTP relay/OAuth2.
-- If Firestore TTL cleanup is desired, configure a Firestore TTL policy for the `delivery.expireAt` field on the `mail` collection group. The extension writes this field because `TTL_EXPIRE_TYPE=month` and `TTL_EXPIRE_VALUE=1` are configured.
+- If Firestore TTL cleanup is desired, set `TTL_EXPIRE_TYPE` to a duration such as `month`, redeploy the extension, then configure a Firestore TTL policy for the `delivery.expireAt` field on the `mail` collection group.

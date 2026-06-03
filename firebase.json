@@ -32,7 +32,7 @@
         "source": "/api/bookings",
         "function": {
           "functionId": "createBooking",
-          "region": "europe-west2"
+          "region": "us-central1"
         }
       }
     ]

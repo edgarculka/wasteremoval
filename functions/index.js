@@ -148,7 +148,7 @@ function buildText(title, intro, lines) {
 
 exports.createBooking = onRequest(
   {
-    region: "europe-west2",
+    region: "us-central1",
     cors: false,
     maxInstances: 10,
   },

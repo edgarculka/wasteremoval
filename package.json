@@ -22,7 +22,7 @@
     "firebase:use": "npx -y firebase-tools@latest use wasteremoval-3276",
     "firebase:functions:list": "npx -y firebase-tools@latest functions:list --project wasteremoval-3276",
     "firebase:firestore:list": "npx -y firebase-tools@latest firestore:databases:list --project wasteremoval-3276",
-    "firebase:firestore:create": "npx -y firebase-tools@latest firestore:databases:create \"(default)\" --location europe-west2 --project wasteremoval-3276",
+    "firebase:firestore:create": "npx -y firebase-tools@latest firestore:databases:create \"(default)\" --location us-central1 --project wasteremoval-3276",
     "firebase:extensions:list": "npx -y firebase-tools@latest ext:list --project wasteremoval-3276",
     "firebase:email-secret:check": "npx -y firebase-tools@latest functions:secrets:get firestore-send-email-SMTP_PASSWORD --project wasteremoval-3276",
     "firebase:email-secret": "npx -y firebase-tools@latest functions:secrets:set firestore-send-email-SMTP_PASSWORD --project wasteremoval-3276",
