@@ -123,6 +123,7 @@ What each command does:
 - `npm run firebase:email-secret:check` checks metadata for the SMTP password secret without printing the secret value.
 - `npm run firebase:email-secret` creates or updates the Secret Manager value used by the extension for Gmail SMTP. Paste the 16-character Google App Password when prompted.
 - `npm run firebase:deploy:email` deploys Functions, Firestore rules, Hosting rewrites, and Extensions for the email booking flow.
+- `npm run firebase:deploy:extensions` deploys only Firebase Extensions after changing committed extension configuration.
 
 The extension configuration is committed in `extensions/firestore-send-email.env`; the secret value itself is stored in Google Secret Manager.
 
@@ -178,7 +179,9 @@ The required live setup order is:
 
 ## GitHub Actions deployment setup
 
-The default-branch workflow in `.github/workflows/deploy-static.yml` deploys Hosting, Functions, Firestore rules, and Extensions with the Firebase CLI. It needs a repository secret containing a Google Cloud service account JSON key.
+The default-branch workflow in `.github/workflows/deploy-static.yml` deploys Hosting, Functions, and Firestore rules with the Firebase CLI. It does not redeploy Firebase Extensions on every site publish because the extension is already installed and normal publishes should not depend on the Firebase Extensions registry being available. Deploy the extension separately with `npm run firebase:deploy:extensions` after changing `firebase.json` or `extensions/firestore-send-email.env`.
+
+The GitHub Actions workflow needs a repository secret containing a Google Cloud service account JSON key.
 
 Create or review the service account here:
 
