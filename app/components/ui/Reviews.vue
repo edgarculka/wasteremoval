@@ -23,11 +23,12 @@ defineProps<Props>();
     </div>
 
     <div
-      class="mt-9 grid w-full gap-3 md:grid-cols-2 lg:grid-cols-3"
+      class="mt-9 flex w-full snap-x gap-3 overflow-x-auto overscroll-x-contain pb-4 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 lg:grid-cols-3"
     >
       <UiCard
         v-for="review in reviews"
         :key="`${review.author}-${review.meta ?? review.quote}`"
+        class="w-72 shrink-0 snap-start md:w-auto md:shrink"
       >
         <article class="flex h-full flex-col gap-4">
           <UiRating :value="review.rating" />
