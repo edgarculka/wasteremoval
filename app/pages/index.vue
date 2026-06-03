@@ -179,7 +179,7 @@ function openBookingWithPricingSelection() {
 </script>
 
 <template>
-  <UiSection tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Waste removal, on your schedule."
       description="Same-day rubbish removal and property clearance for tenants, landlords, and businesses. No skip permit, no hassle."
@@ -197,21 +197,21 @@ function openBookingWithPricingSelection() {
           </template>
         </UiButton>
       </template>
+      <template #visual>
+        <img
+          src="/images/rubbish-removal.webp"
+          alt="Rubbish removal illustration"
+          width="1200"
+          height="900"
+          :srcset="homeHeroSrcset"
+          :sizes="halfWidthImageSizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
-    <template #visual>
-      <img
-        src="/images/rubbish-removal.webp"
-        alt="Rubbish removal illustration"
-        width="1200"
-        height="900"
-        :srcset="homeHeroSrcset"
-        :sizes="halfWidthImageSizes"
-        fetchpriority="high"
-        decoding="async"
-        class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)] aspect-video"
-      />
-    </template>
   </UiSection>
 
   <UiMarquee tone="primary" :items="marqueeItems" />
