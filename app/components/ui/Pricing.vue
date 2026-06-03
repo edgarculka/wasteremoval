@@ -46,11 +46,12 @@ const emit = defineEmits<{
       </UiText>
     </div>
     <div
-      class="mt-9 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5"
+      class="mt-9 flex w-full snap-x gap-3 overflow-x-auto overscroll-x-contain pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-5"
     >
       <UiCard
         v-for="tier in tiers"
         :key="tier.id"
+        class="w-48 shrink-0 snap-start sm:w-auto sm:shrink"
         :selectable="selectable"
         layout="option"
         :selected="selectedTierId === tier.id"
