@@ -603,7 +603,7 @@ onScopeDispose(() => {
           class="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 lg:px-16"
           :class="mode === 'page' ? 'pt-20 pb-36 sm:pt-24' : ''"
         >
-          <div v-if="mode === 'page'" class="mb-8 pr-16 sm:pr-20">
+          <div v-if="mode === 'page'" class="mb-8">
             <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
               <div class="flex flex-col text-start">
                 <UiText as="span" size="xs" tone="low">Estimated total</UiText>
@@ -637,11 +637,12 @@ onScopeDispose(() => {
 
           <div
             v-if="currentQuestion.type === 'load'"
-            class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            class="mt-8 flex snap-x gap-4 overflow-x-auto overscroll-x-contain pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
           >
             <UiCard
               v-for="load in loads"
               :key="load.id"
+              class="w-72 shrink-0 snap-start sm:w-auto sm:shrink"
               selectable
               layout="option"
               :selected="selectedLoadId === load.id"
