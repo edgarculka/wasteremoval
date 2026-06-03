@@ -29,14 +29,14 @@ export type BookingFieldValidator =
   | "minLength3";
 
 export interface BookingTextField {
-  id: "postcode" | "addressLine1" | "name" | "phone" | "email";
+  id: string;
   label: string;
   type?: "text" | "tel" | "email";
   autocomplete?: string;
   placeholder?: string;
   required?: boolean;
   transform?: "uppercase";
-  validator: BookingFieldValidator;
+  validator?: BookingFieldValidator;
 }
 
 export type BookingQuestion =

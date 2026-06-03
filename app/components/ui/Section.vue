@@ -96,7 +96,7 @@ const isHorizontal = computed(
     :class="[
       'relative',
       sectionClasses,
-      '[--section-px:1.5rem] sm:[--section-px:2.5rem] lg:[--section-px:4rem] max-w-[100dvw] overflow-x-hidden',
+      '[--section-px:1.5rem] sm:[--section-px:2.5rem] lg:[--section-px:4rem] max-w-[100dvw]',
     ]"
   >
     <div class="px-(--section-px)">

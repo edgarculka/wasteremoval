@@ -26,6 +26,7 @@ const commercialSitemapPaths = [
 const prerenderRoutes = [
   ...commercialSitemapPaths,
   "/thank-you/",
+  "/admin/",
   "/robots.txt",
   "/sitemap.xml",
   ...(enableDesignSystem ? ["/design-system/"] : []),
@@ -51,6 +52,27 @@ export default defineNuxtConfig({
       siteUrl,
       siteName,
       enableDesignSystem,
+      adminEmailDomain:
+        process.env.NUXT_PUBLIC_ADMIN_EMAIL_DOMAIN || "dbs-waste.co.uk",
+      firebase: {
+        apiKey:
+          process.env.NUXT_PUBLIC_FIREBASE_API_KEY ||
+          "AIzaSyAHdtlqYpiTPLGA0-cs0Kzd31GsrvQHGvQ",
+        authDomain:
+          process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
+          "wasteremoval-3276.firebaseapp.com",
+        projectId:
+          process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || "wasteremoval-3276",
+        storageBucket:
+          process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+          "wasteremoval-3276.firebasestorage.app",
+        messagingSenderId:
+          process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ||
+          "112080630299",
+        appId:
+          process.env.NUXT_PUBLIC_FIREBASE_APP_ID ||
+          "1:112080630299:web:7ee64305d04016de3bbebe",
+      },
     },
   },
 
@@ -62,6 +84,25 @@ export default defineNuxtConfig({
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#d7f55d" },
+      ],
+      link: [
+        { rel: "icon", href: "/favicon.ico", sizes: "any" },
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "16x16",
+          href: "/favicon-16x16.png",
+        },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "32x32",
+          href: "/favicon-32x32.png",
+        },
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        { rel: "manifest", href: "/site.webmanifest" },
       ],
       script: [
         {

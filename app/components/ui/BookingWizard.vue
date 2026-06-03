@@ -32,7 +32,9 @@ export type {
 } from "~/utils/booking-form";
 
 export interface BookingSubmitControls {
-  fail: () => void;
+  signal: AbortSignal;
+  isCurrent: () => boolean;
+  fail: (message?: string) => void;
 }
 
 export interface BookingPhotoData {
@@ -56,6 +58,7 @@ export interface BookingFormData {
   load: BookingLoad;
   date: string;
   time: BookingTimeSlot;
+  fields: Record<string, string>;
   postcode: string;
   addressLine1: string;
   name: string;
@@ -120,8 +123,10 @@ const photos = ref<BookingPhotoData[]>([]);
 const additionalQuantities = reactive<Record<string, number>>({});
 const attemptedQuestionIds = reactive<Record<string, boolean>>({});
 const photoError = ref("");
+const submitError = ref("");
 const isProcessingPhotos = ref(false);
-const fieldValues = reactive<Record<BookingTextField["id"], string>>({
+let activeSubmitController: AbortController | null = null;
+const fieldValues = reactive<Record<string, string>>({
   postcode: "",
   addressLine1: "",
   name: "",
@@ -182,12 +187,14 @@ const remainingPhotoSlots = computed(() =>
 );
 
 function isFieldValid(field: BookingTextField) {
-  const value = fieldValues[field.id].trim();
+  const value = (fieldValues[field.id] ?? "").trim();
+  if (!field.required && !value) return true;
+
   switch (field.validator) {
     case "postcode":
       return postcodePattern.test(value);
     case "name":
-      return value.split(/\s+/).filter(Boolean).length >= 2;
+      return value.length >= 2;
     case "phone":
       return phonePattern.test(value);
     case "email":
@@ -195,7 +202,7 @@ function isFieldValid(field: BookingTextField) {
     case "minLength3":
       return value.length >= 3;
     default:
-      return false;
+      return value.length > 0;
   }
 }
 
@@ -216,8 +223,12 @@ function fieldErrorMessage(field: BookingTextField) {
   }
 }
 
+function fieldValue(id: string) {
+  return fieldValues[id] ?? "";
+}
+
 function shouldShowFieldError(field: BookingTextField) {
-  const value = fieldValues[field.id].trim();
+  const value = (fieldValues[field.id] ?? "").trim();
   return (
     !isFieldValid(field) &&
     (attemptedQuestionIds[currentQuestion.value.id] || value.length > 0)
@@ -271,7 +282,10 @@ function close() {
 }
 
 function reset() {
+  activeSubmitController?.abort();
+  activeSubmitController = null;
   isSubmitting.value = false;
+  submitError.value = "";
   submissionId.value = createSubmissionId();
   applyInitialLoadSelection();
   selectedDate.value = null;
@@ -282,7 +296,7 @@ function reset() {
   for (const key of Object.keys(attemptedQuestionIds)) {
     delete attemptedQuestionIds[key];
   }
-  for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
+  for (const key of Object.keys(fieldValues)) {
     fieldValues[key] = "";
   }
   photos.value = [];
@@ -306,17 +320,24 @@ function applyInitialLoadSelection() {
 }
 
 function goBack() {
+  submitError.value = "";
   if (stepIndex.value > 0) stepIndex.value -= 1;
 }
 
 function goNext() {
   attemptedQuestionIds[currentQuestion.value.id] = true;
+  submitError.value = "";
   if (!stepValid.value || isSubmitting.value) return;
   if (isLastStep.value) {
     if (!selectedLoad.value || !selectedDate.value || !selectedTime.value)
       return;
+    const submittedFields = Object.fromEntries(
+      Object.entries(fieldValues).map(([key, value]) => [key, value.trim()]),
+    );
     // Lock the form so the submit can't be fired twice while it's in flight.
     isSubmitting.value = true;
+    const submitController = new AbortController();
+    activeSubmitController = submitController;
     emit(
       "submit",
       {
@@ -324,19 +345,32 @@ function goNext() {
         load: selectedLoad.value,
         date: selectedDate.value,
         time: selectedTime.value,
-        postcode: fieldValues.postcode.trim().toUpperCase(),
-        addressLine1: fieldValues.addressLine1.trim(),
-        name: fieldValues.name.trim(),
-        phone: fieldValues.phone.trim(),
-        email: fieldValues.email.trim(),
+        fields: submittedFields,
+        postcode: (submittedFields.postcode ?? "").toUpperCase(),
+        addressLine1: submittedFields.addressLine1 ?? "",
+        name: submittedFields.name ?? "",
+        phone: submittedFields.phone ?? "",
+        email: submittedFields.email ?? "",
         photos: photos.value,
         additionalItems: selectedAdditionalItems.value,
         estimatedTotalPence: estimatedTotalPence.value,
         estimatedTotalLabel: priceLabel.value,
       },
       {
-        fail: () => {
+        signal: submitController.signal,
+        isCurrent: () =>
+          activeSubmitController === submitController &&
+          !submitController.signal.aborted,
+        fail: (message = "Sorry, we couldn't submit your booking. Please try again.") => {
+          if (
+            activeSubmitController !== submitController ||
+            submitController.signal.aborted
+          ) {
+            return;
+          }
+          activeSubmitController = null;
           isSubmitting.value = false;
+          submitError.value = message;
         },
       },
     );
@@ -510,21 +544,9 @@ function scrollToStepTop() {
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
-function focusFirstField() {
-  if (typeof document === "undefined") return;
-  if (currentQuestion.value.type !== "fields") return;
-
-  const input = scrollContainer.value?.querySelector<HTMLElement>(
-    "input, textarea, select",
-  );
-  // preventScroll keeps the step pinned to the top we just scrolled to.
-  input?.focus({ preventScroll: true });
-}
-
 async function settleStep() {
   await nextTick();
   scrollToStepTop();
-  focusFirstField();
 }
 
 watch(
@@ -533,6 +555,15 @@ watch(
     if (stepIndex.value >= length) stepIndex.value = Math.max(length - 1, 0);
   },
 );
+
+watchEffect(() => {
+  for (const question of questions.value) {
+    if (question.type !== "fields") continue;
+    for (const field of question.fields) {
+      fieldValues[field.id] ??= "";
+    }
+  }
+});
 
 watch(
   () => props.open,
@@ -570,6 +601,7 @@ watch(
 );
 
 watch(stepIndex, () => {
+  submitError.value = "";
   void settleStep();
 });
 
@@ -584,6 +616,8 @@ watchEffect((onCleanup) => {
 });
 
 onScopeDispose(() => {
+  activeSubmitController?.abort();
+  activeSubmitController = null;
   if (typeof document !== "undefined") document.body.style.overflow = "";
 });
 </script>
@@ -683,10 +717,19 @@ onScopeDispose(() => {
           <UiText tone="low" class="mt-3">
             {{ currentQuestion.description }}
           </UiText>
+          <UiText
+            v-if="submitError"
+            size="sm"
+            weight="semibold"
+            class="mt-4 text-red-700"
+            role="alert"
+          >
+            {{ submitError }}
+          </UiText>
 
           <div
             v-if="currentQuestion.type === 'load'"
-            class="mt-8 flex snap-x gap-4 overflow-x-auto overscroll-x-contain pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
+            class="mx-[calc(50%-50vw)] mt-6 flex w-screen snap-x gap-4 overflow-x-auto overscroll-x-contain px-6 pt-2 pb-8 [scroll-padding-inline:1.5rem] sm:mx-0 sm:mt-8 sm:grid sm:w-full sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pt-0 sm:pb-0 lg:grid-cols-3"
           >
             <UiCard
               v-for="load in loads"
@@ -720,7 +763,7 @@ onScopeDispose(() => {
               </div>
             </div>
 
-            <div class="mt-4 max-h-[30rem] overflow-y-auto pr-1">
+            <div class="mt-4">
               <div
                 v-for="item in additionalChargeItems"
                 :key="item.id"
@@ -1000,8 +1043,8 @@ onScopeDispose(() => {
                 Address
               </UiText>
               <UiText as="dd" size="md" weight="semibold" class="text-right">
-                {{ fieldValues.addressLine1.trim() }}<br />
-                {{ fieldValues.postcode.trim().toUpperCase() }}
+                {{ fieldValue("addressLine1").trim() }}<br />
+                {{ fieldValue("postcode").trim().toUpperCase() }}
               </UiText>
             </div>
             <div class="flex items-start justify-between gap-6 p-5">
@@ -1009,9 +1052,9 @@ onScopeDispose(() => {
                 Contact
               </UiText>
               <UiText as="dd" size="md" weight="semibold" class="text-right">
-                {{ fieldValues.name.trim() }}<br />
-                {{ fieldValues.phone.trim() }}<br />
-                {{ fieldValues.email.trim() }}
+                {{ fieldValue("name").trim() }}<br />
+                {{ fieldValue("phone").trim() }}<br />
+                {{ fieldValue("email").trim() }}
               </UiText>
             </div>
             <div class="flex flex-col gap-4 p-5 sm:flex-row sm:justify-between sm:gap-6">

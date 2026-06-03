@@ -26,7 +26,18 @@ const requiredValues = [
   ["wasteCarrierRegistration", readStringProperty("wasteCarrierRegistration")],
 ];
 
+const canonicalPhoneValues = new Map([
+  ["primaryPhone", "+447747251550"],
+  ["primaryPhoneDisplay", "+44 7747 251550"],
+  ["primaryPhoneHref", "tel:+447747251550"],
+  ["whatsappHref", "https://wa.me/447747251550"],
+]);
+
 const placeholderValues = new Set([
+  "+447880234934",
+  "07880 234934",
+  "tel:+447880234934",
+  "https://wa.me/447880234934",
   "+442012345678",
   "020 1234 5678",
   "tel:+442012345678",
@@ -36,9 +47,15 @@ const placeholderValues = new Set([
 ]);
 
 const failures = requiredValues
-  .filter(([, value]) => !value || placeholderValues.has(value))
+  .filter(([name, value]) => {
+    const canonicalValue = canonicalPhoneValues.get(name);
+
+    return !value || placeholderValues.has(value) || (canonicalValue && value !== canonicalValue);
+  })
   .map(([name, value]) =>
-    value
+    canonicalPhoneValues.has(name) && value
+      ? `${name} must be "${canonicalPhoneValues.get(name)}", not "${value}"`
+      : value
       ? `${name} is still using placeholder value "${value}"`
       : `${name} is blank`,
   );

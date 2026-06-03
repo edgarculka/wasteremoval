@@ -32,6 +32,33 @@ function valueLabel(value: string | boolean) {
 function featureValue(feature: SkipComparisonFeature, columnId: string) {
   return feature.values[columnId] ?? false;
 }
+
+function headingClasses(column: SkipComparisonColumn) {
+  return [
+    "flex min-h-48 flex-col items-center justify-center gap-3 rounded-t-2xl border-2 p-6 text-center",
+    column.featured
+      ? "border-primary-foreground/20 bg-primary text-primary-foreground"
+      : "border-border bg-secondary text-secondary-foreground",
+  ];
+}
+
+function cellClasses(
+  column: SkipComparisonColumn,
+  featureIndex: number,
+  featureCount: number,
+) {
+  return [
+    "grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-x-2 px-5 py-3 lg:flex lg:justify-center",
+    column.featured
+      ? "border-primary-foreground/20 bg-primary text-primary-foreground"
+      : "border-border bg-secondary text-secondary-foreground",
+    featureIndex === featureCount - 1
+      ? "rounded-b-2xl border-b-2"
+      : column.featured
+        ? "border-b border-b-primary-foreground/20"
+        : "border-b border-b-border/30",
+  ];
+}
 </script>
 
 <template>
@@ -53,7 +80,7 @@ function featureValue(feature: SkipComparisonFeature, columnId: string) {
     </div>
 
     <div
-      class="mt-8 overflow-x-auto pb-4 lg:mt-0 lg:overflow-visible lg:pb-0"
+      class="mx-[calc(50%-50vw)] mt-6 w-screen overflow-x-auto overscroll-x-contain px-(--section-px) pt-2 pb-8 [scroll-padding-inline:var(--section-px)] lg:mx-0 lg:mt-0 lg:w-full lg:overflow-visible lg:px-0 lg:pt-0 lg:pb-0"
     >
       <div
         class="grid min-w-max gap-x-4 gap-y-0 [grid-template-columns:minmax(10rem,0.85fr)_repeat(var(--comparison-cols),minmax(10.5rem,1fr))] lg:min-w-0 lg:gap-x-6 lg:[grid-template-columns:minmax(12rem,0.85fr)_repeat(var(--comparison-cols),minmax(11rem,1fr))]"
@@ -81,70 +108,63 @@ function featureValue(feature: SkipComparisonFeature, columnId: string) {
           </UiButton>
         </div>
 
-      <div
-        v-for="column in columns"
-        :key="`heading-${column.id}`"
-        :class="[
-          'flex min-h-48 flex-col items-center justify-center gap-3 rounded-t-2xl border-2 border-border bg-secondary p-6 text-center text-secondary-foreground',
-          column.featured
-            ? 'shadow-[0.35rem_0.35rem_0_0_var(--foreground)]'
-            : '',
-        ]"
-      >
-        <UiTag v-if="column.label" variant="accent">
-          {{ column.label }}
-        </UiTag>
-        <UiHeading :level="3" size="md">{{ column.title }}</UiHeading>
-      </div>
-
-      <template v-for="(feature, featureIndex) in features" :key="feature.label">
-        <UiText
-          as="div"
-          size="sm"
-          weight="bold"
-          class="flex min-h-14 items-center py-3"
-        >
-          {{ feature.label }}
-        </UiText>
         <div
           v-for="column in columns"
-          :key="`${feature.label}-${column.id}`"
-          :class="[
-            'grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-x-2 border-border bg-secondary px-5 py-3 text-secondary-foreground lg:flex lg:justify-center',
-            featureIndex === features.length - 1
-              ? 'rounded-b-2xl border-b-2'
-              : 'border-b border-b-border/30',
-            column.featured && featureIndex === features.length - 1
-              ? 'shadow-[0.35rem_0.35rem_0_0_var(--foreground)]'
-              : '',
-          ]"
+          :key="`heading-${column.id}`"
+          :class="headingClasses(column)"
         >
-          <UiText as="span" size="sm" weight="bold" class="lg:sr-only">
-            {{ feature.label }}
-          </UiText>
+          <UiTag
+            v-if="column.label"
+            :variant="column.featured ? 'secondary' : 'accent'"
+          >
+            {{ column.label }}
+          </UiTag>
+          <UiHeading :level="3" size="md">{{ column.title }}</UiHeading>
+        </div>
+
+        <template
+          v-for="(feature, featureIndex) in features"
+          :key="feature.label"
+        >
           <UiText
-            v-if="typeof featureValue(feature, column.id) === 'string'"
-            as="span"
+            as="div"
             size="sm"
             weight="bold"
-            class="text-right lg:text-center"
+            class="flex min-h-14 items-center py-3"
           >
-            {{ featureValue(feature, column.id) }}
+            {{ feature.label }}
           </UiText>
-          <span v-else class="flex justify-end lg:justify-center">
-            <IconsTick
-              v-if="featureValue(feature, column.id)"
-              class="text-3xl leading-none text-accent"
-              :aria-label="valueLabel(featureValue(feature, column.id))"
-            />
-            <IconsClose
-              v-else
-              class="text-2xl leading-none text-secondary-foreground"
-              :aria-label="valueLabel(featureValue(feature, column.id))"
-            />
-          </span>
-        </div>
-      </template>
+          <div
+            v-for="column in columns"
+            :key="`${feature.label}-${column.id}`"
+            :class="cellClasses(column, featureIndex, features.length)"
+          >
+            <UiText as="span" size="sm" weight="bold" class="lg:sr-only">
+              {{ feature.label }}
+            </UiText>
+            <UiText
+              v-if="typeof featureValue(feature, column.id) === 'string'"
+              as="span"
+              size="sm"
+              weight="bold"
+              class="text-right lg:text-center"
+            >
+              {{ featureValue(feature, column.id) }}
+            </UiText>
+            <span v-else class="flex justify-end lg:justify-center">
+              <IconsTick
+                v-if="featureValue(feature, column.id)"
+                class="text-3xl leading-none text-accent"
+                :aria-label="valueLabel(featureValue(feature, column.id))"
+              />
+              <IconsClose
+                v-else
+                class="text-2xl leading-none text-current/55"
+                :aria-label="valueLabel(featureValue(feature, column.id))"
+              />
+            </span>
+          </div>
+        </template>
       </div>
     </div>
   </div>

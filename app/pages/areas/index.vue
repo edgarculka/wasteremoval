@@ -73,7 +73,7 @@ usePageSeo({
 </script>
 
 <template>
-  <UiSection tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Waste removal areas across West London"
       description="Choose the area closest to your collection address, then view service pages for local house, tenancy, garden, office, garage, builders, furniture and mattress clearances."
@@ -87,21 +87,20 @@ usePageSeo({
           </template>
         </UiButton>
       </template>
+      <template v-if="primaryImage" #visual>
+        <img
+          :src="primaryImage.src"
+          :alt="primaryImage.alt"
+          :width="primaryImage.width"
+          :height="primaryImage.height"
+          :srcset="primaryImage.srcset"
+          :sizes="primaryImage.sizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
-
-    <template v-if="primaryImage" #visual>
-      <img
-        :src="primaryImage.src"
-        :alt="primaryImage.alt"
-        :width="primaryImage.width"
-        :height="primaryImage.height"
-        :srcset="primaryImage.srcset"
-        :sizes="primaryImage.sizes"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
-      />
-    </template>
   </UiSection>
 
   <UiSection

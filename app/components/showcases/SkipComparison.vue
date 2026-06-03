@@ -7,13 +7,14 @@ import type {
 const columns: SkipComparisonColumn[] = [
   {
     id: "waste-removal",
-    title: "Our waste removal",
-    label: "Recommended",
+    title: "DBS Waste collection",
+    label: "This website",
     featured: true,
   },
   {
     id: "skip-hire",
     title: "Hiring a skip",
+    label: "Alternative",
   },
 ];
 

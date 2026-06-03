@@ -81,7 +81,7 @@ const truckImage = {
 </script>
 
 <template>
-  <UiSection tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Responsible waste disposal"
       description="Clearance work is not only about loading a van. The waste type, access, restricted materials and disposal records need to be understood before the job starts."
@@ -95,6 +95,19 @@ const truckImage = {
           </template>
         </UiButton>
       </template>
+      <template #visual>
+        <img
+          :src="truckImage.src"
+          :alt="truckImage.alt"
+          :width="truckImage.width"
+          :height="truckImage.height"
+          :srcset="truckImage.srcset"
+          :sizes="truckImage.sizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
 
     <UiTrustStrip :items="[
@@ -102,20 +115,6 @@ const truckImage = {
       { value: 'Records', label: 'On request' },
       { value: 'Restricted', label: 'Flagged early' },
     ]" class="mt-8 max-w-3xl" />
-
-    <template #visual>
-      <img
-        :src="truckImage.src"
-        :alt="truckImage.alt"
-        :width="truckImage.width"
-        :height="truckImage.height"
-        :srcset="truckImage.srcset"
-        :sizes="truckImage.sizes"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
-      />
-    </template>
   </UiSection>
 
   <UiSection tone="secondary" spacing="md" wide>

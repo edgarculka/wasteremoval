@@ -46,7 +46,7 @@ const workerAlt = "Waste removal worker holding a black bin bag";
             <template #cta>
               <UiButton size="lg">Get a quote</UiButton>
               <UiButton variant="secondary" size="lg">
-                Call 020 1234 5678
+                Call +44 7747 251550
               </UiButton>
             </template>
           </UiCallToAction>

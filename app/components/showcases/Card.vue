@@ -62,16 +62,16 @@ const times = [
 
 const contactCards = [
   {
-    title: "020 1234 5678",
+    title: "+44 7747 251550",
     description: "Mon-Fri, 7am-7pm",
-    href: "tel:+442012345678",
+    href: "tel:+447747251550",
     icon: IconsPhone,
     iconLabel: "Phone",
   },
   {
     title: "Chat on WhatsApp",
     description: "Fastest way to reach us",
-    href: "https://wa.me/442012345678",
+    href: "https://wa.me/447747251550",
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },

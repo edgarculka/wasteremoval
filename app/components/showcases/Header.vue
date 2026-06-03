@@ -53,7 +53,7 @@ const sampleNav = [
     <section>
       <UiHeading :level="2" size="sm">Default</UiHeading>
       <div class="mt-4 overflow-hidden rounded-md border border-border">
-        <UiHeader :nav="sampleNav" phone="020 1234 5678" cta-href="#" />
+        <UiHeader :nav="sampleNav" phone="+44 7747 251550" cta-href="#" />
       </div>
     </section>
 
@@ -82,7 +82,7 @@ const sampleNav = [
       <div class="mt-4 overflow-hidden rounded-md border border-border">
         <UiHeader
           :nav="sampleNav"
-          phone="020 1234 5678"
+          phone="+44 7747 251550"
           cta-label="Book pickup"
           cta-href="#"
         />

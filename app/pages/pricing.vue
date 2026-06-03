@@ -19,17 +19,19 @@ interface ContactCardLink {
 const comparisonColumns: SkipComparisonColumn[] = [
   {
     id: "waste-removal",
-    title: "Waste removal",
-    label: "Recommended",
+    title: "DBS Waste collection",
+    label: "This website",
     featured: true,
   },
   {
     id: "skip-hire",
     title: "Skip hire",
+    label: "Alternative",
   },
   {
     id: "council",
     title: "Council bulky waste",
+    label: "Alternative",
   },
 ];
 
@@ -172,7 +174,7 @@ function openBookingWithPricingSelection() {
       lead="Compare"
       accent="collection"
       trailing="options"
-      subhead="For most home and business clearances, a loaded collection is simpler than hiring a skip or waiting for a bulky waste slot."
+      subhead="DBS Waste is the loaded collection option on this site. Skip hire and council bulky waste are shown as alternatives so you can compare the trade-offs quickly."
       :columns="comparisonColumns"
       :features="comparisonFeatures"
     />

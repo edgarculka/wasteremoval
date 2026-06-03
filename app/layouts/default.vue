@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const selectedLocation = useSelectedSeoLocation();
 const route = useRoute();
-const showHeader = computed(() => !route.path.startsWith("/quote"));
+const showHeader = computed(
+  () => !route.path.startsWith("/quote") && !route.path.startsWith("/admin"),
+);
 
 const headerNav = computed(() => [
   {

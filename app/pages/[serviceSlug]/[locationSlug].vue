@@ -131,7 +131,7 @@ const workerSrcset =
 </script>
 
 <template>
-  <UiSection v-if="page" tone="background" spacing="md" alignment="left">
+  <UiSection v-if="page" tone="background" spacing="md" alignment="left" wide>
     <UiHero :heading="page.heading" :description="page.description">
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
@@ -142,21 +142,21 @@ const workerSrcset =
           </template>
         </UiButton>
       </template>
+      <template #visual>
+        <img
+          :src="page.image.src"
+          :alt="page.image.alt"
+          :width="page.image.width"
+          :height="page.image.height"
+          :srcset="page.image.srcset"
+          :sizes="page.image.sizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
-    <template #visual>
-      <img
-        :src="page.image.src"
-        :alt="page.image.alt"
-        :width="page.image.width"
-        :height="page.image.height"
-        :srcset="page.image.srcset"
-        :sizes="page.image.sizes"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
-      />
-    </template>
   </UiSection>
 
   <UiMarquee v-if="page" tone="primary" :items="marqueeItems" />

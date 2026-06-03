@@ -13,8 +13,6 @@ const PHOTO_STORAGE_BUCKET = "wasteremoval-3276.firebasestorage.app";
 const MAX_PHOTOS = 4;
 const MAX_PHOTO_BYTES = 750 * 1024;
 const MAX_THUMBNAIL_BYTES = 140 * 1024;
-const ALLOWED_LOAD_IDS = new Set(["min", "mini", "small", "large", "full"]);
-const ALLOWED_TIME_IDS = new Set(["anytime", "morning", "afternoon", "evening"]);
 const LOAD_PRICES = new Map([
   ["min", 4000],
   ["mini", 10000],
@@ -61,6 +59,21 @@ function readString(value, maxLength) {
   return value.trim().slice(0, maxLength);
 }
 
+function readNumber(value, fallback = 0) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function readPricePence(value) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value >= 0 ? Math.round(value) : 0;
+  }
+
+  if (typeof value !== "string") return 0;
+  const amount = Number(value.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(amount) && amount >= 0 ? Math.round(amount * 100) : 0;
+}
+
 function normalizeEmail(value) {
   return readString(value, 160).toLowerCase();
 }
@@ -72,12 +85,7 @@ function normalizePostcode(value) {
 function readPhotoPayload(value, errors) {
   if (typeof value === "undefined" || value === null) return [];
   if (!Array.isArray(value)) {
-    errors.push("Photos must be sent as a list.");
     return [];
-  }
-
-  if (value.length > MAX_PHOTOS) {
-    errors.push(`Upload no more than ${MAX_PHOTOS} photos.`);
   }
 
   return value.slice(0, MAX_PHOTOS).flatMap((item, index) => {
@@ -105,39 +113,38 @@ function readPhotoPayload(value, errors) {
     };
 
     const photoPrefix = `Photo ${index + 1}`;
-    if (file.mimeType !== "image/jpeg") {
-      errors.push(`${photoPrefix} must be an optimised JPEG image.`);
-    }
-    if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(file.dataUrl)) {
-      errors.push(`${photoPrefix} is missing image data.`);
-    }
-    if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(file.thumbnail.dataUrl)) {
-      errors.push(`${photoPrefix} is missing thumbnail data.`);
-    }
-    if (!Number.isFinite(width) || width < 1 || width > 2000) {
-      errors.push(`${photoPrefix} has invalid image dimensions.`);
-    }
-    if (!Number.isFinite(height) || height < 1 || height > 2000) {
-      errors.push(`${photoPrefix} has invalid image dimensions.`);
-    }
-    if (
-      !Number.isFinite(thumbnailWidth) ||
-      thumbnailWidth < 1 ||
-      thumbnailWidth > 600 ||
-      !Number.isFinite(thumbnailHeight) ||
-      thumbnailHeight < 1 ||
-      thumbnailHeight > 600
-    ) {
-      errors.push(`${photoPrefix} has invalid thumbnail dimensions.`);
+    const hasValidMetadata =
+      file.mimeType === "image/jpeg" &&
+      /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(file.dataUrl) &&
+      /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(file.thumbnail.dataUrl) &&
+      Number.isFinite(width) &&
+      width >= 1 &&
+      width <= 2000 &&
+      Number.isFinite(height) &&
+      height >= 1 &&
+      height <= 2000 &&
+      Number.isFinite(thumbnailWidth) &&
+      thumbnailWidth >= 1 &&
+      thumbnailWidth <= 600 &&
+      Number.isFinite(thumbnailHeight) &&
+      thumbnailHeight >= 1 &&
+      thumbnailHeight <= 600;
+
+    if (!hasValidMetadata) {
+      logger.warn(`${photoPrefix} was skipped because its metadata was invalid.`);
+      return [];
     }
 
     const imageBuffer = decodeDataUrl(file.dataUrl);
     const thumbnailBuffer = decodeDataUrl(file.thumbnail.dataUrl);
-    if (!imageBuffer || imageBuffer.length > MAX_PHOTO_BYTES) {
-      errors.push(`${photoPrefix} is too large.`);
-    }
-    if (!thumbnailBuffer || thumbnailBuffer.length > MAX_THUMBNAIL_BYTES) {
-      errors.push(`${photoPrefix} thumbnail is too large.`);
+    if (
+      !imageBuffer ||
+      imageBuffer.length > MAX_PHOTO_BYTES ||
+      !thumbnailBuffer ||
+      thumbnailBuffer.length > MAX_THUMBNAIL_BYTES
+    ) {
+      logger.warn(`${photoPrefix} was skipped because its data was invalid or too large.`);
+      return [];
     }
 
     return [
@@ -156,48 +163,56 @@ function readPhotoPayload(value, errors) {
 function readAdditionalItems(value, errors) {
   if (typeof value === "undefined" || value === null) return [];
   if (!Array.isArray(value)) {
-    errors.push("Additional items must be sent as a list.");
     return [];
   }
 
-  if (value.length > ADDITIONAL_ITEM_PRICES.size) {
-    errors.push("Too many additional item types were sent.");
-  }
-
   const seen = new Set();
-  return value.slice(0, ADDITIONAL_ITEM_PRICES.size).flatMap((item) => {
+  return value.slice(0, 80).flatMap((item) => {
     const id = readString(item?.id, 64);
-    const quantity = Number(item?.quantity);
+    const quantity = readNumber(item?.quantity);
     const allowedItem = ADDITIONAL_ITEM_PRICES.get(id);
+    const submittedName = readString(item?.name ?? item?.shortName, 120);
 
-    if (!allowedItem) {
-      errors.push("Choose a valid additional item.");
+    if (!id || seen.has(id) || !Number.isInteger(quantity) || quantity < 1) {
       return [];
     }
-    if (seen.has(id)) {
-      errors.push(`Additional item ${allowedItem.name} was sent more than once.`);
-      return [];
-    }
+
     seen.add(id);
-    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
-      errors.push(`Choose a valid quantity for ${allowedItem.name}.`);
-      return [];
-    }
+    const safeQuantity = Math.min(quantity, 99);
+    const name = allowedItem?.name || submittedName || id;
+    const unitPricePence =
+      allowedItem?.pricePence ||
+      readPricePence(item?.unitPricePence) ||
+      Math.round(readNumber(item?.totalPricePence) / safeQuantity) ||
+      0;
 
-    const totalPricePence = allowedItem.pricePence * quantity;
+    const totalPricePence = unitPricePence * safeQuantity;
 
     return [
       {
         id,
-        name: allowedItem.name,
-        quantity,
-        unitPricePence: allowedItem.pricePence,
-        unitPriceLabel: formatPounds(allowedItem.pricePence),
+        name,
+        quantity: safeQuantity,
+        unitPricePence,
+        unitPriceLabel: formatPounds(unitPricePence),
         totalPricePence,
         totalPriceLabel: formatPounds(totalPricePence),
       },
     ];
   });
+}
+
+function readFields(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .map(([key, fieldValue]) => [
+        readString(key, 80),
+        readString(fieldValue, 400),
+      ])
+      .filter(([key, fieldValue]) => key && fieldValue),
+  );
 }
 
 function validateBookingPayload(payload) {
@@ -207,9 +222,10 @@ function validateBookingPayload(payload) {
 
   const booking = {
     submissionId: readString(payload?.submissionId, 80),
+    fields: readFields(payload?.fields),
     load: {
       id: readString(load?.id, 32),
-      name: readString(load?.name, 80),
+      name: readString(load?.name, 80) || readString(load?.id, 32),
       ribbon: readString(load?.ribbon, 80),
       price: readString(load?.price, 32),
     },
@@ -228,13 +244,19 @@ function validateBookingPayload(payload) {
     additionalItems: readAdditionalItems(payload?.additionalItems, errors),
   };
 
-  const loadPricePence = LOAD_PRICES.get(booking.load.id) || 0;
+  const loadPricePence =
+    LOAD_PRICES.get(booking.load.id) ||
+    readPricePence(load?.pricePence) ||
+    readPricePence(load?.price);
   const additionalTotalPence = booking.additionalItems.reduce(
     (total, item) => total + item.totalPricePence,
     0,
   );
   booking.estimatedTotalPence = loadPricePence + additionalTotalPence;
   booking.estimatedTotalLabel = formatPounds(booking.estimatedTotalPence);
+  if (!booking.load.price) {
+    booking.load.price = loadPricePence ? formatPounds(loadPricePence) : "To confirm";
+  }
 
   if (
     booking.submissionId &&
@@ -242,10 +264,9 @@ function validateBookingPayload(payload) {
   ) {
     errors.push("Refresh the quote form and try again.");
   }
-  if (!ALLOWED_LOAD_IDS.has(booking.load.id)) errors.push("Choose a valid load size.");
-  if (!booking.load.name || !booking.load.price) errors.push("Load details are missing.");
+  if (!booking.load.id && !booking.load.name) errors.push("Choose a load size.");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(booking.date)) errors.push("Choose a valid collection date.");
-  if (!ALLOWED_TIME_IDS.has(booking.time.id)) errors.push("Choose a valid arrival window.");
+  if (!booking.time.id && !booking.time.label) errors.push("Choose an arrival window.");
   if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/.test(booking.postcode)) errors.push("Enter a valid UK postcode.");
   if (booking.addressLine1.length < 3) errors.push("Enter the first line of the collection address.");
   if (booking.name.length < 2) errors.push("Enter your full name.");
@@ -365,6 +386,21 @@ function bookingLines(booking, bookingId, photos = []) {
         )
         .join("; ")
     : "None selected";
+  const knownFieldKeys = new Set([
+    "postcode",
+    "addressLine1",
+    "name",
+    "phone",
+    "email",
+  ]);
+  const extraFields = Object.entries(booking.fields || {})
+    .filter(([key]) => !knownFieldKeys.has(key))
+    .map(([key, value]) => [
+      key
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+      value,
+    ]);
 
   return [
     ["Booking reference", bookingId],
@@ -378,6 +414,7 @@ function bookingLines(booking, bookingId, photos = []) {
     ["Estimated total", booking.estimatedTotalLabel],
     ["Preferred date", formatDate(booking.date)],
     ["Preferred time", `${booking.time.label}${booking.time.description ? ` (${booking.time.description})` : ""}`],
+    ...extraFields,
     ["Photos", photos.length ? `${photos.length} uploaded` : "None uploaded"],
   ];
 }

@@ -46,7 +46,7 @@ const emit = defineEmits<{
       </UiText>
     </div>
     <div
-      class="mt-9 flex w-full snap-x gap-3 overflow-x-auto overscroll-x-contain pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-5"
+      class="mx-[calc(50%-50vw)] mt-7 flex w-screen snap-x gap-3 overflow-x-auto overscroll-x-contain px-(--section-px) pt-2 pb-8 [scroll-padding-inline:var(--section-px)] sm:mx-0 sm:mt-9 sm:grid sm:w-full sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pt-0 sm:pb-0 lg:grid-cols-5"
     >
       <UiCard
         v-for="tier in tiers"

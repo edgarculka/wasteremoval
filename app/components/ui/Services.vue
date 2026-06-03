@@ -56,7 +56,7 @@ withDefaults(defineProps<Props>(), {
     </div>
 
     <div
-      class="mt-9 flex w-full snap-x gap-4 overflow-x-auto overscroll-x-contain pb-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0"
+      class="mx-[calc(50%-50vw)] mt-7 flex w-screen snap-x gap-4 overflow-x-auto overscroll-x-contain px-(--section-px) pt-2 pb-8 [scroll-padding-inline:var(--section-px)] md:mx-0 md:mt-9 md:grid md:w-full md:grid-cols-3 md:overflow-visible md:px-0 md:pt-0 md:pb-0"
     >
       <UiCard
         v-for="service in services"

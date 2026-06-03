@@ -16,7 +16,10 @@ const isFullscreenDesignSystem = computed(() =>
 );
 
 const showFooter = computed(
-  () => !isFullscreenDesignSystem.value && !route.path.startsWith("/quote"),
+  () =>
+    !isFullscreenDesignSystem.value &&
+    !route.path.startsWith("/quote") &&
+    !route.path.startsWith("/admin"),
 );
 
 const footerServiceLinks = computed(() =>

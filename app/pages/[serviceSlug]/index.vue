@@ -119,7 +119,7 @@ const workerSrcset =
 </script>
 
 <template>
-  <UiSection tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       :heading="`${service.title} in West London`"
       :description="service.description"
@@ -133,21 +133,21 @@ const workerSrcset =
           </template>
         </UiButton>
       </template>
+      <template #visual>
+        <img
+          :src="service.image.src"
+          :alt="service.image.alt"
+          :width="service.image.width"
+          :height="service.image.height"
+          :srcset="service.image.srcset"
+          :sizes="service.image.sizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
-    <template #visual>
-      <img
-        :src="service.image.src"
-        :alt="service.image.alt"
-        :width="service.image.width"
-        :height="service.image.height"
-        :srcset="service.image.srcset"
-        :sizes="service.image.sizes"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
-      />
-    </template>
   </UiSection>
 
   <UiMarquee tone="primary" :items="marqueeItems" />

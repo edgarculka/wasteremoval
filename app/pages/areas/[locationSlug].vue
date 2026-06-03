@@ -119,7 +119,7 @@ usePageSeo({
 </script>
 
 <template>
-  <UiSection tone="background" spacing="md" alignment="left">
+  <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       :heading="`Waste removal in ${location.name}`"
       :description="location.shortDescription"
@@ -133,21 +133,20 @@ usePageSeo({
           </template>
         </UiButton>
       </template>
+      <template #visual>
+        <img
+          :src="location.image.src"
+          :alt="location.image.alt"
+          :width="location.image.width"
+          :height="location.image.height"
+          :srcset="location.image.srcset"
+          :sizes="location.image.sizes"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+        />
+      </template>
     </UiHero>
-
-    <template #visual>
-      <img
-        :src="location.image.src"
-        :alt="location.image.alt"
-        :width="location.image.width"
-        :height="location.image.height"
-        :srcset="location.image.srcset"
-        :sizes="location.image.sizes"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
-      />
-    </template>
   </UiSection>
 
   <UiMarquee

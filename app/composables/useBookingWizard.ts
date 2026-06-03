@@ -7,6 +7,7 @@ import type {
 import IconsAfternoon from "~/components/icons/Afternoon.vue";
 import IconsEvening from "~/components/icons/Evening.vue";
 import IconsMorning from "~/components/icons/Morning.vue";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const bookingLoads: BookingLoad[] = [
   {
@@ -94,16 +95,89 @@ const bookingTimes: BookingTimeSlot[] = [
   },
 ];
 
-function wait(ms: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+function wait(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException("Submission cancelled.", "AbortError"));
+      return;
+    }
+
+    const timeout = window.setTimeout(resolve, ms);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeout);
+        reject(new DOMException("Submission cancelled.", "AbortError"));
+      },
+      { once: true },
+    );
+  });
 }
 
-async function postBooking(data: BookingFormData) {
+async function postBooking(data: BookingFormData, signal?: AbortSignal) {
   return fetch("/api/bookings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    signal,
   });
+}
+
+function stripPhotoData(data: BookingFormData) {
+  return data.photos.map((photo) => ({
+    id: photo.id,
+    name: photo.name,
+    mimeType: photo.mimeType,
+    width: photo.width,
+    height: photo.height,
+    size: photo.size,
+    thumbnail: {
+      width: photo.thumbnail.width,
+      height: photo.thumbnail.height,
+      size: photo.thumbnail.size,
+    },
+  }));
+}
+
+async function createFallbackBooking(data: BookingFormData) {
+  const services = useFirebaseClient();
+  if (!services) throw new Error("Firebase is unavailable.");
+
+  const docRef = await addDoc(collection(services.db, "bookings"), {
+    submissionId: data.submissionId,
+    load: {
+      id: data.load.id,
+      name: data.load.name,
+      ribbon: data.load.ribbon,
+      price: data.load.price,
+    },
+    date: data.date,
+    time: {
+      id: data.time.id,
+      label: data.time.label,
+      description: data.time.description ?? "",
+    },
+    fields: data.fields,
+    postcode: data.postcode,
+    addressLine1: data.addressLine1,
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    photos: stripPhotoData(data),
+    photoCount: data.photos.length,
+    additionalItems: data.additionalItems,
+    estimatedTotalPence: data.estimatedTotalPence,
+    estimatedTotalLabel: data.estimatedTotalLabel,
+    status: "quote-received",
+    createdAt: serverTimestamp(),
+    source: "quote-form-firestore-fallback",
+  });
+
+  return docRef.id;
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
 async function readBookingError(response: Response) {
@@ -120,6 +194,16 @@ async function readBookingError(response: Response) {
   }
 
   return "";
+}
+
+async function waitForRetry(signal?: AbortSignal) {
+  try {
+    await wait(700, signal);
+    return true;
+  } catch (error) {
+    if (isAbortError(error)) return false;
+    throw error;
+  }
 }
 
 export function useBookingWizard() {
@@ -141,26 +225,39 @@ export function useBookingWizard() {
     controls?: BookingSubmitControls,
   ) {
     let response: Response | null = null;
+    let apiErrorMessage = "";
+    const signal = controls?.signal;
+
+    if (signal?.aborted || controls?.isCurrent?.() === false) return;
 
     try {
-      response = await postBooking(data);
-    } catch {
-      await wait(700);
+      response = await postBooking(data, signal);
+    } catch (error) {
+      if (isAbortError(error) || controls?.isCurrent?.() === false) return;
+      if (!(await waitForRetry(signal))) return;
       try {
-        response = await postBooking(data);
-      } catch {
+        response = await postBooking(data, signal);
+      } catch (retryError) {
+        if (isAbortError(retryError) || controls?.isCurrent?.() === false) return;
         response = null;
       }
     }
 
-    if (response && [502, 503, 504].includes(response.status)) {
-      await wait(700);
+    if (
+      response &&
+      [502, 503, 504].includes(response.status) &&
+      controls?.isCurrent?.() !== false
+    ) {
+      if (!(await waitForRetry(signal))) return;
       try {
-        response = await postBooking(data);
-      } catch {
+        response = await postBooking(data, signal);
+      } catch (error) {
+        if (isAbortError(error) || controls?.isCurrent?.() === false) return;
         response = null;
       }
     }
+
+    if (signal?.aborted || controls?.isCurrent?.() === false) return;
 
     if (response?.ok) {
       try {
@@ -171,11 +268,27 @@ export function useBookingWizard() {
       return;
     }
 
-    controls?.fail();
-    const errorMessage = response ? await readBookingError(response) : "";
-    window.alert(
-      errorMessage
-        ? `Please check your quote details. ${errorMessage}`
+    apiErrorMessage = response ? await readBookingError(response) : "";
+    if (signal?.aborted || controls?.isCurrent?.() === false) return;
+
+    try {
+      await createFallbackBooking(data);
+      if (signal?.aborted || controls?.isCurrent?.() === false) return;
+      try {
+        await navigateTo("/thank-you/");
+      } catch {
+        window.location.assign("/thank-you/");
+      }
+      return;
+    } catch (error) {
+      console.error("Failed to create fallback booking", error);
+    }
+
+    if (signal?.aborted || controls?.isCurrent?.() === false) return;
+
+    controls?.fail(
+      apiErrorMessage
+        ? `Please check your quote details. ${apiErrorMessage}`
         : "Sorry, we couldn't submit your booking. Please try again.",
     );
   }
