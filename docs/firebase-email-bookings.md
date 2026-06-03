@@ -195,6 +195,22 @@ The service account must be able to deploy the same Firebase targets as the manu
 - Firebase Extensions;
 - extension configuration that references Secret Manager.
 
+The current GitHub Actions service account is:
+
+```text
+github-action-deploy@wasteremoval-3276.iam.gserviceaccount.com
+```
+
+It needs these project-level roles:
+
+- `roles/firebasehosting.admin` (`Firebase Hosting Admin`);
+- `roles/firebase.admin` (`Firebase Admin`);
+- `roles/cloudbuild.builds.editor` (`Cloud Build Editor`);
+- `roles/iam.serviceAccountUser` (`Service Account User`);
+- `roles/secretmanager.admin` (`Secret Manager Admin`).
+
+`roles/firebase.admin` includes Service Usage inspection permissions such as `serviceusage.services.get`, which the Firebase CLI uses when it checks that required APIs, including `firestore.googleapis.com`, are enabled before deployment.
+
 For initial setup, a project Owner can run the first manual deploy. For CI, grant only the roles required by the deployed targets. Firebase's current docs call out:
 
 - Firebase Extensions install/manage access: Owner, Editor, or Firebase Admin.

@@ -40,6 +40,14 @@ Before the workflow can complete successfully:
 - create the Firebase secret `firestore-send-email-SMTP_PASSWORD` with the sending mailbox app password;
 - grant the service account enough Firebase/Google Cloud IAM permissions to deploy Hosting, Functions, Firestore rules, Extensions, and Secret Manager-backed extension configuration.
 
+For the current CI account, `github-action-deploy@wasteremoval-3276.iam.gserviceaccount.com`, the required project roles are:
+
+- Firebase Hosting Admin;
+- Firebase Admin;
+- Cloud Build Editor;
+- Service Account User;
+- Secret Manager Admin.
+
 The workflow also audits `app/utils/company.ts` and emits a warning until verified phone, address, and waste carrier registration details are complete. That audit is intentionally non-blocking so Firebase email deployment can continue while business details are being finalized.
 
 To deploy manually from a local machine with Firebase configured:
