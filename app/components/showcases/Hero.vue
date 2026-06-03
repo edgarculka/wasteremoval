@@ -25,7 +25,7 @@
               <UiButton variant="ghost" size="lg">
                 Get a demo
                 <template #iconRight>
-                  <span aria-hidden="true">›</span>
+                  <IconsChevronRight />
                 </template>
               </UiButton>
             </template>

@@ -138,7 +138,7 @@ const workerSrcset =
         <UiButton href="/services/" variant="ghost" size="lg">
           See all services
           <template #iconRight>
-            <span aria-hidden="true">&gt;</span>
+            <IconsChevronRight />
           </template>
         </UiButton>
       </template>

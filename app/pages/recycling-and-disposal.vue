@@ -91,7 +91,7 @@ const truckImage = {
         <UiButton href="/pricing/" variant="ghost" size="lg">
           View pricing
           <template #iconRight>
-            <span aria-hidden="true">&gt;</span>
+            <IconsChevronRight />
           </template>
         </UiButton>
       </template>
@@ -143,12 +143,31 @@ const truckImage = {
       booking because they may need specialist handling or separate disposal.
     </UiText>
     <div class="grid w-full gap-4 md:grid-cols-2">
-      <UiCard
+      <article
         v-for="item in restrictedItems"
         :key="item.title"
-        :title="item.title"
-        :description="item.description"
-      />
+        class="overflow-hidden rounded-lg border border-border bg-secondary text-secondary-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+      >
+        <img
+          :src="item.image.src"
+          :srcset="item.image.srcset"
+          :sizes="item.image.sizes"
+          :alt="item.image.alt"
+          :width="item.image.width"
+          :height="item.image.height"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[4/3] w-full object-cover"
+        />
+        <div class="p-5">
+          <UiHeading :level="3" size="sm">
+            {{ item.title }}
+          </UiHeading>
+          <UiText size="sm" tone="low" class="mt-2">
+            {{ item.description }}
+          </UiText>
+        </div>
+      </article>
     </div>
   </UiSection>
 

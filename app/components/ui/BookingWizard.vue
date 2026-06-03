@@ -106,6 +106,7 @@ const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
 const photos = ref<BookingPhotoData[]>([]);
 const additionalQuantities = reactive<Record<string, number>>({});
+const attemptedQuestionIds = reactive<Record<string, boolean>>({});
 const photoError = ref("");
 const isProcessingPhotos = ref(false);
 const fieldValues = reactive<Record<BookingTextField["id"], string>>({
@@ -174,7 +175,7 @@ function isFieldValid(field: BookingTextField) {
     case "postcode":
       return postcodePattern.test(value);
     case "name":
-      return value.length >= 2;
+      return value.split(/\s+/).filter(Boolean).length >= 2;
     case "phone":
       return phonePattern.test(value);
     case "email":
@@ -184,6 +185,31 @@ function isFieldValid(field: BookingTextField) {
     default:
       return false;
   }
+}
+
+function fieldErrorMessage(field: BookingTextField) {
+  switch (field.validator) {
+    case "postcode":
+      return "Enter a valid UK postcode.";
+    case "name":
+      return "Enter your full name.";
+    case "phone":
+      return "Enter a valid phone number.";
+    case "email":
+      return "Enter a valid email address.";
+    case "minLength3":
+      return "Enter at least 3 characters.";
+    default:
+      return "Enter a valid value.";
+  }
+}
+
+function shouldShowFieldError(field: BookingTextField) {
+  const value = fieldValues[field.id].trim();
+  return (
+    !isFieldValid(field) &&
+    (attemptedQuestionIds[currentQuestion.value.id] || value.length > 0)
+  );
 }
 
 const stepValid = computed(() => {
@@ -208,6 +234,11 @@ const stepValid = computed(() => {
 });
 
 const isLastStep = computed(() => stepIndex.value === questions.value.length - 1);
+const primaryDisabled = computed(
+  () =>
+    isSubmitting.value ||
+    (!stepValid.value && currentQuestion.value.type !== "fields"),
+);
 
 const primaryLabel = computed(() =>
   isSubmitting.value ? "Submitting…" : isLastStep.value ? "Submit" : "Continue",
@@ -231,9 +262,12 @@ function reset() {
   isSubmitting.value = false;
   applyInitialLoadSelection();
   selectedDate.value = null;
-  selectedTimeId.value = null;
+  selectedTimeId.value = props.times[0]?.id ?? null;
   for (const key of Object.keys(additionalQuantities)) {
     delete additionalQuantities[key];
+  }
+  for (const key of Object.keys(attemptedQuestionIds)) {
+    delete attemptedQuestionIds[key];
   }
   for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
     fieldValues[key] = "";
@@ -263,6 +297,7 @@ function goBack() {
 }
 
 function goNext() {
+  attemptedQuestionIds[currentQuestion.value.id] = true;
   if (!stepValid.value || isSubmitting.value) return;
   if (isLastStep.value) {
     if (!selectedLoad.value || !selectedDate.value || !selectedTime.value)
@@ -659,82 +694,73 @@ onScopeDispose(() => {
           </div>
 
           <div v-else-if="currentQuestion.type === 'additionalCharges'" class="mt-8">
-            <div
-              class="overflow-hidden rounded-2xl border-2 border-foreground bg-secondary text-secondary-foreground"
-            >
+            <div class="flex items-end justify-between gap-4">
+              <div>
+                <UiText size="sm" weight="semibold">
+                  Specialist items added:
+                  {{ selectedAdditionalItems.length }}
+                </UiText>
+                <UiText size="sm" tone="low">
+                  Extra total: {{ formatPounds(additionalTotalPence) }}
+                </UiText>
+              </div>
+            </div>
+
+            <div class="mt-4 max-h-[30rem] overflow-y-auto pr-1">
               <div
-                class="flex flex-col gap-3 border-b-2 border-border p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+                v-for="item in additionalChargeItems"
+                :key="item.id"
+                class="grid grid-cols-[4.75rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-border py-3 last:border-b-0 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-4 sm:py-4"
               >
-                <div>
-                  <UiText size="sm" weight="semibold">
-                    Specialist items added:
-                    {{ selectedAdditionalItems.length }}
+                <img
+                  :src="item.image.src"
+                  :srcset="item.image.srcset"
+                  :sizes="item.image.sizes"
+                  :alt="item.image.alt"
+                  :width="item.image.width"
+                  :height="item.image.height"
+                  loading="lazy"
+                  decoding="async"
+                  data-no-lightbox
+                  class="aspect-square w-full rounded-lg border border-border object-cover"
+                />
+                <div class="min-w-0">
+                  <UiText as="p" size="sm" weight="bold" class="truncate">
+                    {{ item.shortName }}
                   </UiText>
-                  <UiText size="sm" tone="low">
-                    Extra total: {{ formatPounds(additionalTotalPence) }}
+                  <UiText as="p" size="xs" tone="low" class="mt-1">
+                    {{ item.category }}
+                  </UiText>
+                  <UiText as="p" size="sm" weight="semibold" class="mt-1">
+                    {{ formatPounds(item.pricePence) }} per {{ formatChargeUnit(item.unit) }}
                   </UiText>
                 </div>
-                <UiButton href="/additional-charges/" variant="secondary" size="sm">
-                  View full charges
-                </UiButton>
-              </div>
-
-              <div class="max-h-[30rem] overflow-y-auto">
-                <div
-                  v-for="item in additionalChargeItems"
-                  :key="item.id"
-                  class="grid grid-cols-[4.75rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-border p-3 last:border-b-0 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-4 sm:p-4"
-                >
-                  <img
-                    :src="item.image.src"
-                    :srcset="item.image.srcset"
-                    :sizes="item.image.sizes"
-                    :alt="item.image.alt"
-                    :width="item.image.width"
-                    :height="item.image.height"
-                    loading="lazy"
-                    decoding="async"
-                    data-no-lightbox
-                    class="aspect-square w-full rounded-lg border border-border object-cover"
-                  />
-                  <div class="min-w-0">
-                    <UiText as="p" size="sm" weight="bold" class="truncate">
-                      {{ item.shortName }}
-                    </UiText>
-                    <UiText as="p" size="xs" tone="low" class="mt-1">
-                      {{ item.category }}
-                    </UiText>
-                    <UiText as="p" size="sm" weight="semibold" class="mt-1">
-                      {{ formatPounds(item.pricePence) }} per {{ formatChargeUnit(item.unit) }}
-                    </UiText>
-                  </div>
-                  <div class="grid grid-cols-[2.5rem_2.5rem_2.5rem] items-center">
-                    <button
-                      type="button"
-                      class="grid size-10 place-items-center rounded-full border border-border bg-background text-lg font-bold transition hover:border-foreground disabled:pointer-events-none disabled:opacity-40"
-                      :disabled="getAdditionalQuantity(item.id) === 0"
-                      :aria-label="`Remove one ${item.name}`"
-                      @click="decrementAdditionalItem(item.id)"
-                    >
-                      -
-                    </button>
-                    <UiText
-                      as="span"
-                      size="md"
-                      weight="bold"
-                      class="text-center tabular-nums"
-                    >
-                      {{ getAdditionalQuantity(item.id) }}
-                    </UiText>
-                    <button
-                      type="button"
-                      class="grid size-10 place-items-center rounded-full border border-foreground bg-primary text-lg font-bold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/80"
-                      :aria-label="`Add one ${item.name}`"
-                      @click="incrementAdditionalItem(item.id)"
-                    >
-                      +
-                    </button>
-                  </div>
+                <div class="grid grid-cols-[2.5rem_2.5rem_2.5rem] items-center">
+                  <button
+                    type="button"
+                    class="grid size-10 place-items-center rounded-full border border-border bg-background text-lg font-bold transition hover:border-foreground disabled:pointer-events-none disabled:opacity-40"
+                    :disabled="getAdditionalQuantity(item.id) === 0"
+                    :aria-label="`Remove one ${item.name}`"
+                    @click="decrementAdditionalItem(item.id)"
+                  >
+                    -
+                  </button>
+                  <UiText
+                    as="span"
+                    size="md"
+                    weight="bold"
+                    class="text-center tabular-nums"
+                  >
+                    {{ getAdditionalQuantity(item.id) }}
+                  </UiText>
+                  <button
+                    type="button"
+                    class="grid size-10 place-items-center rounded-full border border-foreground bg-primary text-lg font-bold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/80"
+                    :aria-label="`Add one ${item.name}`"
+                    @click="incrementAdditionalItem(item.id)"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             </div>
@@ -775,98 +801,69 @@ onScopeDispose(() => {
               @change="handlePhotoSelection"
             />
 
-            <div
-              class="overflow-hidden rounded-2xl border-2 border-foreground bg-secondary text-secondary-foreground shadow-[0_0.75rem_1.5rem_rgba(6,53,31,0.08)]"
-            >
-              <div class="p-4 sm:p-5">
-                <div class="flex items-center justify-between gap-4">
-                  <UiText as="span" size="xs" weight="semibold" tone="low">
-                    Optional
-                  </UiText>
-                  <UiText
-                    as="span"
-                    size="xs"
-                    weight="semibold"
-                    class="shrink-0 rounded-full border border-foreground bg-background px-3 py-1"
-                  >
-                    {{ photos.length }}/{{ maxPhotoCount }}
-                  </UiText>
-                </div>
-
-                <button
-                  type="button"
-                  class="mx-auto mt-6 grid size-24 place-items-center rounded-full border-2 border-border bg-background text-3xl font-bold text-foreground transition hover:-translate-y-0.5 hover:border-foreground hover:shadow-[0_0.5rem_1rem_rgba(6,53,31,0.08)] disabled:pointer-events-none disabled:opacity-50"
-                  :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
-                  aria-label="Upload collection photos"
-                  @click="triggerUploadPicker"
-                >
-                  <IconsCamera />
-                </button>
-
-                <div class="mt-4 flex justify-center">
-                  <UiButton
-                    variant="secondary"
-                    :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
-                    @click="triggerUploadPicker"
-                  >
-                    Upload photos
-                  </UiButton>
-                </div>
-
-                <UiText size="sm" tone="low" class="mx-auto mt-3 max-w-md text-center">
-                  Add up to {{ maxPhotoCount }} photos. You can take a new photo
-                  or choose from your device.
-                  <template v-if="isProcessingPhotos"> Optimising photos...</template>
-                </UiText>
-
-                <UiText
-                  v-if="photoError"
-                  size="sm"
-                  weight="semibold"
-                  class="mt-4 text-center text-red-700"
-                  role="alert"
-                >
-                  {{ photoError }}
-                </UiText>
-
-                <div
-                  v-if="photos.length"
-                  class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
-                >
-                  <figure
-                    v-for="photo in photos"
-                    :key="photo.id"
-                    class="group relative overflow-hidden rounded-xl border-2 border-foreground bg-secondary"
-                  >
-                    <img
-                      :src="photo.thumbnail.dataUrl"
-                      :alt="`Selected quote photo: ${photo.name}`"
-                      :width="photo.thumbnail.width"
-                      :height="photo.thumbnail.height"
-                      class="aspect-[4/3] w-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      class="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-foreground bg-background text-sm font-bold shadow disabled:pointer-events-none disabled:opacity-50"
-                      :disabled="isProcessingPhotos"
-                      :aria-label="`Remove ${photo.name}`"
-                      @click="removePhoto(photo.id)"
-                    >
-                      x
-                    </button>
-                    <figcaption class="p-2">
-                      <UiText size="xs" weight="semibold" class="truncate">
-                        {{ photo.name }}
-                      </UiText>
-                    </figcaption>
-                  </figure>
-                </div>
+            <div class="flex flex-col items-center text-center">
+              <div class="grid size-32 place-items-center rounded-full border-2 border-border bg-secondary text-5xl text-foreground">
+                <IconsCamera />
               </div>
 
-              <div class="border-t-2 border-border bg-background px-5 py-3 text-center sm:px-6">
-                <UiText size="sm" tone="low">
-                  Photos are optional and optimised before sending.
-                </UiText>
+              <UiButton
+                class="mt-5"
+                variant="secondary"
+                :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+                @click="triggerUploadPicker"
+              >
+                Upload photos
+              </UiButton>
+
+              <UiText size="sm" tone="low" class="mx-auto mt-3 max-w-md">
+                Optional - add up to {{ maxPhotoCount }} photos.
+                <template v-if="isProcessingPhotos"> Optimising photos...</template>
+              </UiText>
+              <UiText as="span" size="xs" weight="semibold" tone="low" class="mt-2">
+                {{ photos.length }}/{{ maxPhotoCount }} added
+              </UiText>
+
+              <UiText
+                v-if="photoError"
+                size="sm"
+                weight="semibold"
+                class="mt-4 text-red-700"
+                role="alert"
+              >
+                {{ photoError }}
+              </UiText>
+
+              <div
+                v-if="photos.length"
+                class="mt-6 grid w-full grid-cols-2 gap-3 sm:grid-cols-4"
+              >
+                <figure
+                  v-for="photo in photos"
+                  :key="photo.id"
+                  class="group relative overflow-hidden rounded-xl border-2 border-foreground bg-secondary text-left"
+                >
+                  <img
+                    :src="photo.thumbnail.dataUrl"
+                    :alt="`Selected quote photo: ${photo.name}`"
+                    :width="photo.thumbnail.width"
+                    :height="photo.thumbnail.height"
+                    class="aspect-[4/3] w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    class="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-foreground bg-background text-sm font-bold shadow disabled:pointer-events-none disabled:opacity-50"
+                    :disabled="isProcessingPhotos"
+                    :aria-label="`Remove ${photo.name}`"
+                    @click="removePhoto(photo.id)"
+                  >
+                    x
+                  </button>
+                  <figcaption class="p-2">
+                    <UiText size="xs" weight="semibold" class="truncate">
+                      {{ photo.name }}
+                    </UiText>
+                  </figcaption>
+                </figure>
               </div>
             </div>
           </div>
@@ -891,7 +888,21 @@ onScopeDispose(() => {
                 :required="field.required"
                 :placeholder="field.placeholder"
                 :transform="field.transform"
+                :aria-invalid="shouldShowFieldError(field) ? true : undefined"
+                :aria-describedby="
+                  shouldShowFieldError(field) ? `${field.id}-error` : undefined
+                "
               />
+              <UiText
+                v-if="shouldShowFieldError(field)"
+                :id="`${field.id}-error`"
+                size="sm"
+                weight="semibold"
+                class="text-red-700"
+                role="alert"
+              >
+                {{ fieldErrorMessage(field) }}
+              </UiText>
             </label>
             <button
               type="submit"
@@ -1051,7 +1062,7 @@ onScopeDispose(() => {
             variant="primary"
             size="md"
             class="flex-1"
-            :disabled="!stepValid || isSubmitting"
+            :disabled="primaryDisabled"
             @click="goNext"
           >
             <template v-if="isSubmitting" #iconLeft>
@@ -1081,7 +1092,7 @@ onScopeDispose(() => {
           <UiButton
             variant="primary"
             size="md"
-            :disabled="!stepValid || isSubmitting"
+            :disabled="primaryDisabled"
             @click="goNext"
           >
             <template v-if="isSubmitting" #iconLeft>

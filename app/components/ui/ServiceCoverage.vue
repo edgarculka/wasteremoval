@@ -70,12 +70,25 @@ withDefaults(defineProps<Props>(), {
       </UiCard>
 
       <div v-if="notes.length" class="grid gap-3">
-        <UiCard
-          v-for="note in notes"
+        <article
+          v-for="(note, index) in notes"
           :key="note"
-          :description="note"
-          size="sm"
-        />
+          class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 rounded-lg border border-border bg-background p-4 text-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+        >
+          <span
+            class="grid size-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+          >
+            {{ index + 1 }}
+          </span>
+          <span class="min-w-0">
+            <UiText as="span" size="sm" weight="bold" class="block">
+              {{ note.split(": ")[0] }}
+            </UiText>
+            <UiText as="span" size="sm" tone="low" class="mt-1 block">
+              {{ note.split(": ").slice(1).join(": ") || note }}
+            </UiText>
+          </span>
+        </article>
       </div>
     </aside>
   </div>

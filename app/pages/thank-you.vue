@@ -56,7 +56,7 @@ const contactCards: ContactCardLink[] = [
   >
     <UiThankYou
       heading="Thanks, your booking is confirmed."
-      description="We've received your booking details and your collection request has been made. The team will review everything and send your next update shortly."
+      description="We've got your booking, we'll be in touch shortly."
     />
   </UiSection>
 

@@ -70,6 +70,11 @@ const bookingLoads: BookingLoad[] = [
 
 const bookingTimes: BookingTimeSlot[] = [
   {
+    id: "anytime",
+    label: "Any time",
+    description: "First available slot",
+  },
+  {
     id: "morning",
     label: "Morning",
     description: "8am - 12pm",

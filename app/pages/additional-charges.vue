@@ -22,11 +22,6 @@ const chargeFaqs = [
   },
 ];
 
-const visibleSources = additionalChargeSources.map((source) => ({
-  ...source,
-  host: new URL(source.href).hostname.replace(/^www\./, ""),
-}));
-
 usePageSeo({
   title: "Additional Waste Disposal Charges",
   description:
@@ -78,11 +73,11 @@ usePageSeo({
   </UiSection>
 
   <UiSection id="charge-list" tone="secondary" spacing="md" wide>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="w-full overflow-hidden rounded-lg border border-border bg-background">
       <article
         v-for="item in additionalChargeItems"
         :key="item.id"
-        class="overflow-hidden rounded-lg border border-border bg-background text-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+        class="grid grid-cols-[5.5rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-border p-3 text-foreground last:border-b-0 sm:grid-cols-[7rem_minmax(0,1fr)_auto] sm:gap-5 sm:p-4"
       >
         <img
           :src="item.image.src"
@@ -93,69 +88,28 @@ usePageSeo({
           :height="item.image.height"
           loading="lazy"
           decoding="async"
-          class="aspect-[4/3] w-full object-cover"
+          class="aspect-square w-full rounded-lg object-cover"
         />
-        <div class="grid gap-3 p-5">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <UiText as="p" size="xs" tone="low" weight="semibold">
-                {{ item.category }}
-              </UiText>
-              <UiHeading :level="2" size="sm" class="mt-1">
-                {{ item.name }}
-              </UiHeading>
-            </div>
-            <div class="shrink-0 text-right">
-              <UiText as="p" size="lg" weight="bold">
-                {{ formatPounds(item.pricePence) }}
-              </UiText>
-              <UiText as="p" size="xs" tone="low">
-                per {{ formatChargeUnit(item.unit) }}
-              </UiText>
-            </div>
-          </div>
+        <div class="min-w-0">
+          <UiText as="p" size="xs" tone="low" weight="semibold">
+            {{ item.category }}
+          </UiText>
+          <UiHeading :level="2" size="sm" class="mt-1">
+            {{ item.name }}
+          </UiHeading>
           <UiText size="sm" tone="low">
             {{ item.note }}
           </UiText>
         </div>
-      </article>
-    </div>
-  </UiSection>
-
-  <UiSection tone="background" spacing="md" wide>
-    <div
-      class="overflow-hidden rounded-lg border border-border bg-secondary text-secondary-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
-    >
-      <div class="border-b border-border p-5 sm:p-6">
-        <UiHeading :level="2" size="md">Price research sources</UiHeading>
-        <UiText tone="low" class="mt-2">
-          These DBS Waste quote add-ons are based on published London waste
-          removal and skip-hire surcharge lists, with specialist handling
-          guidance checked against GOV.UK where relevant.
-        </UiText>
-      </div>
-      <div class="grid divide-y divide-border">
-        <a
-          v-for="source in visibleSources"
-          :key="source.href"
-          :href="source.href"
-          class="grid gap-2 p-5 text-foreground transition hover:bg-primary/20 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-6"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>
-            <UiText as="span" weight="bold" class="block">
-              {{ source.name }}
-            </UiText>
-            <UiText as="span" size="sm" tone="low" class="block">
-              {{ source.note }}
-            </UiText>
-          </span>
-          <UiText as="span" size="sm" weight="semibold">
-            {{ source.host }}
+        <div class="shrink-0 text-right">
+          <UiText as="p" size="lg" weight="bold">
+            {{ formatPounds(item.pricePence) }}
           </UiText>
-        </a>
-      </div>
+          <UiText as="p" size="xs" tone="low">
+            per {{ formatChargeUnit(item.unit) }}
+          </UiText>
+        </div>
+      </article>
     </div>
   </UiSection>
 

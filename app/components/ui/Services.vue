@@ -118,7 +118,7 @@ withDefaults(defineProps<Props>(), {
               class="mt-5 inline-flex items-center gap-1"
             >
               {{ ctaLabel }}
-              <span aria-hidden="true">&gt;</span>
+              <IconsChevronRight />
             </UiText>
           </div>
         </article>

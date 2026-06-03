@@ -129,7 +129,7 @@ usePageSeo({
         <UiButton href="/areas/" variant="ghost" size="lg">
           All areas
           <template #iconRight>
-            <span aria-hidden="true">&gt;</span>
+            <IconsChevronRight />
           </template>
         </UiButton>
       </template>

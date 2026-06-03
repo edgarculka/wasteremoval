@@ -17,8 +17,5 @@ defineProps<Props>();
     <UiText size="lg" tone="low" class="mt-8 max-w-3xl">
       {{ description }}
     </UiText>
-    <UiButton class="mt-5 w-full md:w-auto" variant="secondary"
-      >Request a call back</UiButton
-    >
   </div>
 </template>

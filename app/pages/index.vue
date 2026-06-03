@@ -193,7 +193,7 @@ function openBookingWithPricingSelection() {
         >
           See services
           <template #iconRight>
-            <span aria-hidden="true">›</span>
+            <IconsChevronRight />
           </template>
         </UiButton>
       </template>
@@ -269,7 +269,7 @@ function openBookingWithPricingSelection() {
       <UiButton href="/services/" variant="secondary" size="lg">
         See services
         <template #iconRight>
-          <span aria-hidden="true">›</span>
+          <IconsChevronRight />
         </template>
       </UiButton>
     </template>

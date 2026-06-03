@@ -83,7 +83,7 @@ usePageSeo({
         <UiButton href="/services/" variant="ghost" size="lg">
           View services
           <template #iconRight>
-            <span aria-hidden="true">&gt;</span>
+            <IconsChevronRight />
           </template>
         </UiButton>
       </template>
@@ -115,7 +115,6 @@ usePageSeo({
       <UiCard
         v-for="area in areaCards"
         :key="area.href"
-        :href="area.href"
       >
         <article class="flex h-full flex-col gap-4">
           <div>
@@ -130,9 +129,17 @@ usePageSeo({
             </UiText>
           </div>
           <UiTickList :items="area.notes" />
-          <UiText as="span" size="sm" weight="bold">
-            View area page <span aria-hidden="true">&gt;</span>
-          </UiText>
+          <UiButton
+            :href="area.href"
+            variant="ghost"
+            size="sm"
+            class="mt-auto w-full sm:w-fit"
+          >
+            View area page
+            <template #iconRight>
+              <IconsChevronRight />
+            </template>
+          </UiButton>
         </article>
       </UiCard>
     </div>
