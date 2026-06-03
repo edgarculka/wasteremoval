@@ -73,12 +73,12 @@ function closeMenu() {
 
           <div
             v-if="item.children?.length"
-            class="invisible absolute left-1/2 top-full z-20 w-[min(44rem,calc(100vw-3rem))] -translate-x-1/2 pt-4 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+            class="invisible fixed inset-x-4 top-12 z-20 mx-auto max-w-4xl pt-4 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
           >
             <div
               class="rounded-2xl border border-border bg-secondary p-3 shadow-[0_1.25rem_3.5rem_rgba(6,53,31,0.18)]"
             >
-              <div class="grid gap-3 sm:grid-cols-3">
+              <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
                 <NuxtLink
                   v-for="child in item.children"
                   :key="child.href"

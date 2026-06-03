@@ -102,19 +102,29 @@ export function useBookingWizard() {
     data: BookingFormData,
     controls?: BookingSubmitControls,
   ) {
+    let response: Response;
+
     try {
-      const response = await fetch("/api/bookings", {
+      response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
-      if (response.ok) {
-        await navigateTo("/thank-you/");
-        return;
-      }
     } catch {
-      // The failure UI below covers both network errors and non-2xx responses.
+      controls?.fail();
+      window.alert(
+        "Sorry, we couldn't confirm your booking request. Please check whether you receive a confirmation, or contact DBS Waste directly.",
+      );
+      return;
+    }
+
+    if (response.ok) {
+      try {
+        await navigateTo("/thank-you/");
+      } catch {
+        window.location.assign("/thank-you/");
+      }
+      return;
     }
 
     controls?.fail();
