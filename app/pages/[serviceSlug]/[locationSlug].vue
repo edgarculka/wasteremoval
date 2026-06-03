@@ -9,6 +9,7 @@ if (!page) {
   throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
+const pageFaqs = buildServiceLocationFaqs(page.service, page.location);
 const rememberSeoLocation = useRememberSeoLocation();
 
 onMounted(() => {
@@ -56,19 +57,7 @@ usePageSeo({
         url: "/quote/",
       },
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "@id": `${page.path}#faq`,
-      mainEntity: page.service.faqs.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.answer,
-        },
-      })),
-    },
+    buildFaqStructuredData(pageFaqs, `${page.path}#faq`),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -272,7 +261,7 @@ const workerSrcset =
     alignment="center"
     title="Common questions"
   >
-    <UiFaq :items="page.service.faqs" />
+    <UiFaq :items="pageFaqs" />
   </UiSection>
 
   <UiSection

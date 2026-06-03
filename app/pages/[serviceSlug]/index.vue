@@ -10,7 +10,8 @@ if (!service) {
 const servicePath = buildServicePath(service);
 const serviceAreaNames = seoLocations.map((location) => location.name);
 const serviceHubTitle = `${service.metaTitle} Services in West London`;
-const serviceHubDescription = `${service.metaDescription} Serving ${serviceAreaNames.join(", ")}.`;
+const serviceHubDescription = `${service.metaDescription} Available across London, West London and nearby service areas.`;
+const serviceFaqs = buildServiceFaqs(service);
 
 usePageSeo({
   title: serviceHubTitle,
@@ -44,18 +45,7 @@ usePageSeo({
         availability: "https://schema.org/InStock",
       },
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: service.faqs.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.answer,
-        },
-      })),
-    },
+    buildFaqStructuredData(serviceFaqs, `${servicePath}#faq`),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -249,7 +239,7 @@ const workerSrcset =
     alignment="center"
     title="Common questions"
   >
-    <UiFaq :items="service.faqs" />
+    <UiFaq :items="serviceFaqs" />
   </UiSection>
 
   <UiSection

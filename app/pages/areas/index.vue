@@ -22,7 +22,7 @@ const services: ServicesService[] = seoServices.map((service) => ({
 usePageSeo({
   title: "Waste Removal Areas in West London",
   description:
-    "Find rubbish removal and clearance service areas for DBS Waste across London, Brentford, Chiswick and Ealing.",
+    "Find twenty rubbish removal and clearance service areas for DBS Waste across London and West London.",
   path: "/areas/",
   image: primaryImage,
   structuredData: [
@@ -76,7 +76,7 @@ usePageSeo({
   <UiSection tone="background" spacing="md" alignment="left">
     <UiHero
       heading="Waste removal areas across West London"
-      description="Choose the area closest to your collection address, then view service pages for local house clearance, tenancy clearance and garden waste removal."
+      description="Choose the area closest to your collection address, then view service pages for local house, tenancy, garden, office, garage, builders, furniture and mattress clearances."
     >
       <template #actions>
         <UiButton href="/quote/" size="lg">Get a quote</UiButton>
@@ -141,7 +141,7 @@ usePageSeo({
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
       heading="Services available across these areas"
-      description="Each service has a dedicated local page for London, Brentford, Chiswick and Ealing."
+      description="Each service has a dedicated local page across the expanded London and West London coverage list."
       :services="services"
       cta-label="View service hub"
     />

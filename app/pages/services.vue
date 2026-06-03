@@ -25,7 +25,7 @@ const serviceGroups = seoServices.map((service) => ({
 usePageSeo({
   title: "Waste Removal Services in West London",
   description:
-    "Browse rubbish removal, house clearance, garden waste removal and end of tenancy clearance services across West London.",
+    "Browse eight rubbish removal and clearance services for homes, landlords and businesses across West London.",
   path: "/services/",
   image: seoServices[0]?.image,
   structuredData: [

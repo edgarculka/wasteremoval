@@ -3,7 +3,6 @@ import type { Component } from "vue";
 import IconsMail from "~/components/icons/Mail.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
 import IconsWhatsApp from "~/components/icons/WhatsApp.vue";
-import type { FaqItem } from "~/components/ui/Faq.vue";
 import type { ReviewItem } from "~/components/ui/Reviews.vue";
 import type {
   ServicesLocation,
@@ -39,32 +38,35 @@ usePageSeo({
     width: 1200,
     height: 900,
   },
-  structuredData: {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "/#business",
-    name: companyDetails.tradingName,
-    legalName: companyDetails.legalName,
-    url: "/",
-    telephone: companyDetails.contact.primaryPhone,
-    email: companyDetails.contact.email,
-    image: "/images/rubbish-removal.webp",
-    priceRange: companyDetails.priceRange,
-    openingHours: companyDetails.openingHours,
-    areaServed: companyDetails.serviceAreas.map((area) => ({
-      "@type": "Place",
-      name: area,
-    })),
-    makesOffer: seoServices.map((service) => ({
-      "@type": "Offer",
-      url: buildServicePath(service),
-      itemOffered: {
-        "@type": "Service",
-        name: service.name,
-        description: service.shortDescription,
-      },
-    })),
-  },
+  structuredData: [
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": "/#business",
+      name: companyDetails.tradingName,
+      legalName: companyDetails.legalName,
+      url: "/",
+      telephone: companyDetails.contact.primaryPhone,
+      email: companyDetails.contact.email,
+      image: "/images/rubbish-removal.webp",
+      priceRange: companyDetails.priceRange,
+      openingHours: companyDetails.openingHours,
+      areaServed: companyDetails.serviceAreas.map((area) => ({
+        "@type": "Place",
+        name: area,
+      })),
+      makesOffer: seoServices.map((service) => ({
+        "@type": "Offer",
+        url: buildServicePath(service),
+        itemOffered: {
+          "@type": "Service",
+          name: service.name,
+          description: service.shortDescription,
+        },
+      })),
+    },
+    buildFaqStructuredData(homeFaqs, "/#faq"),
+  ],
 });
 
 const sellingPoints = [
@@ -125,39 +127,6 @@ const reviews: ReviewItem[] = [
     meta: "Appliance removal",
     rating: 4.5,
     quote: "Simple, tidy, and much easier than hiring a skip.",
-  },
-];
-
-const faqItems: FaqItem[] = [
-  {
-    question: "Do I need to be home during the collection?",
-    answer:
-      "Not always. Many of our customers leave items in a designated spot. We'll text 30 minutes before arrival, send photos before and after, and bill once the job is done.",
-  },
-  {
-    question: "What items can't you take?",
-    answer:
-      "We can collect standard household and business waste. We can't take asbestos, hazardous chemicals, paint tins with liquid inside, or clinical waste - those need a specialist carrier.",
-  },
-  {
-    question: "How quickly can you come out?",
-    answer:
-      "Same-day across West London if you book before 1pm. Next-day everywhere else, with a guaranteed 2-hour arrival window.",
-  },
-  {
-    question: "How do you handle disposal?",
-    answer:
-      "Items are taken through appropriate disposal routes, with reusable and recyclable material separated where practical. Ask for transfer-note details before booking if you need them for your records.",
-  },
-  {
-    question: "How is the price worked out?",
-    answer:
-      "By load size, not by the hour. The five tiers above cover labour, transport and standard disposal handling. The price you see is the price you pay.",
-  },
-  {
-    question: "What areas do you cover?",
-    answer:
-      "All of West London — Brentford, Hounslow, Ealing, Acton, Chiswick, Richmond, Hammersmith, and surrounding postcodes. Outside that we'll quote on request.",
   },
 ];
 
@@ -337,7 +306,7 @@ function openBookingWithPricingSelection() {
     alignment="left"
     title="Frequently asked questions"
   >
-    <UiFaq :items="faqItems" />
+    <UiFaq :items="homeFaqs" />
     <template #visual>
       <div
         class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"

@@ -30,7 +30,6 @@ export const disposalSteps: DisposalStep[] = [
       "Customers who need disposal paperwork for landlord, business or property-management records should request it before booking.",
   },
 ];
-
 export const restrictedItems: RestrictedItem[] = [
   {
     title: "Asbestos",
@@ -51,23 +50,5 @@ export const restrictedItems: RestrictedItem[] = [
     title: "Clinical or sanitary waste",
     description:
       "Clinical waste, sharps and sanitary waste require specialist collection and cannot be mixed with standard clearance loads.",
-  },
-];
-
-export const disposalFaqs = [
-  {
-    question: "Can you provide disposal paperwork?",
-    answer:
-      "Ask before booking if you need disposal paperwork for landlord, business or property-management records. The team can confirm what can be supplied for your job type.",
-  },
-  {
-    question: "What happens to reusable items?",
-    answer:
-      "Reusable and recyclable material is separated where practical before the remaining waste is sent through appropriate disposal routes.",
-  },
-  {
-    question: "What should I mention before booking?",
-    answer:
-      "Mention heavy materials, liquids, chemicals, paint, gas bottles, electrical items, access restrictions and any items you think may need specialist handling.",
   },
 ];

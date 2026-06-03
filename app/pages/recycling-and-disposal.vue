@@ -40,19 +40,7 @@ usePageSeo({
         },
       },
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "@id": `${disposalPath}#faq`,
-      mainEntity: disposalFaqs.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.answer,
-        },
-      })),
-    },
+    buildFaqStructuredData(disposalFaqs, `${disposalPath}#faq`),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

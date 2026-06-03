@@ -3,7 +3,6 @@ import type { Component } from "vue";
 import IconsMail from "~/components/icons/Mail.vue";
 import IconsPhone from "~/components/icons/Phone.vue";
 import IconsWhatsApp from "~/components/icons/WhatsApp.vue";
-import type { FaqItem } from "~/components/ui/Faq.vue";
 import type {
   SkipComparisonColumn,
   SkipComparisonFeature,
@@ -85,34 +84,6 @@ const comparisonFeatures: SkipComparisonFeature[] = [
   },
 ];
 
-const faqItems: FaqItem[] = [
-  {
-    question: "How is the price worked out?",
-    answer:
-      "Pricing is based on load size. Labour, transport, and standard disposal handling are included, so you can choose the closest tier before booking.",
-  },
-  {
-    question: "What happens if my load is smaller or larger on the day?",
-    answer:
-      "The crew confirms the final load size before anything is removed. If it is different from your selection, they agree the correct tier with you first.",
-  },
-  {
-    question: "Are there any hidden fees?",
-    answer:
-      "No hidden fees for standard household and business waste. Specialist items or restricted materials are flagged before collection if they need separate handling.",
-  },
-  {
-    question: "Can I get a price before booking?",
-    answer:
-      "Yes. Send photos by WhatsApp or email and we can confirm the best tier before you choose a slot.",
-  },
-  {
-    question: "Do I need to arrange a skip permit?",
-    answer:
-      "No. The team arrives, loads the waste, and takes it away in one visit, so there is no skip left on the road.",
-  },
-];
-
 usePageSeo({
   title: "Rubbish Removal Pricing",
   description:
@@ -124,18 +95,7 @@ usePageSeo({
     width: 1200,
     height: 900,
   },
-  structuredData: {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  },
+  structuredData: buildFaqStructuredData(pricingFaqs, "/pricing/#faq"),
 });
 
 const contactCards: ContactCardLink[] = [
@@ -222,7 +182,7 @@ function openBookingWithPricingSelection() {
     alignment="left"
     title="Pricing questions"
   >
-    <UiFaq :items="faqItems" />
+    <UiFaq :items="pricingFaqs" />
     <template #visual>
       <div
         class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
