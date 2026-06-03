@@ -38,6 +38,31 @@ const targets = [
     output: "public/images/services/garden-waste-removal.webp",
     width: 1200,
   },
+  {
+    input: "source-images/services/office-clearance-no-people.png",
+    output: "public/images/services/office-clearance.webp",
+    width: 1200,
+  },
+  {
+    input: "source-images/services/garage-clearance-no-people.png",
+    output: "public/images/services/garage-clearance.webp",
+    width: 1200,
+  },
+  {
+    input: "source-images/services/builders-waste-removal-no-people.png",
+    output: "public/images/services/builders-waste-removal.webp",
+    width: 1200,
+  },
+  {
+    input: "source-images/services/furniture-removal-no-people.png",
+    output: "public/images/services/furniture-removal.webp",
+    width: 1200,
+  },
+  {
+    input: "source-images/services/mattress-removal-no-people.png",
+    output: "public/images/services/mattress-removal.webp",
+    width: 1200,
+  },
 ];
 
 for (const target of targets) {

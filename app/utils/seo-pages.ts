@@ -207,12 +207,12 @@ export const seoServices: SeoService[] = [
     description:
       "A practical business clearance service for offices, studios, shops and small commercial units that need unwanted items removed without disrupting the working day.",
     image: {
-      src: "/images/services/house-clearance.webp",
-      alt: "Half-full waste removal van with furniture, boxes and bags ready for office clearance",
+      src: "/images/services/office-clearance.webp",
+      alt: "Caged waste removal van loaded with office chairs, filing cabinets and archive boxes outside a London office",
       width: 1200,
       height: 900,
       srcset:
-        "/images/services/house-clearance-640.webp 640w, /images/services/house-clearance-960.webp 960w, /images/services/house-clearance.webp 1200w",
+        "/images/services/office-clearance-640.webp 640w, /images/services/office-clearance-960.webp 960w, /images/services/office-clearance.webp 1200w",
       sizes: "(min-width: 1024px) 50vw, calc(100vw - 48px)",
     },
     searchTerms: ["office clearance", "business waste removal", "commercial clearance"],
@@ -247,12 +247,12 @@ export const seoServices: SeoService[] = [
     description:
       "A focused garage clearance service for homes that need storage space reclaimed before a move, renovation, sale or seasonal tidy-up.",
     image: {
-      src: "/images/services/house-clearance.webp",
-      alt: "Half-full waste removal van with boxes, household clutter and garage clearance items",
+      src: "/images/services/garage-clearance.webp",
+      alt: "Caged waste removal van loaded with garage clutter, shelving, storage boxes and tools on a driveway",
       width: 1200,
       height: 900,
       srcset:
-        "/images/services/house-clearance-640.webp 640w, /images/services/house-clearance-960.webp 960w, /images/services/house-clearance.webp 1200w",
+        "/images/services/garage-clearance-640.webp 640w, /images/services/garage-clearance-960.webp 960w, /images/services/garage-clearance.webp 1200w",
       sizes: "(min-width: 1024px) 50vw, calc(100vw - 48px)",
     },
     searchTerms: ["garage clearance", "garage rubbish removal", "stored clutter removal"],
@@ -287,12 +287,12 @@ export const seoServices: SeoService[] = [
     description:
       "A builders waste collection service for small refurbishments, DIY projects and trade jobs where leftover materials need clearing from a home, flat or site access point.",
     image: {
-      src: "/images/services/garden-waste-removal.webp",
-      alt: "Half-full waste removal van with mixed outdoor and renovation waste ready for collection",
+      src: "/images/services/builders-waste-removal.webp",
+      alt: "Caged waste removal van with rubble bags, plasterboard, timber offcuts and renovation waste outside a London home",
       width: 1200,
       height: 900,
       srcset:
-        "/images/services/garden-waste-removal-640.webp 640w, /images/services/garden-waste-removal-960.webp 960w, /images/services/garden-waste-removal.webp 1200w",
+        "/images/services/builders-waste-removal-640.webp 640w, /images/services/builders-waste-removal-960.webp 960w, /images/services/builders-waste-removal.webp 1200w",
       sizes: "(min-width: 1024px) 50vw, calc(100vw - 48px)",
     },
     searchTerms: ["builders waste removal", "rubble removal", "renovation waste clearance"],
@@ -327,12 +327,12 @@ export const seoServices: SeoService[] = [
     description:
       "A bulky furniture removal service for single items, room clear-outs and property handovers where large pieces need lifting, loading and disposal.",
     image: {
-      src: "/images/services/house-clearance.webp",
-      alt: "Half-full waste removal van with household furniture and boxes ready for collection",
+      src: "/images/services/furniture-removal.webp",
+      alt: "Caged waste removal van loaded with sofas, wardrobes, chairs and bulky furniture on a London street",
       width: 1200,
       height: 900,
       srcset:
-        "/images/services/house-clearance-640.webp 640w, /images/services/house-clearance-960.webp 960w, /images/services/house-clearance.webp 1200w",
+        "/images/services/furniture-removal-640.webp 640w, /images/services/furniture-removal-960.webp 960w, /images/services/furniture-removal.webp 1200w",
       sizes: "(min-width: 1024px) 50vw, calc(100vw - 48px)",
     },
     searchTerms: ["furniture removal", "sofa removal", "bulky furniture collection"],
@@ -367,12 +367,12 @@ export const seoServices: SeoService[] = [
     description:
       "A simple mattress removal service for households, landlords and tenants who need bulky bedroom items collected without waiting for council bulky waste slots.",
     image: {
-      src: "/images/services/end-of-tenancy-rubbish-removal.webp",
-      alt: "Half-full waste removal van with a mattress and bags outside a rental property",
+      src: "/images/services/mattress-removal.webp",
+      alt: "Caged waste removal van loaded with mattresses, bed frames and bedroom furniture outside a London home",
       width: 1200,
       height: 900,
       srcset:
-        "/images/services/end-of-tenancy-rubbish-removal-640.webp 640w, /images/services/end-of-tenancy-rubbish-removal-960.webp 960w, /images/services/end-of-tenancy-rubbish-removal.webp 1200w",
+        "/images/services/mattress-removal-640.webp 640w, /images/services/mattress-removal-960.webp 960w, /images/services/mattress-removal.webp 1200w",
       sizes: "(min-width: 1024px) 50vw, calc(100vw - 48px)",
     },
     searchTerms: ["mattress removal", "old mattress collection", "bed frame removal"],
