@@ -59,6 +59,13 @@ export type BookingQuestion =
       description: string;
     }
   | {
+      id: "photos";
+      type: "photos";
+      title: string;
+      description: string;
+      maxPhotos: number;
+    }
+  | {
       id: "address" | "contact";
       type: "fields";
       title: string;
@@ -97,6 +104,14 @@ export const bookingFormConfig: BookingFormConfig = {
       type: "time",
       title: "Pick a preferred time",
       description: "We’ll confirm the exact arrival window before the team is dispatched.",
+    },
+    {
+      id: "photos",
+      type: "photos",
+      title: "Add photos",
+      description:
+        "Upload up to four photos so the team can quote the collection more accurately.",
+      maxPhotos: 4,
     },
     {
       id: "address",

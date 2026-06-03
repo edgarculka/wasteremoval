@@ -27,6 +27,22 @@ export interface BookingSubmitControls {
   fail: () => void;
 }
 
+export interface BookingPhotoData {
+  id: string;
+  name: string;
+  mimeType: "image/jpeg";
+  width: number;
+  height: number;
+  size: number;
+  dataUrl: string;
+  thumbnail: {
+    dataUrl: string;
+    width: number;
+    height: number;
+    size: number;
+  };
+}
+
 export interface BookingFormData {
   load: BookingLoad;
   date: string;
@@ -36,6 +52,7 @@ export interface BookingFormData {
   name: string;
   phone: string;
   email: string;
+  photos: BookingPhotoData[];
 }
 
 interface Props {
@@ -70,9 +87,14 @@ const emit = defineEmits<{
 const stepIndex = ref(0);
 const isSubmitting = ref(false);
 const scrollContainer = ref<HTMLElement | null>(null);
+const uploadInput = ref<HTMLInputElement | null>(null);
+const cameraInput = ref<HTMLInputElement | null>(null);
 const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
+const photos = ref<BookingPhotoData[]>([]);
+const photoError = ref("");
+const isProcessingPhotos = ref(false);
 const fieldValues = reactive<Record<BookingTextField["id"], string>>({
   postcode: "",
   addressLine1: "",
@@ -102,6 +124,12 @@ const currentQuestion = computed(
 const phonePattern = /^[+\d][\d\s()-]{6,}$/;
 const emailPattern = /^\S+@\S+\.\S+$/;
 const postcodePattern = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+const maxPhotoCount = computed(() =>
+  currentQuestion.value.type === "photos" ? currentQuestion.value.maxPhotos : 4,
+);
+const remainingPhotoSlots = computed(() =>
+  Math.max(maxPhotoCount.value - photos.value.length, 0),
+);
 
 function isFieldValid(field: BookingTextField) {
   const value = fieldValues[field.id].trim();
@@ -129,6 +157,8 @@ const stepValid = computed(() => {
       return Boolean(selectedDate.value);
     case "time":
       return Boolean(selectedTime.value);
+    case "photos":
+      return !isProcessingPhotos.value;
     case "fields":
       return currentQuestion.value.fields.every(isFieldValid);
     case "review":
@@ -177,6 +207,10 @@ function reset() {
   for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
     fieldValues[key] = "";
   }
+  photos.value = [];
+  photoError.value = "";
+  if (uploadInput.value) uploadInput.value.value = "";
+  if (cameraInput.value) cameraInput.value.value = "";
 }
 
 function goBack() {
@@ -201,6 +235,7 @@ function goNext() {
         name: fieldValues.name.trim(),
         phone: fieldValues.phone.trim(),
         email: fieldValues.email.trim(),
+        photos: photos.value,
       },
       {
         fail: () => {
@@ -211,6 +246,143 @@ function goNext() {
     return;
   }
   stepIndex.value += 1;
+}
+
+function triggerUploadPicker() {
+  uploadInput.value?.click();
+}
+
+function triggerCameraPicker() {
+  cameraInput.value?.click();
+}
+
+function removePhoto(photoId: string) {
+  photos.value = photos.value.filter((photo) => photo.id !== photoId);
+  photoError.value = "";
+}
+
+function canvasToDataUrl(
+  canvas: HTMLCanvasElement,
+  quality: number,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error("Could not process image."));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Could not read image."));
+        reader.readAsDataURL(blob);
+      },
+      "image/jpeg",
+      quality,
+    );
+  });
+}
+
+function getDataUrlSize(dataUrl: string) {
+  const encoded = dataUrl.split(",")[1] ?? "";
+  return Math.floor((encoded.length * 3) / 4);
+}
+
+async function resizeImage(
+  file: File,
+  maxEdge: number,
+  maxBytes: number,
+  initialQuality: number,
+) {
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = new Image();
+    image.decoding = "async";
+    const loaded = new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("Could not load image."));
+    });
+    image.src = objectUrl;
+    await loaded;
+
+    const scale = Math.min(1, maxEdge / Math.max(image.naturalWidth, image.naturalHeight));
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Could not process image.");
+    context.drawImage(image, 0, 0, width, height);
+
+    let quality = initialQuality;
+    let dataUrl = await canvasToDataUrl(canvas, quality);
+    while (getDataUrlSize(dataUrl) > maxBytes && quality > 0.48) {
+      quality -= 0.08;
+      dataUrl = await canvasToDataUrl(canvas, quality);
+    }
+
+    return {
+      dataUrl,
+      width,
+      height,
+      size: getDataUrlSize(dataUrl),
+    };
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+async function processPhotoFile(file: File): Promise<BookingPhotoData> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Choose an image file.");
+  }
+
+  const full = await resizeImage(file, 1280, 520_000, 0.74);
+  const thumbnail = await resizeImage(file, 360, 90_000, 0.68);
+
+  return {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    name: file.name || "collection-photo.jpg",
+    mimeType: "image/jpeg",
+    width: full.width,
+    height: full.height,
+    size: full.size,
+    dataUrl: full.dataUrl,
+    thumbnail,
+  };
+}
+
+async function handlePhotoSelection(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const selectedFiles = Array.from(input.files ?? []);
+  input.value = "";
+  if (!selectedFiles.length) return;
+
+  photoError.value = "";
+  const files = selectedFiles.slice(0, remainingPhotoSlots.value);
+  if (selectedFiles.length > remainingPhotoSlots.value) {
+    photoError.value = `Only ${maxPhotoCount.value} photos can be added.`;
+  }
+
+  isProcessingPhotos.value = true;
+  try {
+    const processed = [];
+    for (const file of files) {
+      processed.push(await processPhotoFile(file));
+    }
+    photos.value = [...photos.value, ...processed].slice(0, maxPhotoCount.value);
+  } catch (error) {
+    photoError.value =
+      error instanceof Error
+        ? error.message
+        : "Could not process one of the selected photos.";
+  } finally {
+    isProcessingPhotos.value = false;
+  }
 }
 
 function scrollToStepTop() {
@@ -421,6 +593,91 @@ onScopeDispose(() => {
             <UiTimePicker v-model="selectedTimeId" :options="times" />
           </div>
 
+          <div v-else-if="currentQuestion.type === 'photos'" class="mt-8">
+            <input
+              ref="uploadInput"
+              class="sr-only"
+              type="file"
+              accept="image/*"
+              multiple
+              :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+              @change="handlePhotoSelection"
+            />
+            <input
+              ref="cameraInput"
+              class="sr-only"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+              @change="handlePhotoSelection"
+            />
+
+            <div class="flex flex-wrap gap-3">
+              <UiButton
+                variant="primary"
+                :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+                @click="triggerUploadPicker"
+              >
+                Upload photos
+              </UiButton>
+              <UiButton
+                variant="secondary"
+                :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+                @click="triggerCameraPicker"
+              >
+                Take photo
+              </UiButton>
+            </div>
+
+            <UiText size="sm" tone="low" class="mt-4">
+              {{ photos.length }} of {{ maxPhotoCount }} photos added.
+              <template v-if="isProcessingPhotos"> Optimising photos...</template>
+            </UiText>
+
+            <UiText
+              v-if="photoError"
+              size="sm"
+              weight="semibold"
+              class="mt-3 text-red-700"
+              role="alert"
+            >
+              {{ photoError }}
+            </UiText>
+
+            <div
+              v-if="photos.length"
+              class="mt-5 grid gap-4 sm:grid-cols-2"
+            >
+              <figure
+                v-for="photo in photos"
+                :key="photo.id"
+                class="overflow-hidden rounded-lg border-2 border-foreground bg-secondary"
+              >
+                <img
+                  :src="photo.thumbnail.dataUrl"
+                  :alt="`Selected quote photo: ${photo.name}`"
+                  :width="photo.thumbnail.width"
+                  :height="photo.thumbnail.height"
+                  class="aspect-[4/3] w-full object-cover"
+                />
+                <figcaption class="flex items-center justify-between gap-3 p-3">
+                  <UiText size="sm" weight="semibold" class="truncate">
+                    {{ photo.name }}
+                  </UiText>
+                  <UiButton
+                    size="sm"
+                    variant="secondary"
+                    :disabled="isProcessingPhotos"
+                    @click="removePhoto(photo.id)"
+                  >
+                    Remove
+                  </UiButton>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
           <form
             v-else-if="currentQuestion.type === 'fields'"
             class="mt-8 flex flex-col gap-5"
@@ -501,6 +758,14 @@ onScopeDispose(() => {
                 {{ fieldValues.name.trim() }}<br />
                 {{ fieldValues.phone.trim() }}<br />
                 {{ fieldValues.email.trim() }}
+              </UiText>
+            </div>
+            <div class="flex items-center justify-between gap-6 p-5">
+              <UiText as="dt" size="sm" tone="low" weight="semibold">
+                Photos
+              </UiText>
+              <UiText as="dd" size="md" weight="semibold" class="text-right">
+                {{ photos.length ? `${photos.length} added` : "None added" }}
               </UiText>
             </div>
           </dl>
