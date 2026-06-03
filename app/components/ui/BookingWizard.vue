@@ -776,13 +776,39 @@ onScopeDispose(() => {
                 {{ fieldValues.email.trim() }}
               </UiText>
             </div>
-            <div class="flex items-center justify-between gap-6 p-5">
+            <div class="flex flex-col gap-4 p-5 sm:flex-row sm:justify-between sm:gap-6">
               <UiText as="dt" size="sm" tone="low" weight="semibold">
                 Photos
               </UiText>
-              <UiText as="dd" size="md" weight="semibold" class="text-right">
-                {{ photos.length ? `${photos.length} added` : "None added" }}
-              </UiText>
+              <dd class="sm:max-w-lg sm:text-right">
+                <UiText size="md" weight="semibold">
+                  {{ photos.length ? `${photos.length} added` : "None added" }}
+                </UiText>
+
+                <div
+                  v-if="photos.length"
+                  class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"
+                >
+                  <figure
+                    v-for="photo in photos"
+                    :key="photo.id"
+                    class="overflow-hidden rounded-xl border-2 border-foreground bg-background text-left"
+                  >
+                    <img
+                      :src="photo.thumbnail.dataUrl"
+                      :alt="`Review photo: ${photo.name}`"
+                      :width="photo.thumbnail.width"
+                      :height="photo.thumbnail.height"
+                      class="aspect-[4/3] w-full object-cover"
+                    />
+                    <figcaption class="p-2">
+                      <UiText size="xs" weight="semibold" class="truncate">
+                        {{ photo.name }}
+                      </UiText>
+                    </figcaption>
+                  </figure>
+                </div>
+              </dd>
             </div>
           </dl>
         </div>
