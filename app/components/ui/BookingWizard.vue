@@ -52,6 +52,7 @@ export interface BookingPhotoData {
 }
 
 export interface BookingFormData {
+  submissionId: string;
   load: BookingLoad;
   date: string;
   time: BookingTimeSlot;
@@ -97,10 +98,21 @@ const emit = defineEmits<{
   submit: [data: BookingFormData, controls: BookingSubmitControls];
 }>();
 
+function createSubmissionId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `quote-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 12)}`;
+}
+
 const stepIndex = ref(0);
 const isSubmitting = ref(false);
 const scrollContainer = ref<HTMLElement | null>(null);
 const uploadInput = ref<HTMLInputElement | null>(null);
+const submissionId = ref(createSubmissionId());
 const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
@@ -260,6 +272,7 @@ function close() {
 
 function reset() {
   isSubmitting.value = false;
+  submissionId.value = createSubmissionId();
   applyInitialLoadSelection();
   selectedDate.value = null;
   selectedTimeId.value = props.times[0]?.id ?? null;
@@ -307,6 +320,7 @@ function goNext() {
     emit(
       "submit",
       {
+        submissionId: submissionId.value,
         load: selectedLoad.value,
         date: selectedDate.value,
         time: selectedTime.value,

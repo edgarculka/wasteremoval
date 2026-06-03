@@ -14,7 +14,7 @@ const MAX_PHOTOS = 4;
 const MAX_PHOTO_BYTES = 750 * 1024;
 const MAX_THUMBNAIL_BYTES = 140 * 1024;
 const ALLOWED_LOAD_IDS = new Set(["min", "mini", "small", "large", "full"]);
-const ALLOWED_TIME_IDS = new Set(["morning", "afternoon", "evening"]);
+const ALLOWED_TIME_IDS = new Set(["anytime", "morning", "afternoon", "evening"]);
 const LOAD_PRICES = new Map([
   ["min", 4000],
   ["mini", 10000],
@@ -206,6 +206,7 @@ function validateBookingPayload(payload) {
   const errors = [];
 
   const booking = {
+    submissionId: readString(payload?.submissionId, 80),
     load: {
       id: readString(load?.id, 32),
       name: readString(load?.name, 80),
@@ -235,6 +236,12 @@ function validateBookingPayload(payload) {
   booking.estimatedTotalPence = loadPricePence + additionalTotalPence;
   booking.estimatedTotalLabel = formatPounds(booking.estimatedTotalPence);
 
+  if (
+    booking.submissionId &&
+    !/^[a-zA-Z0-9-]{16,80}$/.test(booking.submissionId)
+  ) {
+    errors.push("Refresh the quote form and try again.");
+  }
   if (!ALLOWED_LOAD_IDS.has(booking.load.id)) errors.push("Choose a valid load size.");
   if (!booking.load.name || !booking.load.price) errors.push("Load details are missing.");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(booking.date)) errors.push("Choose a valid collection date.");
@@ -466,6 +473,26 @@ exports.createBooking = onRequest(
     const { booking, errors } = validateBookingPayload(req.body);
     if (errors.length) {
       return jsonResponse(res, 400, { error: "Invalid booking", details: errors });
+    }
+
+    if (booking.submissionId) {
+      try {
+        const existingBooking = await db
+          .collection(BOOKINGS_COLLECTION)
+          .where("submissionId", "==", booking.submissionId)
+          .limit(1)
+          .get();
+
+        if (!existingBooking.empty) {
+          const existing = existingBooking.docs[0];
+          return jsonResponse(res, 201, {
+            bookingId: existing.id,
+            duplicate: true,
+          });
+        }
+      } catch (error) {
+        logger.error("Failed to check existing booking submission", error);
+      }
     }
 
     const bookingId = randomUUID().slice(0, 8).toUpperCase();

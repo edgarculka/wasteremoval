@@ -94,6 +94,34 @@ const bookingTimes: BookingTimeSlot[] = [
   },
 ];
 
+function wait(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function postBooking(data: BookingFormData) {
+  return fetch("/api/bookings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+}
+
+async function readBookingError(response: Response) {
+  try {
+    const body = await response.json();
+    if (Array.isArray(body?.details) && body.details.length) {
+      return body.details.join(" ");
+    }
+    if (typeof body?.error === "string" && body.error) {
+      return body.error;
+    }
+  } catch {
+    // Fall back to a generic message below.
+  }
+
+  return "";
+}
+
 export function useBookingWizard() {
   function openBookingWizard(loadId?: string | null | Event) {
     const selectedLoadId = typeof loadId === "string" ? loadId : null;
@@ -112,23 +140,29 @@ export function useBookingWizard() {
     data: BookingFormData,
     controls?: BookingSubmitControls,
   ) {
-    let response: Response;
+    let response: Response | null = null;
 
     try {
-      response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      response = await postBooking(data);
     } catch {
-      controls?.fail();
-      window.alert(
-        "Sorry, we couldn't confirm your booking request. Please check whether you receive a confirmation, or contact DBS Waste directly.",
-      );
-      return;
+      await wait(700);
+      try {
+        response = await postBooking(data);
+      } catch {
+        response = null;
+      }
     }
 
-    if (response.ok) {
+    if (response && [502, 503, 504].includes(response.status)) {
+      await wait(700);
+      try {
+        response = await postBooking(data);
+      } catch {
+        response = null;
+      }
+    }
+
+    if (response?.ok) {
       try {
         await navigateTo("/thank-you/");
       } catch {
@@ -138,8 +172,11 @@ export function useBookingWizard() {
     }
 
     controls?.fail();
+    const errorMessage = response ? await readBookingError(response) : "";
     window.alert(
-      "Sorry, we couldn't submit your booking. Please try again or contact DBS Waste directly.",
+      errorMessage
+        ? `Please check your quote details. ${errorMessage}`
+        : "Sorry, we couldn't submit your booking. Please try again.",
     );
   }
 
