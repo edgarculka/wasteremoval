@@ -128,7 +128,7 @@ function toggleMobileChildren(href: string) {
               Call {{ phone }}
             </UiButton>
           </div>
-          <div class="hidden sm:block lg:hidden">
+          <div class="block lg:hidden">
             <UiButton
               :href="phoneHref"
               variant="secondary"
