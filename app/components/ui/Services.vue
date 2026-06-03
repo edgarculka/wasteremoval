@@ -55,12 +55,14 @@ withDefaults(defineProps<Props>(), {
       </UiText>
     </div>
 
-    <div class="mt-9 grid w-full gap-4 md:grid-cols-3">
+    <div
+      class="mt-9 flex w-full snap-x gap-4 overflow-x-auto overscroll-x-contain pb-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0"
+    >
       <UiCard
         v-for="service in services"
         :key="service.href"
         :href="service.href"
-        class="h-full"
+        class="h-full w-80 shrink-0 snap-start md:w-auto md:shrink"
       >
         <article class="flex h-full flex-col">
           <div class="aspect-[4/3] overflow-hidden rounded-lg border border-border">
