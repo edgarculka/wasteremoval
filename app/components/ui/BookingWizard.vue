@@ -88,7 +88,6 @@ const stepIndex = ref(0);
 const isSubmitting = ref(false);
 const scrollContainer = ref<HTMLElement | null>(null);
 const uploadInput = ref<HTMLInputElement | null>(null);
-const cameraInput = ref<HTMLInputElement | null>(null);
 const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
@@ -210,7 +209,6 @@ function reset() {
   photos.value = [];
   photoError.value = "";
   if (uploadInput.value) uploadInput.value.value = "";
-  if (cameraInput.value) cameraInput.value.value = "";
 }
 
 function goBack() {
@@ -250,10 +248,6 @@ function goNext() {
 
 function triggerUploadPicker() {
   uploadInput.value?.click();
-}
-
-function triggerCameraPicker() {
-  cameraInput.value?.click();
 }
 
 function removePhoto(photoId: string) {
@@ -593,7 +587,7 @@ onScopeDispose(() => {
             <UiTimePicker v-model="selectedTimeId" :options="times" />
           </div>
 
-          <div v-else-if="currentQuestion.type === 'photos'" class="mt-8">
+          <div v-else-if="currentQuestion.type === 'photos'" class="mt-6">
             <input
               ref="uploadInput"
               class="sr-only"
@@ -603,78 +597,100 @@ onScopeDispose(() => {
               :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
               @change="handlePhotoSelection"
             />
-            <input
-              ref="cameraInput"
-              class="sr-only"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
-              @change="handlePhotoSelection"
-            />
-
-            <div class="flex flex-wrap gap-3">
-              <UiButton
-                variant="primary"
-                :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
-                @click="triggerUploadPicker"
-              >
-                Upload photos
-              </UiButton>
-              <UiButton
-                variant="secondary"
-                :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
-                @click="triggerCameraPicker"
-              >
-                Take photo
-              </UiButton>
-            </div>
-
-            <UiText size="sm" tone="low" class="mt-4">
-              {{ photos.length }} of {{ maxPhotoCount }} photos added.
-              <template v-if="isProcessingPhotos"> Optimising photos...</template>
-            </UiText>
-
-            <UiText
-              v-if="photoError"
-              size="sm"
-              weight="semibold"
-              class="mt-3 text-red-700"
-              role="alert"
-            >
-              {{ photoError }}
-            </UiText>
 
             <div
-              v-if="photos.length"
-              class="mt-5 grid gap-4 sm:grid-cols-2"
+              class="overflow-hidden rounded-2xl border-2 border-foreground bg-secondary text-secondary-foreground shadow-[0_0.75rem_1.5rem_rgba(6,53,31,0.08)]"
             >
-              <figure
-                v-for="photo in photos"
-                :key="photo.id"
-                class="overflow-hidden rounded-lg border-2 border-foreground bg-secondary"
-              >
-                <img
-                  :src="photo.thumbnail.dataUrl"
-                  :alt="`Selected quote photo: ${photo.name}`"
-                  :width="photo.thumbnail.width"
-                  :height="photo.thumbnail.height"
-                  class="aspect-[4/3] w-full object-cover"
-                />
-                <figcaption class="flex items-center justify-between gap-3 p-3">
-                  <UiText size="sm" weight="semibold" class="truncate">
-                    {{ photo.name }}
+              <div class="p-4 sm:p-5">
+                <div class="flex items-center justify-between gap-4">
+                  <UiText as="span" size="xs" weight="semibold" tone="low">
+                    Optional
                   </UiText>
-                  <UiButton
-                    size="sm"
-                    variant="secondary"
-                    :disabled="isProcessingPhotos"
-                    @click="removePhoto(photo.id)"
+                  <UiText
+                    as="span"
+                    size="xs"
+                    weight="semibold"
+                    class="shrink-0 rounded-full border border-foreground bg-background px-3 py-1"
                   >
-                    Remove
+                    {{ photos.length }}/{{ maxPhotoCount }}
+                  </UiText>
+                </div>
+
+                <button
+                  type="button"
+                  class="mx-auto mt-6 grid size-24 place-items-center rounded-full border-2 border-border bg-background text-3xl font-bold text-foreground transition hover:-translate-y-0.5 hover:border-foreground hover:shadow-[0_0.5rem_1rem_rgba(6,53,31,0.08)] disabled:pointer-events-none disabled:opacity-50"
+                  :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+                  aria-label="Upload collection photos"
+                  @click="triggerUploadPicker"
+                >
+                  <IconsCamera />
+                </button>
+
+                <div class="mt-4 flex justify-center">
+                  <UiButton
+                    variant="secondary"
+                    :disabled="remainingPhotoSlots === 0 || isProcessingPhotos"
+                    @click="triggerUploadPicker"
+                  >
+                    Upload photos
                   </UiButton>
-                </figcaption>
-              </figure>
+                </div>
+
+                <UiText size="sm" tone="low" class="mx-auto mt-3 max-w-md text-center">
+                  Add up to {{ maxPhotoCount }} photos. You can take a new photo
+                  or choose from your device.
+                  <template v-if="isProcessingPhotos"> Optimising photos...</template>
+                </UiText>
+
+                <UiText
+                  v-if="photoError"
+                  size="sm"
+                  weight="semibold"
+                  class="mt-4 text-center text-red-700"
+                  role="alert"
+                >
+                  {{ photoError }}
+                </UiText>
+
+                <div
+                  v-if="photos.length"
+                  class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
+                >
+                  <figure
+                    v-for="photo in photos"
+                    :key="photo.id"
+                    class="group relative overflow-hidden rounded-xl border-2 border-foreground bg-secondary"
+                  >
+                    <img
+                      :src="photo.thumbnail.dataUrl"
+                      :alt="`Selected quote photo: ${photo.name}`"
+                      :width="photo.thumbnail.width"
+                      :height="photo.thumbnail.height"
+                      class="aspect-[4/3] w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      class="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-foreground bg-background text-sm font-bold shadow disabled:pointer-events-none disabled:opacity-50"
+                      :disabled="isProcessingPhotos"
+                      :aria-label="`Remove ${photo.name}`"
+                      @click="removePhoto(photo.id)"
+                    >
+                      x
+                    </button>
+                    <figcaption class="p-2">
+                      <UiText size="xs" weight="semibold" class="truncate">
+                        {{ photo.name }}
+                      </UiText>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
+
+              <div class="border-t-2 border-border bg-background px-5 py-3 text-center sm:px-6">
+                <UiText size="sm" tone="low">
+                  Photos are optional and optimised before sending.
+                </UiText>
+              </div>
             </div>
           </div>
 
