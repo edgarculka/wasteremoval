@@ -4,6 +4,7 @@ const primaryLinks = [
   { label: "Services", href: "/services/" },
   { label: "Areas", href: "/areas/" },
   { label: "Disposal", href: "/recycling-and-disposal/" },
+  { label: "Extra charges", href: "/additional-charges/" },
   { label: "Pricing", href: "/pricing/" },
 ];
 

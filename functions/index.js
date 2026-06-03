@@ -15,6 +15,41 @@ const MAX_PHOTO_BYTES = 750 * 1024;
 const MAX_THUMBNAIL_BYTES = 140 * 1024;
 const ALLOWED_LOAD_IDS = new Set(["min", "mini", "small", "large", "full"]);
 const ALLOWED_TIME_IDS = new Set(["morning", "afternoon", "evening"]);
+const LOAD_PRICES = new Map([
+  ["min", 4000],
+  ["mini", 10000],
+  ["small", 18000],
+  ["large", 24000],
+  ["full", 30000],
+]);
+const ADDITIONAL_ITEM_PRICES = new Map([
+  ["mattress", { name: "Mattress", pricePence: 3000 }],
+  ["small-tyre", { name: "Small tyre", pricePence: 1500 }],
+  ["large-tyre", { name: "Large tyre", pricePence: 5000 }],
+  ["small-fridge", { name: "Small fridge or freezer", pricePence: 5500 }],
+  ["large-fridge", { name: "Large fridge or freezer", pricePence: 8500 }],
+  ["paint-pot", { name: "Full paint pot", pricePence: 3000 }],
+  ["adhesive-tin", { name: "Adhesive tin or tube", pricePence: 3000 }],
+  ["fire-extinguisher", { name: "Fire extinguisher", pricePence: 2500 }],
+  ["gas-bottle", { name: "Gas bottle", pricePence: 8000 }],
+  ["tv-monitor", { name: "TV or monitor", pricePence: 5500 }],
+  ["dishwasher", { name: "Dishwasher", pricePence: 4500 }],
+  ["washing-machine", { name: "Washing machine", pricePence: 4000 }],
+  ["microwave", { name: "Microwave", pricePence: 2500 }],
+  ["cooker", { name: "Cooker", pricePence: 5000 }],
+  ["armchair", { name: "Chair or armchair", pricePence: 5000 }],
+  ["two-seat-sofa", { name: "Two seater sofa", pricePence: 7500 }],
+  ["three-seat-sofa", { name: "Three seater sofa", pricePence: 10000 }],
+  ["small-pops", { name: "Footstool, pouffe, bean bag or bed base", pricePence: 5000 }],
+]);
+
+function formatPounds(pricePence) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    maximumFractionDigits: 0,
+  }).format(pricePence / 100);
+}
 
 function jsonResponse(res, status, body) {
   res.set("Content-Type", "application/json");
@@ -118,6 +153,53 @@ function readPhotoPayload(value, errors) {
   });
 }
 
+function readAdditionalItems(value, errors) {
+  if (typeof value === "undefined" || value === null) return [];
+  if (!Array.isArray(value)) {
+    errors.push("Additional items must be sent as a list.");
+    return [];
+  }
+
+  if (value.length > ADDITIONAL_ITEM_PRICES.size) {
+    errors.push("Too many additional item types were sent.");
+  }
+
+  const seen = new Set();
+  return value.slice(0, ADDITIONAL_ITEM_PRICES.size).flatMap((item) => {
+    const id = readString(item?.id, 64);
+    const quantity = Number(item?.quantity);
+    const allowedItem = ADDITIONAL_ITEM_PRICES.get(id);
+
+    if (!allowedItem) {
+      errors.push("Choose a valid additional item.");
+      return [];
+    }
+    if (seen.has(id)) {
+      errors.push(`Additional item ${allowedItem.name} was sent more than once.`);
+      return [];
+    }
+    seen.add(id);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+      errors.push(`Choose a valid quantity for ${allowedItem.name}.`);
+      return [];
+    }
+
+    const totalPricePence = allowedItem.pricePence * quantity;
+
+    return [
+      {
+        id,
+        name: allowedItem.name,
+        quantity,
+        unitPricePence: allowedItem.pricePence,
+        unitPriceLabel: formatPounds(allowedItem.pricePence),
+        totalPricePence,
+        totalPriceLabel: formatPounds(totalPricePence),
+      },
+    ];
+  });
+}
+
 function validateBookingPayload(payload) {
   const load = payload && typeof payload.load === "object" ? payload.load : null;
   const time = payload && typeof payload.time === "object" ? payload.time : null;
@@ -142,7 +224,16 @@ function validateBookingPayload(payload) {
     phone: readString(payload?.phone, 40),
     email: normalizeEmail(payload?.email),
     photos: readPhotoPayload(payload?.photos, errors),
+    additionalItems: readAdditionalItems(payload?.additionalItems, errors),
   };
+
+  const loadPricePence = LOAD_PRICES.get(booking.load.id) || 0;
+  const additionalTotalPence = booking.additionalItems.reduce(
+    (total, item) => total + item.totalPricePence,
+    0,
+  );
+  booking.estimatedTotalPence = loadPricePence + additionalTotalPence;
+  booking.estimatedTotalLabel = formatPounds(booking.estimatedTotalPence);
 
   if (!ALLOWED_LOAD_IDS.has(booking.load.id)) errors.push("Choose a valid load size.");
   if (!booking.load.name || !booking.load.price) errors.push("Load details are missing.");
@@ -259,6 +350,15 @@ function formatDate(value) {
 }
 
 function bookingLines(booking, bookingId, photos = []) {
+  const additionalItems = booking.additionalItems.length
+    ? booking.additionalItems
+        .map(
+          (item) =>
+            `${item.quantity} x ${item.name} (${item.totalPriceLabel})`,
+        )
+        .join("; ")
+    : "None selected";
+
   return [
     ["Booking reference", bookingId],
     ["Name", booking.name],
@@ -267,6 +367,8 @@ function bookingLines(booking, bookingId, photos = []) {
     ["Collection address", `${booking.addressLine1}, ${booking.postcode}`],
     ["Load size", `${booking.load.name} (${booking.load.ribbon})`],
     ["Estimated price", booking.load.price],
+    ["Additional items", additionalItems],
+    ["Estimated total", booking.estimatedTotalLabel],
     ["Preferred date", formatDate(booking.date)],
     ["Preferred time", `${booking.time.label}${booking.time.description ? ` (${booking.time.description})` : ""}`],
     ["Photos", photos.length ? `${photos.length} uploaded` : "None uploaded"],

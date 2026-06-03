@@ -65,11 +65,35 @@ const targets = [
   },
 ];
 
+const additionalChargeSlugs = [
+  "fluorescent-tubes",
+  "fridge-freezer",
+  "gas-bottle-fire-extinguisher",
+  "mattress",
+  "paint-tins",
+  "rubble-plasterboard",
+  "small-electricals",
+  "tv-monitor",
+  "tyres",
+  "upholstered-furniture",
+  "white-appliances",
+];
+
+for (const slug of additionalChargeSlugs) {
+  targets.push({
+    input: `source-images/additional-charges/${slug}.png`,
+    output: `public/images/additional-charges/${slug}.webp`,
+    width: 960,
+    height: 720,
+    widths: [480, 720, 960],
+  });
+}
+
 for (const target of targets) {
   await mkdir(path.dirname(target.output), { recursive: true });
 
   const parsedOutput = path.parse(target.output);
-  const widths = [640, 960, target.width];
+  const widths = target.widths ?? [640, 960, target.width];
 
   for (const width of widths) {
     const output =
@@ -81,6 +105,11 @@ for (const target of targets) {
       .rotate()
       .resize({
         width,
+        height: target.height
+          ? Math.round((target.height / target.width) * width)
+          : undefined,
+        fit: target.height ? "cover" : undefined,
+        position: target.height ? "center" : undefined,
         withoutEnlargement: true,
       })
       .webp({

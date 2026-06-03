@@ -158,6 +158,9 @@ function openBookingWithPricingSelection() {
       <UiButton variant="secondary" size="lg" href="#pricing-faq">
         Ask a pricing question
       </UiButton>
+      <UiButton variant="ghost" size="lg" href="/additional-charges/">
+        Extra item charges
+      </UiButton>
       <UiButton variant="ghost" size="lg" href="/recycling-and-disposal/">
         Disposal process
       </UiButton>
@@ -207,6 +210,14 @@ function openBookingWithPricingSelection() {
           class="mt-5"
         >
           Read disposal guidance
+        </UiButton>
+        <UiButton
+          href="/additional-charges/"
+          variant="ghost"
+          size="sm"
+          class="mt-3"
+        >
+          View extra charges
         </UiButton>
       </div>
     </template>

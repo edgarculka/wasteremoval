@@ -5,6 +5,7 @@ export interface BookingLoad {
   name: string;
   ribbon: string;
   price: string;
+  pricePence: number;
   tag?: string;
   imageSrc?: string;
   imageAlt?: string;
@@ -66,6 +67,12 @@ export type BookingQuestion =
       maxPhotos: number;
     }
   | {
+      id: "additionalCharges";
+      type: "additionalCharges";
+      title: string;
+      description: string;
+    }
+  | {
       id: "address" | "contact";
       type: "fields";
       title: string;
@@ -90,6 +97,13 @@ export const bookingFormConfig: BookingFormConfig = {
       type: "load",
       title: "Choose your load size",
       description: "How much do we need to clear?",
+    },
+    {
+      id: "additionalCharges",
+      type: "additionalCharges",
+      title: "Any specialist items?",
+      description:
+        "Add items that can need a separate disposal charge. Leave everything at zero if your load is standard rubbish.",
     },
     {
       id: "date",

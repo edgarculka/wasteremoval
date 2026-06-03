@@ -15,6 +15,7 @@ const loads: BookingLoad[] = [
     name: "Min Job",
     ribbon: "Single item",
     price: "£40",
+    pricePence: 4000,
     tag: "Minimum price",
     imageSrc: "/images/0van.svg",
     imageAlt: "Single item",
@@ -24,6 +25,7 @@ const loads: BookingLoad[] = [
     name: "Mini Load",
     ribbon: "1/4 van",
     price: "£100",
+    pricePence: 10000,
     imageSrc: "/images/1van.svg",
     imageAlt: "Quarter-load van",
   },
@@ -32,6 +34,7 @@ const loads: BookingLoad[] = [
     name: "Small Load",
     ribbon: "1/2 van",
     price: "£180",
+    pricePence: 18000,
     tag: "Most popular",
     imageSrc: "/images/2van.svg",
     imageAlt: "Half-load van",
@@ -41,6 +44,7 @@ const loads: BookingLoad[] = [
     name: "Large Load",
     ribbon: "3/4 van",
     price: "£240",
+    pricePence: 24000,
     imageSrc: "/images/3van.svg",
     imageAlt: "Three-quarter-load van",
   },
@@ -49,6 +53,7 @@ const loads: BookingLoad[] = [
     name: "Full Load",
     ribbon: "Full van",
     price: "£300",
+    pricePence: 30000,
     imageSrc: "/images/4van.svg",
     imageAlt: "Full-load van",
   },
@@ -90,8 +95,9 @@ function onSubmit(data: BookingFormData) {
     <header>
       <UiHeading size="lg">Booking wizard</UiHeading>
       <UiText tone="low" class="mt-3">
-        Full-page takeover form. Six steps — load size, date, time, address,
-        contact, review — with a persistent step counter and price summary.
+        Full-page takeover form. Eight steps — load size, specialist items,
+        date, time, photos, address, contact, review — with a persistent step
+        counter and price summary.
         Step order and field definitions come from
         <code>bookingFormConfig.questions</code>. Use
         <code>v-model:open</code> to control visibility, listen to

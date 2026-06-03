@@ -15,6 +15,14 @@ import type {
   BookingTextField,
   BookingTimeSlot,
 } from "~/utils/booking-form";
+import {
+  buildSelectedAdditionalCharge,
+  formatChargeUnit,
+  formatPounds,
+  quoteAdditionalChargeItems,
+  type AdditionalChargeItem,
+  type SelectedAdditionalCharge,
+} from "~/utils/additional-charges";
 
 export type {
   BookingLoad,
@@ -53,6 +61,9 @@ export interface BookingFormData {
   phone: string;
   email: string;
   photos: BookingPhotoData[];
+  additionalItems: SelectedAdditionalCharge[];
+  estimatedTotalPence: number;
+  estimatedTotalLabel: string;
 }
 
 interface Props {
@@ -62,6 +73,7 @@ interface Props {
   mode?: "dialog" | "page";
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   questions?: BookingQuestion[];
+  additionalChargeItems?: AdditionalChargeItem[];
   brandName?: string;
   defaultPriceLabel?: string;
   initialLoadId?: string | null;
@@ -77,6 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
   minDaysAhead: 1,
   monthsToShow: 3,
   questions: () => bookingFormConfig.questions,
+  additionalChargeItems: () => quoteAdditionalChargeItems,
 });
 
 const emit = defineEmits<{
@@ -92,6 +105,7 @@ const selectedLoadId = ref<string | null>(null);
 const selectedDate = ref<string | null>(null);
 const selectedTimeId = ref<string | null>(null);
 const photos = ref<BookingPhotoData[]>([]);
+const additionalQuantities = reactive<Record<string, number>>({});
 const photoError = ref("");
 const isProcessingPhotos = ref(false);
 const fieldValues = reactive<Record<BookingTextField["id"], string>>({
@@ -109,8 +123,32 @@ const selectedTime = computed(
   () => props.times.find((t) => t.id === selectedTimeId.value) ?? null,
 );
 
+const selectedAdditionalItems = computed(() =>
+  props.additionalChargeItems
+    .map((item) =>
+      buildSelectedAdditionalCharge(
+        item,
+        Math.max(0, additionalQuantities[item.id] ?? 0),
+      ),
+    )
+    .filter((item) => item.quantity > 0),
+);
+
+const additionalTotalPence = computed(() =>
+  selectedAdditionalItems.value.reduce(
+    (total, item) => total + item.totalPricePence,
+    0,
+  ),
+);
+
+const estimatedTotalPence = computed(() =>
+  selectedLoad.value ? selectedLoad.value.pricePence + additionalTotalPence.value : 0,
+);
+
 const priceLabel = computed(() =>
-  selectedLoad.value ? selectedLoad.value.price : props.defaultPriceLabel,
+  selectedLoad.value
+    ? formatPounds(estimatedTotalPence.value)
+    : props.defaultPriceLabel,
 );
 
 const questions = computed(() =>
@@ -158,6 +196,8 @@ const stepValid = computed(() => {
       return Boolean(selectedTime.value);
     case "photos":
       return !isProcessingPhotos.value;
+    case "additionalCharges":
+      return true;
     case "fields":
       return currentQuestion.value.fields.every(isFieldValid);
     case "review":
@@ -189,11 +229,26 @@ function close() {
 
 function reset() {
   isSubmitting.value = false;
+  applyInitialLoadSelection();
+  selectedDate.value = null;
+  selectedTimeId.value = null;
+  for (const key of Object.keys(additionalQuantities)) {
+    delete additionalQuantities[key];
+  }
+  for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
+    fieldValues[key] = "";
+  }
+  photos.value = [];
+  photoError.value = "";
+  if (uploadInput.value) uploadInput.value.value = "";
+}
+
+function applyInitialLoadSelection() {
   const initialLoadId = props.initialLoadId ?? null;
   const hasInitialLoad = props.loads.some((load) => load.id === initialLoadId);
   selectedLoadId.value = hasInitialLoad ? initialLoadId : null;
   // When a load is already chosen (e.g. picked from the pricing page), skip the
-  // load-size step and open directly on the following step (collection date).
+  // load-size step and open directly on the following step.
   const loadStepIndex = questions.value.findIndex((q) => q.type === "load");
   stepIndex.value =
     hasInitialLoad &&
@@ -201,14 +256,6 @@ function reset() {
     loadStepIndex + 1 < questions.value.length
       ? loadStepIndex + 1
       : 0;
-  selectedDate.value = null;
-  selectedTimeId.value = null;
-  for (const key of Object.keys(fieldValues) as BookingTextField["id"][]) {
-    fieldValues[key] = "";
-  }
-  photos.value = [];
-  photoError.value = "";
-  if (uploadInput.value) uploadInput.value.value = "";
 }
 
 function goBack() {
@@ -234,6 +281,9 @@ function goNext() {
         phone: fieldValues.phone.trim(),
         email: fieldValues.email.trim(),
         photos: photos.value,
+        additionalItems: selectedAdditionalItems.value,
+        estimatedTotalPence: estimatedTotalPence.value,
+        estimatedTotalLabel: priceLabel.value,
       },
       {
         fail: () => {
@@ -248,6 +298,28 @@ function goNext() {
 
 function triggerUploadPicker() {
   uploadInput.value?.click();
+}
+
+function getAdditionalQuantity(itemId: string) {
+  return additionalQuantities[itemId] ?? 0;
+}
+
+function setAdditionalQuantity(itemId: string, quantity: number) {
+  const nextQuantity = Math.max(0, Math.min(99, quantity));
+  if (nextQuantity === 0) {
+    delete additionalQuantities[itemId];
+    return;
+  }
+
+  additionalQuantities[itemId] = nextQuantity;
+}
+
+function incrementAdditionalItem(itemId: string) {
+  setAdditionalQuantity(itemId, getAdditionalQuantity(itemId) + 1);
+}
+
+function decrementAdditionalItem(itemId: string) {
+  setAdditionalQuantity(itemId, getAdditionalQuantity(itemId) - 1);
 }
 
 function removePhoto(photoId: string) {
@@ -430,6 +502,24 @@ watch(
   { immediate: true },
 );
 
+watch(
+  () => props.initialLoadId,
+  (loadId, previousLoadId) => {
+    if (!props.open || loadId === previousLoadId) return;
+    const hasProgress =
+      Boolean(selectedDate.value) ||
+      Boolean(selectedTimeId.value) ||
+      photos.value.length > 0 ||
+      selectedAdditionalItems.value.length > 0 ||
+      Object.values(fieldValues).some(Boolean);
+
+    if (!hasProgress) {
+      applyInitialLoadSelection();
+      void settleStep();
+    }
+  },
+);
+
 watch(stepIndex, () => {
   void settleStep();
 });
@@ -565,6 +655,92 @@ onScopeDispose(() => {
               :image-height="load.imageHeight"
               @select="selectedLoadId = load.id"
             />
+          </div>
+
+          <div v-else-if="currentQuestion.type === 'additionalCharges'" class="mt-8">
+            <div
+              class="overflow-hidden rounded-2xl border-2 border-foreground bg-secondary text-secondary-foreground"
+            >
+              <div
+                class="flex flex-col gap-3 border-b-2 border-border p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+              >
+                <div>
+                  <UiText size="sm" weight="semibold">
+                    Specialist items added:
+                    {{ selectedAdditionalItems.length }}
+                  </UiText>
+                  <UiText size="sm" tone="low">
+                    Extra total: {{ formatPounds(additionalTotalPence) }}
+                  </UiText>
+                </div>
+                <UiButton href="/additional-charges/" variant="secondary" size="sm">
+                  View full charges
+                </UiButton>
+              </div>
+
+              <div class="max-h-[30rem] overflow-y-auto">
+                <div
+                  v-for="item in additionalChargeItems"
+                  :key="item.id"
+                  class="grid grid-cols-[4.75rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-border p-3 last:border-b-0 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-4 sm:p-4"
+                >
+                  <img
+                    :src="item.image.src"
+                    :srcset="item.image.srcset"
+                    :sizes="item.image.sizes"
+                    :alt="item.image.alt"
+                    :width="item.image.width"
+                    :height="item.image.height"
+                    loading="lazy"
+                    decoding="async"
+                    data-no-lightbox
+                    class="aspect-square w-full rounded-lg border border-border object-cover"
+                  />
+                  <div class="min-w-0">
+                    <UiText as="p" size="sm" weight="bold" class="truncate">
+                      {{ item.shortName }}
+                    </UiText>
+                    <UiText as="p" size="xs" tone="low" class="mt-1">
+                      {{ item.category }}
+                    </UiText>
+                    <UiText as="p" size="sm" weight="semibold" class="mt-1">
+                      {{ formatPounds(item.pricePence) }} per {{ formatChargeUnit(item.unit) }}
+                    </UiText>
+                  </div>
+                  <div class="grid grid-cols-[2.5rem_2.5rem_2.5rem] items-center">
+                    <button
+                      type="button"
+                      class="grid size-10 place-items-center rounded-full border border-border bg-background text-lg font-bold transition hover:border-foreground disabled:pointer-events-none disabled:opacity-40"
+                      :disabled="getAdditionalQuantity(item.id) === 0"
+                      :aria-label="`Remove one ${item.name}`"
+                      @click="decrementAdditionalItem(item.id)"
+                    >
+                      -
+                    </button>
+                    <UiText
+                      as="span"
+                      size="md"
+                      weight="bold"
+                      class="text-center tabular-nums"
+                    >
+                      {{ getAdditionalQuantity(item.id) }}
+                    </UiText>
+                    <button
+                      type="button"
+                      class="grid size-10 place-items-center rounded-full border border-foreground bg-primary text-lg font-bold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/80"
+                      :aria-label="`Add one ${item.name}`"
+                      @click="incrementAdditionalItem(item.id)"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <UiText size="sm" tone="low" class="mt-4">
+              The crew still confirms the final load size and item count before
+              removal. Leave this step blank if none of these items are included.
+            </UiText>
           </div>
 
           <div v-else-if="currentQuestion.type === 'date'" class="mt-8">
@@ -736,6 +912,42 @@ onScopeDispose(() => {
               </UiText>
               <UiText as="dd" size="md" weight="semibold" class="text-right">
                 {{ selectedLoad?.name }} — {{ selectedLoad?.price }}
+              </UiText>
+            </div>
+            <div class="flex flex-col gap-4 p-5 sm:flex-row sm:justify-between sm:gap-6">
+              <UiText as="dt" size="sm" tone="low" weight="semibold">
+                Additional items
+              </UiText>
+              <dd class="sm:max-w-lg sm:text-right">
+                <UiText size="md" weight="semibold">
+                  {{
+                    selectedAdditionalItems.length
+                      ? `${selectedAdditionalItems.length} item types selected`
+                      : "None selected"
+                  }}
+                </UiText>
+                <ul v-if="selectedAdditionalItems.length" class="mt-3 grid gap-2">
+                  <li
+                    v-for="item in selectedAdditionalItems"
+                    :key="item.id"
+                    class="flex justify-between gap-4 rounded-lg border border-border bg-background px-3 py-2 text-left"
+                  >
+                    <UiText size="sm">
+                      {{ item.quantity }} x {{ item.name }}
+                    </UiText>
+                    <UiText size="sm" weight="bold">
+                      {{ item.totalPriceLabel }}
+                    </UiText>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 bg-background p-5">
+              <UiText as="dt" size="sm" tone="low" weight="semibold">
+                Estimated total
+              </UiText>
+              <UiText as="dd" size="lg" weight="bold" class="text-right">
+                {{ priceLabel }}
               </UiText>
             </div>
             <div class="flex items-center justify-between gap-6 p-5">

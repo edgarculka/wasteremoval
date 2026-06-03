@@ -20,6 +20,7 @@ const headerNav = computed(() => [
     })),
   },
   { label: "Pricing", href: "/pricing/" },
+  { label: "Extra charges", href: "/additional-charges/" },
 ]);
 
 const { openBookingWizard } = useBookingWizard();

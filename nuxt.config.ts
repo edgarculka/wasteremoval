@@ -16,6 +16,7 @@ const commercialSitemapPaths = [
   "/quote/",
   "/services/",
   "/areas/",
+  "/additional-charges/",
   "/recycling-and-disposal/",
   ...areaSeoPaths,
   ...serviceSeoPaths,
