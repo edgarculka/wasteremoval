@@ -1,5 +1,4 @@
 const CLARITY_PROJECT_ID = "x0tf1bhgic";
-const CLARITY_DELAY_MS = 60000;
 
 declare global {
   interface Window {
@@ -8,13 +7,12 @@ declare global {
 }
 
 export default defineNuxtPlugin(() => {
+  const router = useRouter();
   let hasLoaded = false;
-  let timeoutId: number | null = null;
 
   const loadClarity = () => {
     if (hasLoaded || !CLARITY_PROJECT_ID) return;
     hasLoaded = true;
-    if (timeoutId !== null) window.clearTimeout(timeoutId);
 
     window.clarity =
       window.clarity ||
@@ -31,15 +29,29 @@ export default defineNuxtPlugin(() => {
     document.head.appendChild(script);
   };
 
-  const scheduleLoad = () => {
-    timeoutId = window.setTimeout(loadClarity, CLARITY_DELAY_MS);
-    window.addEventListener("pointerdown", loadClarity, { once: true, passive: true });
-    window.addEventListener("keydown", loadClarity, { once: true });
+  const trackRoute = () => {
+    const path = `${window.location.pathname}${window.location.search}`;
+
+    window.clarity?.("set", "page_path", path);
+    window.clarity?.("event", "page_view");
+  };
+
+  const loadAndTrackRoute = () => {
+    loadClarity();
+    trackRoute();
   };
 
   if (document.readyState === "complete") {
-    scheduleLoad();
+    loadAndTrackRoute();
   } else {
-    window.addEventListener("load", scheduleLoad, { once: true });
+    window.addEventListener("load", loadAndTrackRoute, { once: true });
   }
+
+  router.beforeEach(() => {
+    loadClarity();
+  });
+
+  router.afterEach(() => {
+    window.requestAnimationFrame(trackRoute);
+  });
 });
