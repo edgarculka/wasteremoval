@@ -28,7 +28,7 @@ const tiers: PricingTier[] = [
     id: "small",
     ribbon: "1/2 van",
     weightLimit: "Up to 500kg",
-    name: "Small Load",
+    name: "Half Load",
     price: "£230",
     pricePence: 23000,
     tag: "Most popular",
@@ -103,7 +103,7 @@ const tiers: PricingTier[] = [
         />
         <UiCard
           layout="option"
-          title="Small Load"
+          title="Half Load"
           description="1/2 van"
           detail="Up to 500kg"
           price="£230"

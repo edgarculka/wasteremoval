@@ -103,6 +103,36 @@ export const additionalChargeItems: AdditionalChargeItem[] = [
     quoteSelectable: true,
   },
   {
+    id: "armchair",
+    name: "Computer chair",
+    shortName: "Computer chair",
+    category: "POPs upholstered seating",
+    pricePence: 3000,
+    unit: "each",
+    note: "Computer or office chair that can require separate POPs disposal routing.",
+    image: chargeImage(
+      "computer-chair",
+      "Computer chair ready for specialist disposal",
+    ),
+    sourceIds: ["Skip It London", "GOV.UK POPs"],
+    quoteSelectable: true,
+  },
+  {
+    id: "two-seat-sofa",
+    name: "Sofa",
+    shortName: "Sofa",
+    category: "POPs upholstered seating",
+    pricePence: 7500,
+    unit: "each",
+    note: "Upholstered sofas are priced separately because of POPs handling.",
+    image: chargeImage(
+      "two-seat-sofa",
+      "Sofa ready for POPs disposal",
+    ),
+    sourceIds: ["Skip It London", "GOV.UK POPs", "HR Waste"],
+    quoteSelectable: true,
+  },
+  {
     id: "small-tyre",
     name: "Small tyre",
     shortName: "Small tyre",
@@ -313,36 +343,6 @@ export const additionalChargeItems: AdditionalChargeItem[] = [
     quoteSelectable: true,
   },
   {
-    id: "armchair",
-    name: "Computer chair",
-    shortName: "Computer chair",
-    category: "POPs upholstered seating",
-    pricePence: 3000,
-    unit: "each",
-    note: "Computer or office chair that can require separate POPs disposal routing.",
-    image: chargeImage(
-      "armchair",
-      "Computer chair ready for specialist disposal",
-    ),
-    sourceIds: ["Skip It London", "GOV.UK POPs"],
-    quoteSelectable: true,
-  },
-  {
-    id: "two-seat-sofa",
-    name: "Sofa",
-    shortName: "Sofa",
-    category: "POPs upholstered seating",
-    pricePence: 7500,
-    unit: "each",
-    note: "Upholstered sofas are priced separately because of POPs handling.",
-    image: chargeImage(
-      "two-seat-sofa",
-      "Sofa ready for POPs disposal",
-    ),
-    sourceIds: ["Skip It London", "GOV.UK POPs", "HR Waste"],
-    quoteSelectable: true,
-  },
-  {
     id: "three-seat-sofa",
     name: "Three seater sofa",
     shortName: "3 seat sofa",
@@ -433,6 +433,10 @@ export const additionalChargeItems: AdditionalChargeItem[] = [
 
 export const quoteAdditionalChargeItems = additionalChargeItems.filter(
   (item) => item.quoteSelectable,
+);
+
+export const featuredAdditionalChargeItems = additionalChargeItems.filter((item) =>
+  ["mattress", "armchair", "two-seat-sofa"].includes(item.id),
 );
 
 export const additionalChargeCategories = Array.from(

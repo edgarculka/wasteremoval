@@ -126,6 +126,7 @@ const contactCards: ContactCardLink[] = [
 
 const { bookingLoads, openBookingWizard } = useBookingWizard();
 const selectedPricingLoadId = ref<string | null>("small");
+const visibleAdditionalChargeItems = featuredAdditionalChargeItems;
 
 const trustItems = [
   { value: "No hidden fees", label: "Standard waste" },
@@ -160,11 +161,71 @@ function openBookingWithPricingSelection() {
       <UiButton variant="secondary" size="lg" href="#pricing-faq">
         Pricing questions
       </UiButton>
+      <UiButton variant="ghost" size="lg" href="#extra-item-prices">
+        Common extra prices
+      </UiButton>
       <UiButton variant="ghost" size="lg" href="/additional-charges/">
         Extra item charges
       </UiButton>
       <UiButton variant="ghost" size="lg" href="/recycling-and-disposal/">
         Disposal process
+      </UiButton>
+    </template>
+  </UiSection>
+
+  <UiSection
+    id="extra-item-prices"
+    tone="secondary"
+    spacing="md"
+    alignment="left"
+    wide
+    title="Common extra item charges"
+  >
+    <UiText size="lg" tone="low" class="max-w-3xl">
+      These specialist items are added separately to the selected load size when
+      they apply. They are also selectable in the quote form before booking.
+    </UiText>
+
+    <div class="mt-7 grid gap-4 md:grid-cols-3">
+      <UiCard
+        v-for="item in visibleAdditionalChargeItems"
+        :key="item.id"
+        size="sm"
+      >
+        <img
+          :src="item.image.src"
+          :srcset="item.image.srcset"
+          :sizes="item.image.sizes"
+          :alt="item.image.alt"
+          :width="item.image.width"
+          :height="item.image.height"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[4/3] w-full rounded-lg object-cover"
+        />
+        <div class="mt-4 flex items-start justify-between gap-4">
+          <span class="min-w-0">
+            <UiHeading :level="2" size="sm">{{ item.name }}</UiHeading>
+            <UiText size="sm" tone="low" class="mt-1">
+              {{ item.note }}
+            </UiText>
+          </span>
+          <span class="shrink-0 text-right">
+            <UiText as="span" size="lg" weight="bold">
+              {{ formatPounds(item.pricePence) }}
+            </UiText>
+            <UiText as="span" size="xs" tone="low" class="block">
+              per {{ formatChargeUnit(item.unit) }}
+            </UiText>
+          </span>
+        </div>
+      </UiCard>
+    </div>
+
+    <template #cta>
+      <UiButton href="/quote/" size="lg">Add these in quote</UiButton>
+      <UiButton href="/additional-charges/" variant="secondary" size="lg">
+        View all extra charges
       </UiButton>
     </template>
   </UiSection>

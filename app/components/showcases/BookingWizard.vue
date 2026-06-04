@@ -33,7 +33,7 @@ const loads: BookingLoad[] = [
   },
   {
     id: "small",
-    name: "Small Load",
+    name: "Half Load",
     ribbon: "1/2 van",
     weightLimit: "Up to 500kg",
     price: "£230",

@@ -35,7 +35,7 @@
         />
         <UiCard
           layout="option"
-          title="Small Load"
+          title="Half Load"
           description="1/2 van"
           price="£230"
           tag="Most popular"
