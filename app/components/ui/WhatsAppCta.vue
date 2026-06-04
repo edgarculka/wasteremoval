@@ -7,7 +7,7 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   label: "WhatsApp us",
-  ariaLabel: "Chat with DBS Waste on WhatsApp",
+  ariaLabel: "Chat on WhatsApp",
 });
 </script>
 

@@ -48,6 +48,16 @@ usePageSeo({
       url: "/",
       telephone: companyDetails.contact.primaryPhone,
       email: companyDetails.contact.email,
+      identifier: companyDetails.wasteCarrier.registrationNumber,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: [companyDetails.address.buildingNumber, companyDetails.address.street]
+          .filter(Boolean)
+          .join(" "),
+        addressLocality: companyDetails.address.townOrCity,
+        postalCode: companyDetails.address.postcode,
+        addressCountry: companyDetails.address.countryCode,
+      },
       image: "/images/rubbish-removal.webp",
       priceRange: companyDetails.priceRange,
       openingHours: companyDetails.openingHours,
@@ -292,7 +302,7 @@ function openBookingWithPricingSelection() {
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
       heading="Waste removal services"
-      description="From single items to full property clearances, DBS Waste covers common rubbish removal jobs across West London."
+      :description="`From single items to full property clearances, ${companyDetails.tradingName} covers common rubbish removal jobs across West London.`"
       :services="homeServices"
       :locations="homeServiceLocations"
       location-label="Popular service areas"

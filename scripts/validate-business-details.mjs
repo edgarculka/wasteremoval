@@ -23,7 +23,9 @@ const requiredValues = [
   ["street", readStringProperty("street")],
   ["townOrCity", readStringProperty("townOrCity")],
   ["postcode", readStringProperty("postcode")],
-  ["wasteCarrierRegistration", readStringProperty("wasteCarrierRegistration")],
+  ["wasteCarrier.registrationNumber", readStringProperty("registrationNumber")],
+  ["wasteCarrier.registeredCarrierName", readStringProperty("registeredCarrierName")],
+  ["wasteCarrier.expiryDate", readStringProperty("expiryDate")],
 ];
 
 const canonicalPhoneValues = new Map([

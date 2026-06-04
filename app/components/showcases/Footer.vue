@@ -32,6 +32,7 @@
             { label: 'Chiswick', href: '#' },
             { label: 'Ealing', href: '#' },
           ]"
+          business-info-line="DBS BUILDING LTD | trading as DBS-Waste | Environment Agency waste carrier registration CBDU595600"
         />
       </div>
     </section>
@@ -50,6 +51,7 @@
             { label: 'London', href: '#' },
             { label: 'Brentford', href: '#' },
           ]"
+          business-info-line="DBS-Waste"
         />
       </div>
     </section>

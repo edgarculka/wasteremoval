@@ -56,7 +56,7 @@ const contactCards: ContactCardLink[] = [
   >
     <UiThankYou
       heading="Thanks, your booking is confirmed."
-      description="DBS Waste has received your details. The team will confirm the collection information shortly."
+      :description="`${companyDetails.tradingName} has received your details. The team will confirm the collection information shortly.`"
     />
   </UiSection>
 

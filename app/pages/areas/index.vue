@@ -21,8 +21,7 @@ const services: ServicesService[] = seoServices.map((service) => ({
 
 usePageSeo({
   title: "Waste Removal Areas in West London",
-  description:
-    "Find twenty rubbish removal and clearance service areas for DBS Waste across London and West London.",
+  description: `Find twenty rubbish removal and clearance service areas for ${companyDetails.tradingName} across London and West London.`,
   path: "/areas/",
   image: primaryImage,
   structuredData: [
@@ -32,8 +31,7 @@ usePageSeo({
       "@id": "/areas/#collection",
       name: "Waste Removal Areas",
       url: "/areas/",
-      description:
-        "Service area pages for DBS Waste rubbish removal and property clearance.",
+      description: `Service area pages for ${companyDetails.tradingName} rubbish removal and property clearance.`,
       hasPart: seoLocations.map((location) => ({
         "@type": "WebPage",
         name: location.metaTitle,

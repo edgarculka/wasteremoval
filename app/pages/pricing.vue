@@ -19,7 +19,7 @@ interface ContactCardLink {
 const comparisonColumns: SkipComparisonColumn[] = [
   {
     id: "waste-removal",
-    title: "DBS Waste collection",
+    title: `${companyDetails.tradingName} collection`,
     label: "This website",
     featured: true,
   },
@@ -174,7 +174,7 @@ function openBookingWithPricingSelection() {
       lead="Compare"
       accent="collection"
       trailing="options"
-      subhead="DBS Waste is the loaded collection option on this site. Skip hire and council bulky waste are shown as alternatives so you can compare the trade-offs quickly."
+      :subhead="`${companyDetails.tradingName} is the loaded collection option on this site. Skip hire and council bulky waste are shown as alternatives so you can compare the trade-offs quickly.`"
       :columns="comparisonColumns"
       :features="comparisonFeatures"
     />

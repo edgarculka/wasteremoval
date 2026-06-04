@@ -45,6 +45,8 @@ const footerLocationLinks = seoLocations.map((location) => ({
   href: buildAreaPath(location),
 }));
 
+const businessInfoLine = getBusinessInformationLine(companyDetails);
+
 useHead({
   titleTemplate: (title) =>
     title
@@ -61,6 +63,7 @@ useHead({
   <UiWhatsAppCta
     v-if="showStickyWhatsAppCta"
     :href="companyDetails.contact.whatsappHref"
+    :aria-label="`Chat with ${companyDetails.tradingName} on WhatsApp`"
   />
   <UiFooter
     v-if="showFooter"
@@ -69,5 +72,6 @@ useHead({
     :location-links="footerLocationLinks"
     :selected-location-label="selectedLocation.title"
     :brand-name="companyDetails.tradingName"
+    :business-info-line="businessInfoLine"
   />
 </template>

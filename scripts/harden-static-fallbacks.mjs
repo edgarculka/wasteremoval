@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(process.argv[2] || ".output/public");
-const brandName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
+const brandName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS-Waste";
 
 function readHtml(fileName) {
   const filePath = path.join(root, fileName);

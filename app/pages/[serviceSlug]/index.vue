@@ -208,8 +208,9 @@ const workerSrcset =
     :title="`${service.name} details`"
   >
     <UiText size="lg" tone="low" class="max-w-3xl">
-      {{ service.shortDescription }} DBS Waste covers this service across West
-      London, including {{ serviceAreaNames.join(", ") }}.
+      {{ service.shortDescription }} {{ companyDetails.tradingName }} covers
+      this service across West London, including
+      {{ serviceAreaNames.join(", ") }}.
     </UiText>
     <UiTickList :items="service.sellingPoints" />
     <template #visual>

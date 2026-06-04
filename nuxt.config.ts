@@ -4,10 +4,11 @@ import {
   serviceLocationSeoPages,
   serviceSeoPaths,
 } from "./app/utils/seo-pages";
+import { companyDetails } from "./app/utils/company";
 import { normalizeCanonicalPath } from "./app/utils/seo-url";
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://dbs-waste.co.uk";
-const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
+const siteName = process.env.NUXT_PUBLIC_SITE_NAME || companyDetails.tradingName;
 const enableDesignSystem =
   process.env.NUXT_PUBLIC_ENABLE_DESIGN_SYSTEM !== "false";
 

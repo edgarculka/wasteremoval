@@ -3,12 +3,11 @@ const disposalPath = "/recycling-and-disposal/";
 
 usePageSeo({
   title: "Responsible Waste Disposal",
-  description:
-    "How DBS Waste handles rubbish removal loads, restricted items, reusable material, disposal paperwork and responsible collection records.",
+  description: `How ${companyDetails.tradingName} handles rubbish removal loads, restricted items, reusable material, disposal paperwork and responsible collection records.`,
   path: disposalPath,
   image: {
     src: "/images/truck.webp",
-    alt: "DBS Waste rubbish removal truck used for responsible collections",
+    alt: `${companyDetails.tradingName} rubbish removal truck used for responsible collections`,
     width: 1200,
     height: 900,
     srcset:
@@ -22,8 +21,7 @@ usePageSeo({
       "@id": `${disposalPath}#webpage`,
       name: "Responsible Waste Disposal",
       url: disposalPath,
-      description:
-        "How DBS Waste handles rubbish removal loads, restricted items, reusable material, disposal paperwork and responsible collection records.",
+      description: `How ${companyDetails.tradingName} handles rubbish removal loads, restricted items, reusable material, disposal paperwork and responsible collection records.`,
       isPartOf: {
         "@type": "WebSite",
         "@id": "/#website",
@@ -71,7 +69,7 @@ const disposalHighlights = [
 
 const truckImage = {
   src: "/images/truck.webp",
-  alt: "Rubbish removal truck used for DBS Waste collections",
+  alt: `Rubbish removal truck used for ${companyDetails.tradingName} collections`,
   width: 1200,
   height: 900,
   srcset:

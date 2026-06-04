@@ -2,15 +2,14 @@
 const termsPath = "/terms/";
 const lastUpdated = "4 June 2026";
 const companyAddress = formatCompanyAddress(companyDetails.address);
+const businessInformationLine = getBusinessInformationLine(companyDetails);
+const wasteCarrierText = `${getWasteCarrierRegistrationLabel(companyDetails.wasteCarrier)}, registered to ${companyDetails.wasteCarrier.registeredCarrierName}, expires ${companyDetails.wasteCarrier.expiryDate}`;
 const termsImage = {
   src: "/images/hero.jpeg",
-  alt: "DBS Waste rubbish removal team loading waste into a collection van",
+  alt: `${companyDetails.tradingName} rubbish removal team loading waste into a collection van`,
   width: 1200,
   height: 800,
 };
-const wasteCarrierText = companyDetails.wasteCarrierRegistration
-  ? `Environment Agency waste carrier registration ${companyDetails.wasteCarrierRegistration}`
-  : "Environment Agency waste carrier registration details can be provided on request where they apply to the booked service";
 
 const termSections = [
   {
@@ -24,6 +23,7 @@ const termSections = [
     heading: "2. Business Details",
     paragraphs: [
       `${companyDetails.tradingName} is the trading name used by ${companyDetails.legalName}. Our registered contact address is ${companyAddress}.`,
+      businessInformationLine,
       `You can contact us by phone on ${companyDetails.contact.primaryPhoneDisplay}, by email at ${companyDetails.contact.email}, or through ${companyDetails.contact.website}. Our regular opening hours are ${companyDetails.openingHours.join(", ")}.`,
       `Our advertised coverage includes ${companyDetails.serviceAreas.join(", ")} and nearby areas where a collection route is available.`,
     ],
@@ -119,8 +119,7 @@ const termSections = [
 
 usePageSeo({
   title: "Terms of Service",
-  description:
-    "Terms of Service for DBS Waste rubbish removal, bookings, quotes, access, restricted waste, disposal, payments, cancellations and liability.",
+  description: `Terms of Service for ${companyDetails.tradingName} rubbish removal, bookings, quotes, access, restricted waste, disposal, payments, cancellations and liability.`,
   path: termsPath,
   image: termsImage,
   structuredData: [
@@ -130,8 +129,7 @@ usePageSeo({
       "@id": `${termsPath}#webpage`,
       name: "Terms of Service",
       url: termsPath,
-      description:
-        "Terms of Service for DBS Waste rubbish removal, bookings, quotes, access, restricted waste, disposal, payments, cancellations and liability.",
+      description: `Terms of Service for ${companyDetails.tradingName} rubbish removal, bookings, quotes, access, restricted waste, disposal, payments, cancellations and liability.`,
       isPartOf: {
         "@type": "WebSite",
         "@id": "/#website",
@@ -145,6 +143,7 @@ usePageSeo({
         legalName: companyDetails.legalName,
         telephone: companyDetails.contact.primaryPhone,
         email: companyDetails.contact.email,
+        identifier: companyDetails.wasteCarrier.registrationNumber,
         address: {
           "@type": "PostalAddress",
           streetAddress: [companyDetails.address.buildingNumber, companyDetails.address.street]

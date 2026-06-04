@@ -2,9 +2,10 @@
 const privacyPath = "/privacy/";
 const lastUpdated = "4 June 2026";
 const companyAddress = formatCompanyAddress(companyDetails.address);
+const businessInformationLine = getBusinessInformationLine(companyDetails);
 const privacyImage = {
   src: "/images/hero.jpeg",
-  alt: "DBS Waste rubbish removal team loading waste into a collection van",
+  alt: `${companyDetails.tradingName} rubbish removal team loading waste into a collection van`,
   width: 1200,
   height: 800,
 };
@@ -14,6 +15,7 @@ const privacySections = [
     heading: "1. Who We Are",
     paragraphs: [
       `${companyDetails.tradingName} is the trading name used by ${companyDetails.legalName}. We provide rubbish removal, waste collection and clearance services across ${companyDetails.serviceAreas.join(", ")} and nearby areas where a route is available.`,
+      businessInformationLine,
       `For privacy questions, contact us at ${companyDetails.contact.email}, call ${companyDetails.contact.primaryPhoneDisplay}, or write to ${companyAddress}.`,
     ],
   },
@@ -109,8 +111,7 @@ const privacySections = [
 
 usePageSeo({
   title: "Privacy Policy",
-  description:
-    "Privacy Policy for DBS Waste explaining how enquiry, booking, payment, website analytics and waste collection data is collected, used, shared and retained.",
+  description: `Privacy Policy for ${companyDetails.tradingName} explaining how enquiry, booking, payment, website analytics and waste collection data is collected, used, shared and retained.`,
   path: privacyPath,
   image: privacyImage,
   structuredData: [
@@ -120,8 +121,7 @@ usePageSeo({
       "@id": `${privacyPath}#webpage`,
       name: "Privacy Policy",
       url: privacyPath,
-      description:
-        "Privacy Policy for DBS Waste explaining how enquiry, booking, payment, website analytics and waste collection data is collected, used, shared and retained.",
+      description: `Privacy Policy for ${companyDetails.tradingName} explaining how enquiry, booking, payment, website analytics and waste collection data is collected, used, shared and retained.`,
       isPartOf: {
         "@type": "WebSite",
         "@id": "/#website",
@@ -135,6 +135,16 @@ usePageSeo({
         legalName: companyDetails.legalName,
         telephone: companyDetails.contact.primaryPhone,
         email: companyDetails.contact.email,
+        identifier: companyDetails.wasteCarrier.registrationNumber,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: [companyDetails.address.buildingNumber, companyDetails.address.street]
+            .filter(Boolean)
+            .join(" "),
+          addressLocality: companyDetails.address.townOrCity,
+          postalCode: companyDetails.address.postcode,
+          addressCountry: companyDetails.address.countryCode,
+        },
       },
     },
     {

@@ -1,4 +1,5 @@
 import type { SeoFaq, SeoLocation, SeoService } from "~/utils/seo-pages";
+import { companyDetails } from "~/utils/company";
 
 export function buildFaqStructuredData(faqs: SeoFaq[], id?: string) {
   return {
@@ -44,8 +45,7 @@ export const homeFaqs: SeoFaq[] = [
   },
   {
     question: "What areas do you cover?",
-    answer:
-      "DBS Waste covers London and West London service areas including Brentford, Chiswick, Ealing, Acton, Hammersmith, Fulham, Richmond, Hounslow and nearby locations.",
+    answer: `${companyDetails.tradingName} covers London and West London service areas including Brentford, Chiswick, Ealing, Acton, Hammersmith, Fulham, Richmond, Hounslow and nearby locations.`,
   },
   {
     question: "Do I need to hire a skip?",
@@ -148,8 +148,7 @@ export const disposalFaqs: SeoFaq[] = [
 export const thankYouFaqs: SeoFaq[] = [
   {
     question: "Has my booking been received?",
-    answer:
-      "Yes. If you are on this page, DBS Waste has received your booking details. The team will review the request and confirm the collection information.",
+    answer: `Yes. If you are on this page, ${companyDetails.tradingName} has received your booking details. The team will review the request and confirm the collection information.`,
   },
   {
     question: "Will I receive a confirmation message?",
@@ -255,7 +254,7 @@ export function buildServiceLocationFaqs(
     ...service.faqs,
     {
       question: `Is ${service.name.toLowerCase()} available in ${location.name}?`,
-      answer: `Yes. DBS Waste provides ${service.name.toLowerCase()} in ${location.name} and nearby areas including ${location.nearbyAreas.join(", ")}.`,
+      answer: `Yes. ${companyDetails.tradingName} provides ${service.name.toLowerCase()} in ${location.name} and nearby areas including ${location.nearbyAreas.join(", ")}.`,
     },
     {
       question: `What access details help for collections in ${location.name}?`,
@@ -278,7 +277,7 @@ export function buildServiceLocationFaqs(
     {
       question: "Do I need to arrange a skip permit?",
       answer:
-        "No. DBS Waste loads the items and removes them in one visit, so there is no skip permit or on-street skip storage to arrange.",
+        `No. ${companyDetails.tradingName} loads the items and removes them in one visit, so there is no skip permit or on-street skip storage to arrange.`,
     },
     {
       question: "What items should be flagged before booking?",

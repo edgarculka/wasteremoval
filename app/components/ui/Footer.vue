@@ -15,6 +15,7 @@ interface Props {
   locationLinks: FooterLink[];
   selectedLocationLabel?: string;
   brandName?: string;
+  businessInfoLine?: string;
   logoHref?: string;
   ariaLabel?: string;
 }
@@ -50,6 +51,15 @@ withDefaults(defineProps<Props>(), {
             </li>
           </ul>
         </div>
+
+        <UiText
+          v-if="businessInfoLine"
+          size="xs"
+          tone="low"
+          class="max-w-md leading-relaxed"
+        >
+          {{ businessInfoLine }}
+        </UiText>
       </div>
 
       <div class="space-y-4">
