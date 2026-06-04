@@ -5,6 +5,7 @@ export interface ServicesImage {
   width?: number;
   height?: number;
   srcset?: string;
+  avifSrcset?: string;
   sizes?: string;
 }
 
@@ -66,6 +67,13 @@ withDefaults(defineProps<Props>(), {
       >
         <article class="flex h-full flex-col">
           <div class="aspect-[4/3] overflow-hidden rounded-lg border border-border">
+            <picture class="block h-full w-full">
+              <source
+                v-if="service.image.avifSrcset"
+                type="image/avif"
+                :srcset="service.image.avifSrcset"
+                :sizes="service.image.sizes"
+              />
             <img
               :src="service.image.src"
               :alt="service.image.alt"
@@ -77,6 +85,7 @@ withDefaults(defineProps<Props>(), {
               decoding="async"
               class="h-full w-full object-cover"
             />
+            </picture>
           </div>
 
           <div class="mt-5 flex flex-1 flex-col">

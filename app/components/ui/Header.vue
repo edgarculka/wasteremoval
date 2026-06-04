@@ -121,6 +121,8 @@ function toggleMobileChildren(href: string) {
                     :alt="child.image.alt"
                     :width="child.image.width"
                     :height="child.image.height"
+                    loading="lazy"
+                    decoding="async"
                     class="aspect-square w-full rounded-md object-cover"
                     data-no-lightbox
                   />
@@ -273,6 +275,8 @@ function toggleMobileChildren(href: string) {
                 :alt="child.image.alt"
                 :width="child.image.width"
                 :height="child.image.height"
+                loading="lazy"
+                decoding="async"
                 class="aspect-square w-full rounded-md object-cover"
                 data-no-lightbox
               />

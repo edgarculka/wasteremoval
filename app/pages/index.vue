@@ -8,6 +8,7 @@ import type {
   ServicesLocation,
   ServicesService,
 } from "~/components/ui/Services.vue";
+import { bookingLoads } from "~/utils/booking-form";
 
 interface ContactCardLink {
   title: string;
@@ -19,13 +20,31 @@ interface ContactCardLink {
 
 const homeHeroSrcset =
   "/images/rubbish-removal-640.webp 640w, /images/rubbish-removal-960.webp 960w, /images/rubbish-removal.webp 1200w";
+const homeHeroAvifSrcset =
+  "/images/rubbish-removal-640.avif 640w, /images/rubbish-removal-960.avif 960w, /images/rubbish-removal.avif 1200w";
+const homeHeroMobileAvifSrcset =
+  "/images/rubbish-removal-480.avif 480w, /images/rubbish-removal-640.avif 640w";
 const truckSrcset =
   "/images/truck-640.webp 640w, /images/truck-960.webp 960w, /images/truck.webp 1200w";
+const truckAvifSrcset =
+  "/images/truck-640.avif 640w, /images/truck-960.avif 960w, /images/truck.avif 1200w";
 const workerSrcset =
   "/images/waste-removal-service-worker-640.webp 640w, /images/waste-removal-service-worker-960.webp 960w, /images/waste-removal-service-worker.webp 1200w";
 const halfWidthImageSizes =
   "(min-width: 1024px) 50vw, calc(100vw - 48px)";
+const serviceCardImageSizes =
+  "(min-width: 1024px) 18rem, (min-width: 768px) 30vw, 20rem";
 const ctaImageSizes = "(min-width: 1024px) 20rem, calc(100vw - 96px)";
+
+function toServiceCardAvifSrcset(srcset?: string) {
+  return srcset
+    ?.replace(
+      /\/images\/services\/([a-z-]+)-640\.webp 640w/,
+      "/images/services/$1-384.avif 384w, /images/services/$1-640.avif 640w",
+    )
+    .replace(/, \/images\/services\/[a-z-]+-960\.webp 960w/, "")
+    .replace(/, \/images\/services\/[a-z-]+\.webp 1200w/, "");
+}
 
 usePageSeo({
   title: "Same-Day Rubbish Removal in London",
@@ -76,6 +95,21 @@ usePageSeo({
       })),
     },
     buildFaqStructuredData(homeFaqs, "/#faq"),
+  ],
+});
+
+useHead({
+  link: [
+    {
+      rel: "preload",
+      as: "image",
+      href: "/images/rubbish-removal-640.avif",
+      type: "image/avif",
+      media: "(max-width: 767px)",
+      imagesrcset: homeHeroMobileAvifSrcset,
+      imagesizes: halfWidthImageSizes,
+      fetchpriority: "high",
+    },
   ],
 });
 
@@ -168,7 +202,11 @@ const homeServices: ServicesService[] = seoServices.map((service) => ({
   title: service.name,
   description: service.shortDescription,
   href: buildServicePath(service),
-  image: service.image,
+  image: {
+    ...service.image,
+    avifSrcset: toServiceCardAvifSrcset(service.image.srcset),
+    sizes: serviceCardImageSizes,
+  },
   meta: service.searchTerms[0],
   highlights: service.sellingPoints.slice(0, 2),
 }));
@@ -180,12 +218,6 @@ const homeServiceLocations: ServicesLocation[] = seoLocations.map(
   }),
 );
 
-const { bookingLoads, openBookingWizard } = useBookingWizard();
-const selectedPricingLoadId = ref<string | null>(null);
-
-function openBookingWithPricingSelection() {
-  openBookingWizard(selectedPricingLoadId.value);
-}
 </script>
 
 <template>
@@ -195,7 +227,7 @@ function openBookingWithPricingSelection() {
       description="Rubbish removal and property clearance for tenants, landlords, and businesses across West, Central, North and South London. No skip permit needed."
     >
       <template #actions>
-        <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
+        <UiButton href="/quote/" size="lg">Get a quote</UiButton>
         <UiButton
           href="/services/"
           variant="ghost"
@@ -208,17 +240,31 @@ function openBookingWithPricingSelection() {
         </UiButton>
       </template>
       <template #visual>
-        <img
-          src="/images/rubbish-removal.webp"
-          alt="Rubbish removal illustration"
-          width="1200"
-          height="900"
-          :srcset="homeHeroSrcset"
-          :sizes="halfWidthImageSizes"
-          fetchpriority="high"
-          decoding="async"
-          class="aspect-video h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
-        />
+        <picture>
+          <source
+            media="(max-width: 767px)"
+            type="image/avif"
+            :srcset="homeHeroMobileAvifSrcset"
+            :sizes="halfWidthImageSizes"
+          />
+          <source
+            type="image/avif"
+            :srcset="homeHeroAvifSrcset"
+            :sizes="halfWidthImageSizes"
+          />
+          <img
+            src="/images/rubbish-removal.webp"
+            alt="Rubbish removal illustration"
+            width="1200"
+            height="900"
+            :srcset="homeHeroSrcset"
+            :sizes="halfWidthImageSizes"
+            fetchpriority="high"
+            loading="eager"
+            decoding="sync"
+            class="aspect-video h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
+          />
+        </picture>
       </template>
     </UiHero>
     <UiTrustStrip :items="trustItems" class="mt-8 max-w-3xl" />
@@ -237,14 +283,11 @@ function openBookingWithPricingSelection() {
         lead="From"
         accent="GBP 40"
       trailing="per clearance"
-      selectable
       :tiers="bookingLoads"
-      :selected-tier-id="selectedPricingLoadId"
-      @select="selectedPricingLoadId = $event"
     />
 
     <template #cta>
-      <UiButton size="lg" @click="openBookingWithPricingSelection">
+      <UiButton href="/quote/" size="lg">
         Book a slot
       </UiButton>
     </template>
@@ -261,21 +304,28 @@ function openBookingWithPricingSelection() {
     </template>
     <template #visual>
       <div class="max-w-180 aspect-[4/3] mx-auto">
-        <img
-          src="/images/truck.webp"
-          alt="Rubbish removal truck illustration"
-          width="1200"
-          height="900"
-          :srcset="truckSrcset"
-          :sizes="halfWidthImageSizes"
-          loading="lazy"
-          decoding="async"
-          class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
-        />
+        <picture>
+          <source
+            type="image/avif"
+            :srcset="truckAvifSrcset"
+            :sizes="halfWidthImageSizes"
+          />
+          <img
+            src="/images/truck.webp"
+            alt="Rubbish removal truck illustration"
+            width="1200"
+            height="900"
+            :srcset="truckSrcset"
+            :sizes="halfWidthImageSizes"
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
+          />
+        </picture>
       </div>
     </template>
     <template #cta>
-      <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
+      <UiButton href="/quote/" size="lg">Get a quote</UiButton>
       <UiButton href="/services/" variant="secondary" size="lg">
         See services
         <template #iconRight>
@@ -350,7 +400,7 @@ function openBookingWithPricingSelection() {
       image-alt="Waste removal worker ready for a booked collection"
     >
       <template #cta>
-        <UiButton size="lg" variant="secondary" @click="openBookingWizard">
+        <UiButton href="/quote/" size="lg" variant="secondary">
           Get a quote
         </UiButton>
       </template>

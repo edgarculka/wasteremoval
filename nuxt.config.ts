@@ -232,16 +232,6 @@ export default defineNuxtConfig({
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
         { rel: "manifest", href: "/site.webmanifest" },
       ],
-      script: [
-        {
-          type: "text/javascript",
-          innerHTML: `(function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "x0tf1bhgic");`,
-        },
-      ],
     },
   },
 
@@ -258,6 +248,10 @@ export default defineNuxtConfig({
       routes: prerenderRoutes,
       ignore: enableDesignSystem ? [] : [/^\/design-system(?:\/|$)/],
     },
+  },
+
+  routeRules: {
+    "/": { prerender: true, noScripts: true },
   },
 
   sitemap: {

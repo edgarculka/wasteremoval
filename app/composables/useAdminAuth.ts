@@ -1,12 +1,15 @@
 import type { Auth, User } from "firebase/auth";
-import {
-  getRedirectResult,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signInWithRedirect,
-  signOut,
-} from "firebase/auth";
+
+type FirebaseAuthModule = typeof import("firebase/auth");
+
+async function getAdminAuthServices() {
+  const [services, authModule] = await Promise.all([
+    useFirebaseClient(),
+    import("firebase/auth"),
+  ]);
+
+  return services ? { ...services, authModule } : null;
+}
 
 export function useAdminAuth() {
   const runtimeConfig = useRuntimeConfig();
@@ -48,63 +51,77 @@ export function useAdminAuth() {
     }
 
     authError.value = invalidMessage;
+    const { signOut } = await import("firebase/auth");
     await signOut(auth);
     user.value = null;
     return false;
   }
 
   onMounted(() => {
-    const services = useFirebaseClient();
-    if (!services) return;
+    let unsubscribe: (() => void) | null = null;
+    let isActive = true;
 
     ready.value = false;
 
-    const unsubscribe = onAuthStateChanged(services.auth, async (nextUser) => {
-      await acceptAdminUser(
+    void getAdminAuthServices().then((services) => {
+      if (!services || !isActive) return;
+      const { authModule } = services;
+
+      unsubscribe = authModule.onAuthStateChanged(
         services.auth,
-        nextUser,
-        "This Google account cannot access admin.",
+        async (nextUser) => {
+          await acceptAdminUser(
+            services.auth,
+            nextUser,
+            "This Google account cannot access admin.",
+          );
+          ready.value = true;
+          isSigningIn.value = false;
+        },
       );
-      ready.value = true;
-      isSigningIn.value = false;
+
+      void authModule
+        .getRedirectResult(services.auth)
+        .then(async (result) => {
+          if (!result?.user) return;
+
+          await acceptAdminUser(
+            services.auth,
+            result.user,
+            "This Google account cannot access admin.",
+          );
+          ready.value = true;
+        })
+        .catch((error) => {
+          authError.value =
+            error instanceof Error
+              ? error.message
+              : "Google sign-in was not completed.";
+          ready.value = true;
+        })
+        .finally(() => {
+          isSigningIn.value = false;
+        });
     });
 
-    void getRedirectResult(services.auth)
-      .then(async (result) => {
-        if (!result?.user) return;
-
-        await acceptAdminUser(
-          services.auth,
-          result.user,
-          "This Google account cannot access admin.",
-        );
-        ready.value = true;
-      })
-      .catch((error) => {
-        authError.value =
-          error instanceof Error
-            ? error.message
-            : "Google sign-in was not completed.";
-        ready.value = true;
-      })
-      .finally(() => {
-        isSigningIn.value = false;
-      });
-
-    onUnmounted(unsubscribe);
+    onUnmounted(() => {
+      isActive = false;
+      unsubscribe?.();
+    });
   });
 
   async function signInWithGoogle() {
-    const services = useFirebaseClient();
+    const services = await getAdminAuthServices();
     if (!services) return;
+    const { authModule } = services;
 
     isSigningIn.value = true;
     authError.value = "";
 
     try {
-      const provider = new GoogleAuthProvider();
+      const provider = new authModule.GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-      const result = await signInWithPopup(services.auth, provider);
+      const result = await authModule.signInWithPopup(services.auth, provider);
 
       await acceptAdminUser(
         services.auth,
@@ -119,9 +136,9 @@ export function useAdminAuth() {
         "code" in error &&
         String(error.code).includes("popup")
       ) {
-        const provider = new GoogleAuthProvider();
+        const provider = new authModule.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: "select_account" });
-        await signInWithRedirect(services.auth, provider);
+        await authModule.signInWithRedirect(services.auth, provider);
         return;
       }
 
@@ -134,12 +151,12 @@ export function useAdminAuth() {
   }
 
   async function signOutAdmin() {
-    const services = useFirebaseClient();
+    const services = await getAdminAuthServices();
     user.value = null;
     authError.value = "";
     await navigateTo("/");
     if (!services) return;
-    await signOut(services.auth);
+    await services.authModule.signOut(services.auth);
   }
 
   return {
