@@ -66,17 +66,28 @@ const targets = [
 ];
 
 const additionalChargeSlugs = [
-  "fluorescent-tubes",
-  "fridge-freezer",
-  "gas-bottle-fire-extinguisher",
+  "adhesive-tin",
+  "armchair",
+  "cooker",
+  "dishwasher",
+  "fire-extinguisher",
+  "gas-bottle",
+  "large-fridge",
+  "large-tyre",
   "mattress",
-  "paint-tins",
-  "rubble-plasterboard",
+  "paint-pot",
+  "pops-full-load",
+  "rubber-tracks",
+  "scrap-conveyor-belt",
+  "scrap-machine-track",
   "small-electricals",
+  "small-fridge",
+  "small-pops",
+  "small-tyre",
+  "three-seat-sofa",
   "tv-monitor",
-  "tyres",
-  "upholstered-furniture",
-  "white-appliances",
+  "two-seat-sofa",
+  "washing-machine",
 ];
 
 for (const slug of additionalChargeSlugs) {

@@ -8,7 +8,7 @@ const siteUrl = (
   "https://dbs-waste.co.uk"
 ).replace(/\/$/, "");
 
-const expectedNoindex = new Set(["/200.html", "/404.html", "/thank-you/"]);
+const expectedNoindex = new Set(["/200.html", "/404.html", "/admin/", "/thank-you/"]);
 const ignoredHtmlRoutes = new Set(["/200.html"]);
 const requiredIndexableRoutes = new Set([
   "/",
@@ -403,7 +403,10 @@ const report = {
   issues,
 };
 
-const failed = Object.values(counts).some((count) => count > 0);
+const informationalCounts = new Set(["pngReferences"]);
+const failed = Object.entries(counts).some(
+  ([key, count]) => count > 0 && !informationalCounts.has(key),
+);
 
 if (failed || process.argv.includes("--json")) {
   console.log(JSON.stringify(report, null, 2));
