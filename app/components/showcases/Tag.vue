@@ -37,14 +37,14 @@
           layout="option"
           title="Small Load"
           description="1/2 van"
-          price="£180"
+          price="£230"
           tag="Most popular"
         />
         <UiCard
           layout="option"
           title="Full Load"
           description="Full van"
-          price="£300"
+          price="£360"
         />
       </div>
     </section>

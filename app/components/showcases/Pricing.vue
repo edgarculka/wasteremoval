@@ -29,8 +29,8 @@ const tiers: PricingTier[] = [
     ribbon: "1/2 van",
     weightLimit: "Up to 500kg",
     name: "Small Load",
-    price: "£180",
-    pricePence: 18000,
+    price: "£230",
+    pricePence: 23000,
     tag: "Most popular",
     imageSrc: "/images/2van.svg",
     imageAlt: "Half-load van",
@@ -50,8 +50,8 @@ const tiers: PricingTier[] = [
     ribbon: "Full van",
     weightLimit: "Up to 1,000kg",
     name: "Full Load",
-    price: "£300",
-    pricePence: 30000,
+    price: "£360",
+    pricePence: 36000,
     imageSrc: "/images/4van.svg",
     imageAlt: "Full-load van",
   },
@@ -106,7 +106,7 @@ const tiers: PricingTier[] = [
           title="Small Load"
           description="1/2 van"
           detail="Up to 500kg"
-          price="£180"
+          price="£230"
           tag="Most popular"
         />
         <UiCard
@@ -114,7 +114,7 @@ const tiers: PricingTier[] = [
           title="Full Load"
           description="Full van"
           detail="Up to 1,000kg"
-          price="£300"
+          price="£360"
         />
       </div>
     </section>
