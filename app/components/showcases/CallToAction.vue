@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const points = [
-  "Same-day availability",
+  "Same-day slots where possible",
   "Fully licensed waste carriers",
   "No skip permit needed",
-  "Fixed price quote in under 5 minutes",
+  "Clear price before loading",
 ];
 
 const workerImage = "/images/waste-removal-service-worker.webp";
@@ -36,7 +36,7 @@ const workerAlt = "Waste removal worker holding a black bin bag";
       <div class="mt-4 overflow-hidden rounded-md border border-border">
         <UiSection tone="background" spacing="md" alignment="left">
           <UiCallToAction
-            heading="Book your clearance — same day, fixed price."
+            heading="Book your clearance with clear pricing."
             :points="points"
             :rating-value="5"
             rating-label="500+ five-star reviews"
@@ -81,7 +81,7 @@ const workerAlt = "Waste removal worker holding a black bin bag";
       <div class="mt-4 overflow-hidden rounded-md border border-border">
         <UiSection tone="background" spacing="md" alignment="left">
           <UiCallToAction
-            heading="Book your clearance — same day, fixed price."
+            heading="Book your clearance with clear pricing."
             :points="points"
             :rating-value="5"
             rating-label="500+ five-star reviews"

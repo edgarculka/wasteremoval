@@ -143,7 +143,7 @@ const workerSrcset =
           :sizes="service.image.sizes"
           fetchpriority="high"
           decoding="async"
-          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </template>
     </UiHero>
@@ -195,7 +195,7 @@ const workerSrcset =
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServiceProcess
       eyebrow="How it works"
-      :heading="`${service.name} without skip hire delays`"
+      :heading="`${service.name} without hiring a skip`"
       description="A simple collection flow for West London homes, landlords and businesses."
       :steps="serviceProcessSteps"
     />
@@ -214,7 +214,7 @@ const workerSrcset =
     <UiTickList :items="service.sellingPoints" />
     <template #visual>
       <div
-        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <UiHeading :level="3" size="md">Useful before booking</UiHeading>
         <UiText tone="low" class="mt-2">
@@ -251,7 +251,7 @@ const workerSrcset =
   >
     <UiServices
       heading="Other clearance services"
-      description="More rubbish removal options available across West London."
+      description="Other rubbish removal options available across West London."
       :services="relatedServices"
       :locations="locationLinks"
       location-label="Available in"

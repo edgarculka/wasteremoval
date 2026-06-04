@@ -97,7 +97,7 @@ export const seoServices: SeoService[] = [
       "landlord waste clearance",
     ],
     sellingPoints: [
-      "Same-day and next-day availability where possible",
+      "Same-day and next-day slots where possible",
       "Furniture, appliances and bagged waste removed",
       "Suitable for tenants, landlords and letting agents",
     ],
@@ -452,7 +452,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste removal services for properties around Brentford, including homes, flats and rental properties.",
     description:
-      "Brentford has a mix of riverside flats, family homes and rental properties, so clearance pages can reference access, parking and time-sensitive property handovers.",
+      "Brentford collections often involve riverside flats, family homes and rental properties where access, parking and handover timing need to be clear before arrival.",
     image: {
       src: "/images/london.webp",
       alt: "Waste removal service area in Brentford",
@@ -495,7 +495,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Chiswick homes, flats, gardens and commercial properties.",
     description:
-      "Chiswick location pages can highlight careful property access, residential streets, garden waste and clearances for busy households.",
+      "Chiswick collections often need careful access planning on residential streets, especially for garden waste, bulky items and busy household clearances.",
     image: {
       src: "/images/london.webp",
       alt: "Waste removal service area in Chiswick",
@@ -538,7 +538,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Ealing homes, gardens, offices and rental properties.",
     description:
-      "Ealing pages can cover a broader mix of domestic, landlord and business enquiries across a large West London borough.",
+      "Ealing collections cover a broad mix of domestic, landlord and business waste jobs across a large West London borough.",
     image: {
       src: "/images/london.webp",
       alt: "Waste removal service area in Ealing",
@@ -610,7 +610,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Hammersmith flats, offices, rental properties and family homes.",
     description:
-      "Hammersmith pages can reference flats, offices, riverside properties and busy loading routes where timing and access notes are important.",
+      "Hammersmith collections often involve flats, offices, riverside properties and busy loading routes where timing and access notes matter.",
     image: londonAreaImage("Hammersmith"),
     county: "Greater London",
     region: "West London",
@@ -642,7 +642,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Fulham homes, garden flats, rental properties and commercial premises.",
     description:
-      "Fulham pages can cover garden flats, terraces, mansion blocks and rental property clearances where careful access planning is useful.",
+      "Fulham collections often involve garden flats, terraces, mansion blocks and rental properties where careful access planning is useful.",
     image: londonAreaImage("Fulham"),
     county: "Greater London",
     region: "West London",
@@ -674,7 +674,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Shepherd's Bush flats, homes, shops and rental properties.",
     description:
-      "Shepherd's Bush pages can cover flats, shops, shared houses and landlord clearances where parking and loading information is helpful.",
+      "Shepherd's Bush collections often involve flats, shops, shared houses and landlord clearances where parking and loading information helps.",
     image: londonAreaImage("Shepherd's Bush"),
     county: "Greater London",
     region: "West London",
@@ -709,7 +709,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Kensington flats, townhouses, offices and managed rental properties.",
     description:
-      "Kensington pages can reference mansion blocks, townhouses, office premises and managed properties where careful timing and tidy loading matter.",
+      "Kensington collections often involve mansion blocks, townhouses, office premises and managed properties where careful timing and tidy loading matter.",
     image: londonAreaImage("Kensington"),
     county: "Greater London",
     region: "West London",
@@ -741,7 +741,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Chelsea flats, townhouses, offices and managed rental properties.",
     description:
-      "Chelsea pages can cover bulky furniture, tenancy clearances and office waste for properties where access windows and parking details should be confirmed.",
+      "Chelsea collections often involve bulky furniture, tenancy clearances and office waste where access windows and parking details should be confirmed.",
     image: londonAreaImage("Chelsea"),
     county: "Greater London",
     region: "West London",
@@ -773,7 +773,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Notting Hill flats, terraces, shops and rental properties.",
     description:
-      "Notting Hill pages can cover converted flats, terraces, shop premises and rental clearances where controlled parking and access are common considerations.",
+      "Notting Hill collections often involve converted flats, terraces, shop premises and rental clearances where controlled parking and access need planning.",
     image: londonAreaImage("Notting Hill"),
     county: "Greater London",
     region: "West London",
@@ -805,7 +805,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Kew homes, garden properties, flats and rental clearances.",
     description:
-      "Kew pages can highlight garden waste, household clearances and rental property collections around residential streets and riverside homes.",
+      "Kew collections often involve garden waste, household clearances and rental properties around residential streets and riverside homes.",
     image: londonAreaImage("Kew"),
     county: "Greater London",
     region: "West London",
@@ -837,7 +837,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Richmond homes, gardens, offices, flats and rental properties.",
     description:
-      "Richmond pages can cover household, garden and office clearances across residential streets, riverside properties and managed rentals.",
+      "Richmond collections cover household, garden and office clearances across residential streets, riverside properties and managed rentals.",
     image: londonAreaImage("Richmond"),
     county: "Greater London",
     region: "South West London",
@@ -869,7 +869,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Twickenham homes, gardens, garages and rental properties.",
     description:
-      "Twickenham pages can support garden waste, house clearance, furniture removal and landlord jobs across family homes and flats.",
+      "Twickenham collections cover garden waste, house clearance, furniture removal and landlord jobs across family homes and flats.",
     image: londonAreaImage("Twickenham"),
     county: "Greater London",
     region: "South West London",
@@ -901,7 +901,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Isleworth homes, flats, gardens, garages and rental properties.",
     description:
-      "Isleworth pages can cover household clutter, garden waste, garage clearances and landlord jobs around residential streets and estates.",
+      "Isleworth collections cover household clutter, garden waste, garage clearances and landlord jobs around residential streets and estates.",
     image: londonAreaImage("Isleworth"),
     county: "Greater London",
     region: "West London",
@@ -933,7 +933,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Hounslow homes, gardens, offices, garages and rental properties.",
     description:
-      "Hounslow pages can cover household, garden, builders and office waste across a wide mix of homes, flats and commercial premises.",
+      "Hounslow collections cover household, garden, builders and office waste across a wide mix of homes, flats and commercial premises.",
     image: londonAreaImage("Hounslow"),
     county: "Greater London",
     region: "West London",
@@ -965,7 +965,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Hanwell homes, gardens, garages, flats and rental properties.",
     description:
-      "Hanwell pages can cover family homes, garden waste, garage clearances and rental property jobs close to the wider Ealing service area.",
+      "Hanwell collections cover family homes, garden waste, garage clearances and rental property jobs close to the wider Ealing service area.",
     image: londonAreaImage("Hanwell"),
     county: "Greater London",
     region: "West London",
@@ -997,7 +997,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Greenford homes, garages, gardens, offices and rental properties.",
     description:
-      "Greenford pages can support domestic clearances, garage clutter, garden waste and small business collections across West London.",
+      "Greenford collections cover domestic clearances, garage clutter, garden waste and small business collections across West London.",
     image: londonAreaImage("Greenford"),
     county: "Greater London",
     region: "West London",
@@ -1029,7 +1029,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Waste clearance for Southall homes, shops, offices, garages and rental properties.",
     description:
-      "Southall pages can cover household waste, shop clearances, office items and landlord collections across homes, high streets and estates.",
+      "Southall collections cover household waste, shop clearances, office items and landlord jobs across homes, high streets and estates.",
     image: londonAreaImage("Southall"),
     county: "Greater London",
     region: "West London",
@@ -1061,7 +1061,7 @@ export const seoLocations: SeoLocation[] = [
     shortDescription:
       "Clearance services for Hayes homes, gardens, garages, offices and rental properties.",
     description:
-      "Hayes pages can cover domestic rubbish, builders waste, garage clearances and small business collections around West London and Hillingdon borders.",
+      "Hayes collections cover domestic rubbish, builders waste, garage clearances and small business jobs around West London and the Hillingdon border.",
     image: londonAreaImage("Hayes"),
     county: "Greater London",
     region: "West London",

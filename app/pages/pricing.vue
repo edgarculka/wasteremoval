@@ -53,9 +53,9 @@ const comparisonFeatures: SkipComparisonFeature[] = [
     },
   },
   {
-    label: "Same-day options",
+    label: "Short-notice options",
     values: {
-      "waste-removal": true,
+      "waste-removal": "Where possible",
       "skip-hire": "Often delayed",
       council: false,
     },
@@ -158,7 +158,7 @@ function openBookingWithPricingSelection() {
         Book selected load
       </UiButton>
       <UiButton variant="secondary" size="lg" href="#pricing-faq">
-        Ask a pricing question
+        Pricing questions
       </UiButton>
       <UiButton variant="ghost" size="lg" href="/additional-charges/">
         Extra item charges
@@ -190,7 +190,7 @@ function openBookingWithPricingSelection() {
     <UiFaq :items="pricingFaqs" />
     <template #visual>
       <div
-        class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <UiHeading :level="3" size="md">Need a hand pricing it?</UiHeading>
         <UiText tone="low" class="mt-2">

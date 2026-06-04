@@ -6,6 +6,8 @@ const primaryLinks = [
   { label: "Disposal", href: "/recycling-and-disposal/" },
   { label: "Extra charges", href: "/additional-charges/" },
   { label: "Pricing", href: "/pricing/" },
+  { label: "Terms", href: "/terms/" },
+  { label: "Privacy", href: "/privacy/" },
 ];
 
 const route = useRoute();
@@ -20,6 +22,15 @@ const showFooter = computed(
     !isFullscreenDesignSystem.value &&
     !route.path.startsWith("/quote") &&
     !route.path.startsWith("/admin"),
+);
+
+const stickyWhatsAppExcludedPrefixes = ["/quote", "/admin", "/design-system"];
+
+const showStickyWhatsAppCta = computed(
+  () =>
+    !stickyWhatsAppExcludedPrefixes.some((prefix) =>
+      route.path.startsWith(prefix),
+    ),
 );
 
 const footerServiceLinks = computed(() =>
@@ -47,6 +58,10 @@ useHead({
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <UiWhatsAppCta
+    v-if="showStickyWhatsAppCta"
+    :href="companyDetails.contact.whatsappHref"
+  />
   <UiFooter
     v-if="showFooter"
     :primary-links="primaryLinks"

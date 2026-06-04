@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const sellingPoints = [
-  "Same-day and next-day availability where possible",
+  "Same-day and next-day slots where possible",
   "Furniture, appliances and bagged waste removed",
   "Suitable for tenants, landlords and letting agents",
-  "Fully licensed waste carriers — recycled where possible",
+  "Licensed waste carrier, with recycling separated where practical",
 ];
 
 const shortItems = ["Quick", "Reliable", "Licensed"];

@@ -34,7 +34,7 @@ const dateC = ref<string | null>(null);
     </section>
 
     <section>
-      <UiHeading :level="2" size="sm">Same-day allowed</UiHeading>
+      <UiHeading :level="2" size="sm">No lead time</UiHeading>
       <UiText size="sm" tone="low" class="mt-2">
         <code>:min-days-ahead="0"</code> lets the user pick today.
       </UiText>

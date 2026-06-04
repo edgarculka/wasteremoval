@@ -27,6 +27,7 @@ import ShowcasesTickList from "~/components/showcases/TickList.vue";
 import ShowcasesTimePicker from "~/components/showcases/TimePicker.vue";
 import ShowcasesTrustStrip from "~/components/showcases/TrustStrip.vue";
 import ShowcasesTypography from "~/components/showcases/Typography.vue";
+import ShowcasesWhatsAppCta from "~/components/showcases/WhatsAppCta.vue";
 
 definePageMeta({
   layout: false,
@@ -61,6 +62,7 @@ const showcases = {
   "time-picker": ShowcasesTimePicker,
   "trust-strip": ShowcasesTrustStrip,
   typography: ShowcasesTypography,
+  "whatsapp-cta": ShowcasesWhatsAppCta,
 } as const;
 
 type ShowcaseSlug = keyof typeof showcases;

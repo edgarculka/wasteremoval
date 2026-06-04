@@ -32,8 +32,8 @@ const features: SkipComparisonFeature[] = [
     values: { "waste-removal": true, "skip-hire": false },
   },
   {
-    label: "Same-day options",
-    values: { "waste-removal": true, "skip-hire": "Often delayed" },
+    label: "Short-notice options",
+    values: { "waste-removal": "Where possible", "skip-hire": "Varies" },
   },
   {
     label: "No container left outside",

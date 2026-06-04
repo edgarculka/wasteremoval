@@ -17,13 +17,13 @@
             <UiRating :value="5">Five star rating</UiRating>
           </template>
           <UiHero
-            heading="Unbeatable rubbish removal."
-            description="Leading the charge in clearing what others can't. Same-day rubbish removal and property clearance for tenants, landlords, and businesses."
+            heading="Waste removal, on your schedule."
+            description="Rubbish removal and property clearance for tenants, landlords and businesses across West London."
           >
             <template #actions>
-              <UiButton size="lg">Try for free</UiButton>
+              <UiButton size="lg">Get a quote</UiButton>
               <UiButton variant="ghost" size="lg">
-                Get a demo
+                View services
                 <template #iconRight>
                   <IconsChevronRight />
                 </template>

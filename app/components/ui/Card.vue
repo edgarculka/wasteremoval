@@ -83,10 +83,10 @@ const sizeClasses: Record<CardSize, string> = {
 };
 
 const cardClasses = computed(() => [
-  "relative block w-full rounded-lg border text-left shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)] transition disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
+  "relative block w-full rounded-lg border text-left shadow-[0_0.75rem_2rem_rgb(var(--shadow-color)/0.08)] transition disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
   sizeClasses[props.size],
   props.selected
-    ? "border-foreground bg-primary text-primary-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.16)]"
+    ? "border-foreground bg-primary text-primary-foreground shadow-[0_0.75rem_2rem_rgb(var(--shadow-color)/0.16)]"
     : `${toneClasses[props.tone]} border-border`,
   props.selectable || props.href ? "cursor-pointer" : "",
   props.selectable || props.href

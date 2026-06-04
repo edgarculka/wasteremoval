@@ -35,6 +35,7 @@ const groups = [
       { label: "Sidebar", href: "/design-system/sidebar" },
       { label: "Tick list", href: "/design-system/tick-list" },
       { label: "Time picker", href: "/design-system/time-picker" },
+      { label: "WhatsApp CTA", href: "/design-system/whatsapp-cta" },
     ],
   },
   {
@@ -49,9 +50,11 @@ const groups = [
   {
     heading: "Foundations",
     links: [
-      { label: "Typography", href: "/design-system/typography" },
+      { label: "Colors", href: "/design-system/colors" },
       { label: "Icons", href: "/design-system/icons" },
       { label: "Logo", href: "/design-system/logo" },
+      { label: "Tone of voice", href: "/design-system/tone-of-voice" },
+      { label: "Typography", href: "/design-system/typography" },
     ],
   },
 ];

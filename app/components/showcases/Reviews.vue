@@ -12,7 +12,7 @@ const reviews: ReviewItem[] = [
     author: "Tom Bradley",
     meta: "Sofa removal",
     rating: 5,
-    quote: "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
+    quote: "Clear pricing, friendly crew, and careful with a bulky sofa.",
   },
   {
     author: "Maya Roberts",

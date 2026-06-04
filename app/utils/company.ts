@@ -84,3 +84,17 @@ export const companyDetails: CompanyDetails = {
   priceRange: "GBP 40+",
   wasteCarrierRegistration: "",
 };
+
+export function formatCompanyAddress(address: UkAddress) {
+  return [
+    address.buildingName,
+    [address.buildingNumber, address.street].filter(Boolean).join(" "),
+    address.addressLine2,
+    address.townOrCity,
+    address.county,
+    address.postcode,
+    address.country,
+  ]
+    .filter(Boolean)
+    .join(", ");
+}

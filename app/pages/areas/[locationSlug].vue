@@ -143,7 +143,7 @@ usePageSeo({
           :sizes="location.image.sizes"
           fetchpriority="high"
           decoding="async"
-          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </template>
     </UiHero>
@@ -191,7 +191,7 @@ usePageSeo({
     <UiTickList :items="location.accessNotes" />
     <template #visual>
       <div
-        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <UiHeading :level="3" size="md">Common local searches</UiHeading>
         <div class="mt-5 grid gap-3">

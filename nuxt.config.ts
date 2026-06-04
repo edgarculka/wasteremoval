@@ -8,7 +8,42 @@ import { normalizeCanonicalPath } from "./app/utils/seo-url";
 
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || "https://dbs-waste.co.uk";
 const siteName = process.env.NUXT_PUBLIC_SITE_NAME || "DBS Waste";
-const enableDesignSystem = process.env.NUXT_PUBLIC_ENABLE_DESIGN_SYSTEM === "true";
+const enableDesignSystem =
+  process.env.NUXT_PUBLIC_ENABLE_DESIGN_SYSTEM !== "false";
+
+const designSystemRoutes = [
+  "/design-system/",
+  "/design-system/booking-wizard/",
+  "/design-system/buttons/",
+  "/design-system/calendar/",
+  "/design-system/call-to-action/",
+  "/design-system/card/",
+  "/design-system/colors/",
+  "/design-system/faq/",
+  "/design-system/footer/",
+  "/design-system/header/",
+  "/design-system/hero/",
+  "/design-system/icons/",
+  "/design-system/input/",
+  "/design-system/logo/",
+  "/design-system/marquee/",
+  "/design-system/pricing/",
+  "/design-system/rating/",
+  "/design-system/reviews/",
+  "/design-system/section/",
+  "/design-system/service-coverage/",
+  "/design-system/service-process/",
+  "/design-system/services/",
+  "/design-system/sidebar/",
+  "/design-system/skip-comparison/",
+  "/design-system/tag/",
+  "/design-system/thank-you/",
+  "/design-system/tick-list/",
+  "/design-system/time-picker/",
+  "/design-system/tone-of-voice/",
+  "/design-system/trust-strip/",
+  "/design-system/typography/",
+];
 
 const commercialSitemapPaths = [
   "/",
@@ -18,6 +53,8 @@ const commercialSitemapPaths = [
   "/areas/",
   "/additional-charges/",
   "/recycling-and-disposal/",
+  "/terms/",
+  "/privacy/",
   ...areaSeoPaths,
   ...serviceSeoPaths,
   ...serviceLocationSeoPages.map((page) => page.path),
@@ -29,7 +66,7 @@ const prerenderRoutes = [
   "/admin/",
   "/robots.txt",
   "/sitemap.xml",
-  ...(enableDesignSystem ? ["/design-system/"] : []),
+  ...(enableDesignSystem ? designSystemRoutes : []),
 ];
 
 export default defineNuxtConfig({

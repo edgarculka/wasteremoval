@@ -13,7 +13,7 @@ defineProps<Props>();
 
 <template>
   <dl
-    class="grid w-full gap-3 rounded-lg border border-border bg-secondary p-3 shadow-[0_1rem_3rem_rgba(6,53,31,0.08)] sm:grid-cols-3"
+    class="grid w-full gap-3 rounded-lg border border-border bg-secondary p-3 shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.08)] sm:grid-cols-3"
   >
     <div
       v-for="item in items"

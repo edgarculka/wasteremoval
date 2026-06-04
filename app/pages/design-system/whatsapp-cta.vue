@@ -4,7 +4,7 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Trust strip - Design System",
+  title: "WhatsApp CTA - Design System",
   robots: "noindex, nofollow",
 });
 </script>
@@ -14,9 +14,9 @@ useSeoMeta({
     <div class="absolute right-0 top-0">
       <DsFullscreenToggle
         mode="expand"
-        href="/design-system/fullscreen/trust-strip"
+        href="/design-system/fullscreen/whatsapp-cta"
       />
     </div>
-    <ShowcasesTrustStrip />
+    <ShowcasesWhatsAppCta />
   </div>
 </template>

@@ -147,9 +147,9 @@ export const disposalFaqs: SeoFaq[] = [
 
 export const thankYouFaqs: SeoFaq[] = [
   {
-    question: "Has my booking definitely been made?",
+    question: "Has my booking been received?",
     answer:
-      "Yes. If you are on this page, DBS Waste has received your booking details and reserved the request for the team to review.",
+      "Yes. If you are on this page, DBS Waste has received your booking details. The team will review the request and confirm the collection information.",
   },
   {
     question: "Will I receive a confirmation message?",

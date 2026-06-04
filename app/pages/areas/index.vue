@@ -97,7 +97,7 @@ usePageSeo({
           :sizes="primaryImage.sizes"
           fetchpriority="high"
           decoding="async"
-          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </template>
     </UiHero>
@@ -147,7 +147,7 @@ usePageSeo({
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
       heading="Services available across these areas"
-      description="Each service has a dedicated local page across the expanded London and West London coverage list."
+      description="Each service has a local page with access notes, nearby areas and practical collection details."
       :services="services"
       cta-label="View service hub"
     />

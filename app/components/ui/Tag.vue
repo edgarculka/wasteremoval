@@ -18,7 +18,7 @@ const variantClasses: Record<TagVariant, string> = {
 
 <template>
   <span
-    :class="`inline-flex items-center rounded-full border border-current/15 px-3 py-1 text-xs font-bold uppercase tracking-wide shadow-[0_0.35rem_1rem_rgba(6,53,31,0.08)] ${variantClasses[variant]}`"
+    :class="`inline-flex items-center rounded-full border border-current/15 px-3 py-1 text-xs font-bold uppercase tracking-wide shadow-[0_0.35rem_1rem_rgb(var(--shadow-color)/0.08)] ${variantClasses[variant]}`"
   >
     <slot />
   </span>

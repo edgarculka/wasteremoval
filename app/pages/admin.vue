@@ -289,7 +289,7 @@ async function confirmDeleteSelectedBooking() {
                       v-for="booking in dayGroup.bookings"
                       :key="booking.id"
                       draggable="true"
-                      class="group overflow-hidden rounded-md border bg-surface-raised shadow-[0_0.35rem_1rem_rgba(6,53,31,0.08)] transition hover:-translate-y-0.5 hover:border-foreground hover:shadow-[0_0.5rem_1.35rem_rgba(6,53,31,0.14)]"
+                      class="group overflow-hidden rounded-md border bg-surface-raised shadow-[0_0.35rem_1rem_rgb(var(--shadow-color)/0.08)] transition hover:-translate-y-0.5 hover:border-foreground hover:shadow-[0_0.5rem_1.35rem_rgb(var(--shadow-color)/0.14)]"
                       :class="[
                         selectedBookingId === booking.id
                           ? 'border-foreground ring-2 ring-primary'
@@ -308,7 +308,7 @@ async function confirmDeleteSelectedBooking() {
                       />
                       <button
                         type="button"
-                        class="w-full cursor-grab p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:cursor-grabbing"
+                        class="w-full cursor-grab p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring active:cursor-grabbing"
                         @click="toggleBooking(booking.id)"
                       >
                         <span class="mb-2 flex items-start justify-between gap-3">

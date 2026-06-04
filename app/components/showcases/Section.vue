@@ -118,8 +118,8 @@ const placeholderImage = {
               Text on the left, image on the right. Default reading direction.
             </UiText>
             <template #cta>
-              <UiButton>Try for free</UiButton>
-              <UiButton variant="secondary">Get a demo</UiButton>
+              <UiButton>Get a quote</UiButton>
+              <UiButton variant="secondary">View services</UiButton>
             </template>
           </UiSection>
         </div>
@@ -137,8 +137,8 @@ const placeholderImage = {
               left-to-right.
             </UiText>
             <template #cta>
-              <UiButton>Try for free</UiButton>
-              <UiButton variant="secondary">Get a demo</UiButton>
+              <UiButton>Get a quote</UiButton>
+              <UiButton variant="secondary">View services</UiButton>
             </template>
           </UiSection>
         </div>
@@ -156,8 +156,8 @@ const placeholderImage = {
               image renders above the CTA so the buttons close the section.
             </UiText>
             <template #cta>
-              <UiButton>Try for free</UiButton>
-              <UiButton variant="secondary">Get a demo</UiButton>
+              <UiButton>Get a quote</UiButton>
+              <UiButton variant="secondary">View services</UiButton>
             </template>
           </UiSection>
         </div>
@@ -233,12 +233,12 @@ const placeholderImage = {
             tone="background"
             spacing="md"
             alignment="center"
-            title="Cheaper than the rest"
+            title="Clear pricing before loading"
             :ribbon="{ label: 'See our pricing' }"
           >
             <UiText size="lg" tone="low">
-              Pricing transparency baked in — every tier is published, every
-              quote is fixed.
+              Published load tiers help customers understand the likely cost
+              before the crew confirms the final price.
             </UiText>
           </UiSection>
         </div>

@@ -31,14 +31,14 @@ const contactCards: ContactCardLink[] = [
   },
   {
     title: "Chat on WhatsApp",
-    description: "Fastest response - usually under 5 minutes",
+    description: "Send changes or access notes",
     href: companyDetails.contact.whatsappHref,
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },
   {
     title: companyDetails.contact.email,
-    description: "We reply within the hour",
+    description: "Send photos or booking details",
     href: companyDetails.contact.emailHref,
     icon: IconsMail,
     iconLabel: "Email",
@@ -56,7 +56,7 @@ const contactCards: ContactCardLink[] = [
   >
     <UiThankYou
       heading="Thanks, your booking is confirmed."
-      description="We've got your booking, we'll be in touch shortly."
+      description="DBS Waste has received your details. The team will confirm the collection information shortly."
     />
   </UiSection>
 

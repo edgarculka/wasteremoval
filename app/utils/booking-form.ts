@@ -110,14 +110,14 @@ export const bookingFormConfig: BookingFormConfig = {
       type: "date",
       title: "Pick a preferred collection date",
       description:
-        "Choose the date you want and we’ll confirm availability when you contact us.",
+        "Choose the date you want. The team will confirm availability before the job is booked.",
       selectedLabelPrefix: "Preferred date",
     },
     {
       id: "time",
       type: "time",
       title: "Pick a preferred time",
-      description: "We’ll confirm the exact arrival window before the team is dispatched.",
+      description: "The team will confirm the arrival window before the job is dispatched.",
     },
     {
       id: "photos",
@@ -157,7 +157,7 @@ export const bookingFormConfig: BookingFormConfig = {
       type: "fields",
       title: "Your details",
       description:
-        "Add your details so you can copy the request into a call, WhatsApp message, or email.",
+        "Add your details so the team can confirm the quote request.",
       fields: [
         {
           id: "name",
@@ -192,7 +192,7 @@ export const bookingFormConfig: BookingFormConfig = {
       type: "review",
       title: "Review your quote request",
       description:
-        "Check everything looks right, then contact us using one of the working options below.",
+        "Check everything looks right, then submit the request.",
     },
   ],
 };

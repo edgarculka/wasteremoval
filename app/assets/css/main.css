@@ -1,22 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7faf6;
-  --foreground: #06351f;
-  --surface-dark: #06231f;
-  --surface-muted: #edf4eb;
-  --surface-raised: #ffffff;
+  --brand-lime-300: #d7f55d;
 
-  --primary: #d7f55d;
-  --primary-foreground: #053b1f;
-  --secondary: #ffffff;
-  --secondary-foreground: #053b1f;
+  --brand-forest-50: #edf7f0;
+  --brand-forest-100: #d6e8dc;
+  --brand-forest-700: #087a4c;
+  --brand-forest-800: #06351f;
+  --brand-forest-900: #06231f;
 
-  --accent: #087a4c;
-  --accent-foreground: #ffffff;
-  --destructive: #b42318;
+  --neutral-white: #ffffff;
+  --neutral-mist: #f7faf6;
+  --feedback-red-700: #b42318;
 
-  --border: #d6e3d2;
+  --background: var(--neutral-mist);
+  --foreground: var(--brand-forest-800);
+  --surface-dark: var(--brand-forest-900);
+  --surface-muted: var(--brand-forest-50);
+  --surface-raised: var(--neutral-white);
+
+  --primary: var(--brand-lime-300);
+  --primary-foreground: var(--brand-forest-800);
+  --secondary: var(--neutral-white);
+  --secondary-foreground: var(--brand-forest-800);
+
+  --accent: var(--brand-forest-700);
+  --accent-foreground: var(--neutral-white);
+  --destructive: var(--feedback-red-700);
+  --destructive-foreground: var(--neutral-white);
+  --focus-ring: var(--accent);
+
+  --border: var(--brand-forest-100);
+  --shadow-color: 6 53 31;
 }
 
 @theme inline {
@@ -32,6 +47,8 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-focus-ring: var(--focus-ring);
   --color-border: var(--border);
 }
 

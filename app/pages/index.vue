@@ -30,7 +30,7 @@ const ctaImageSizes = "(min-width: 1024px) 20rem, calc(100vw - 96px)";
 usePageSeo({
   title: "Same-Day Rubbish Removal in West London",
   description:
-    "Book same-day rubbish removal and property clearance across West London with fixed load-size pricing and responsible disposal routes.",
+    "Book rubbish removal and property clearance across West London with clear load-size pricing and responsible disposal routes.",
   path: "/",
   image: {
     src: "/images/rubbish-removal.webp",
@@ -70,7 +70,7 @@ usePageSeo({
 });
 
 const sellingPoints = [
-  "Same-day availability",
+  "Same-day slots where possible",
   "Clear load-size pricing",
   "No skip permit needed",
 ];
@@ -78,11 +78,11 @@ const sellingPoints = [
 const trustItems = [
   { value: "Fixed tiers", label: "Pricing" },
   { value: "Photos", label: "Fast estimates" },
-  { value: "Same day", label: "West London slots" },
+  { value: "Local", label: "West London slots" },
 ];
 
 const marqueeItems = [
-  "Same-day availability",
+  "Same-day slots where possible",
   "Clear pricing before loading",
   "No skip permit needed",
   "Team loads the items",
@@ -102,7 +102,7 @@ const reviews: ReviewItem[] = [
     meta: "Sofa removal",
     rating: 5,
     quote:
-      "Clear pricing, friendly crew, and no fuss getting a bulky sofa out.",
+      "Clear pricing, friendly crew, and careful with a bulky sofa.",
   },
   {
     author: "Maya Roberts",
@@ -140,14 +140,14 @@ const contactCards: ContactCardLink[] = [
   },
   {
     title: "Chat on WhatsApp",
-    description: "Fastest response — usually under 5 minutes",
+    description: "Send photos for a faster estimate",
     href: companyDetails.contact.whatsappHref,
     icon: IconsWhatsApp,
     iconLabel: "WhatsApp",
   },
   {
     title: companyDetails.contact.email,
-    description: "We reply within the hour",
+    description: "Send photos or access notes",
     href: companyDetails.contact.emailHref,
     icon: IconsMail,
     iconLabel: "Email",
@@ -182,7 +182,7 @@ function openBookingWithPricingSelection() {
   <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Waste removal, on your schedule."
-      description="Same-day rubbish removal and property clearance for tenants, landlords, and businesses. No skip permit, no hassle."
+      description="Rubbish removal and property clearance for tenants, landlords, and businesses across West London. No skip permit needed."
     >
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
@@ -207,7 +207,7 @@ function openBookingWithPricingSelection() {
           :sizes="halfWidthImageSizes"
           fetchpriority="high"
           decoding="async"
-          class="aspect-video h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="aspect-video h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </template>
     </UiHero>
@@ -260,7 +260,7 @@ function openBookingWithPricingSelection() {
           :sizes="halfWidthImageSizes"
           loading="lazy"
           decoding="async"
-          class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="h-full w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </div>
     </template>
@@ -291,8 +291,8 @@ function openBookingWithPricingSelection() {
 
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
-      heading="What waste removal service we offer"
-      description="From single item removals to full property clearances, we cover all your waste removal needs across West London."
+      heading="Waste removal services"
+      description="From single items to full property clearances, DBS Waste covers common rubbish removal jobs across West London."
       :services="homeServices"
       :locations="homeServiceLocations"
       location-label="Popular service areas"
@@ -309,12 +309,12 @@ function openBookingWithPricingSelection() {
     <UiFaq :items="homeFaqs" />
     <template #visual>
       <div
-        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="rounded-lg border border-border bg-primary p-6 text-primary-foreground shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <UiHeading :level="3" size="md">Still have questions?</UiHeading>
         <UiText tone="low" class="mt-2">
-          We're always here to help - pick whichever way to reach us suits you
-          best.
+          Send photos, access notes or a postcode and the team will help with
+          the next step.
         </UiText>
         <div class="mt-5 flex flex-col gap-3">
           <UiCard
@@ -330,7 +330,7 @@ function openBookingWithPricingSelection() {
 
   <UiSection tone="secondary" spacing="md" alignment="left">
     <UiCallToAction
-      heading="Book your clearance — same day, fixed price."
+      heading="Book your clearance with clear pricing."
       :points="sellingPoints"
       image-src="/images/waste-removal-service-worker.webp"
       image-width="1200"

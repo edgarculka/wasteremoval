@@ -15,7 +15,7 @@
         <UiSection tone="background" spacing="md" alignment="center" wide>
           <UiThankYou
             heading="Thanks, your booking is confirmed."
-            description="We've received your booking details and reserved your collection slot. A confirmation message is on its way with everything you need."
+            description="DBS Waste has received your details. The team will confirm the collection information shortly."
           />
         </UiSection>
       </div>
@@ -29,8 +29,8 @@
       <div class="mt-4 overflow-hidden rounded-md border border-border">
         <UiSection tone="secondary" spacing="md" alignment="center" wide>
           <UiThankYou
-            heading="Your booking has been made."
-            description="The crew has the details you submitted. We'll contact you shortly if we need anything else."
+            heading="Your request has been received."
+            description="The team has the details you submitted and will contact you if anything needs checking."
           />
         </UiSection>
       </div>

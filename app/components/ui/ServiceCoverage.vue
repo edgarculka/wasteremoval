@@ -49,7 +49,7 @@ withDefaults(defineProps<Props>(), {
     <aside class="flex flex-col gap-4">
       <div
         v-if="image"
-        class="overflow-hidden rounded-lg border border-border bg-background shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="overflow-hidden rounded-lg border border-border bg-background shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <img
           :src="image.src"
@@ -73,7 +73,7 @@ withDefaults(defineProps<Props>(), {
         <article
           v-for="(note, index) in notes"
           :key="note"
-          class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 rounded-lg border border-border bg-background p-4 text-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+          class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 rounded-lg border border-border bg-background p-4 text-foreground shadow-[0_0.75rem_2rem_rgb(var(--shadow-color)/0.08)]"
         >
           <span
             class="grid size-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground"

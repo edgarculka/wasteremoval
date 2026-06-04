@@ -18,7 +18,7 @@ function handleOpenChange(open: boolean) {
 usePageSeo({
   title: "Get a Waste Removal Quote",
   description:
-    "Get a fixed waste removal quote from DBS Waste. Choose your load size, collection date, arrival window and contact details.",
+    "Get a waste removal quote from DBS Waste. Choose your load size, preferred collection date, arrival window and contact details.",
   path: "/quote/",
   image: {
     src: "/images/truck.webp",
@@ -33,7 +33,7 @@ usePageSeo({
     name: "Get a Waste Removal Quote",
     url: "/quote/",
     description:
-      "Get a fixed waste removal quote from DBS Waste by choosing a load size, collection date, arrival window and contact details.",
+      "Get a waste removal quote from DBS Waste by choosing a load size, preferred collection date, arrival window and contact details.",
     isPartOf: {
       "@type": "WebSite",
       "@id": "/#website",

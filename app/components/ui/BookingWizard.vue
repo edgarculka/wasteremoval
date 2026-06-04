@@ -721,7 +721,7 @@ onScopeDispose(() => {
             v-if="submitError"
             size="sm"
             weight="semibold"
-            class="mt-4 text-red-700"
+            class="mt-4 text-destructive"
             role="alert"
           >
             {{ submitError }}
@@ -884,7 +884,7 @@ onScopeDispose(() => {
                 v-if="photoError"
                 size="sm"
                 weight="semibold"
-                class="mt-4 text-red-700"
+                class="mt-4 text-destructive"
                 role="alert"
               >
                 {{ photoError }}
@@ -955,7 +955,7 @@ onScopeDispose(() => {
                 :id="`${field.id}-error`"
                 size="sm"
                 weight="semibold"
-                class="text-red-700"
+                class="text-destructive"
                 role="alert"
               >
                 {{ fieldErrorMessage(field) }}

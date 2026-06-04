@@ -84,7 +84,7 @@ const truckImage = {
   <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Responsible waste disposal"
-      description="Clearance work is not only about loading a van. The waste type, access, restricted materials and disposal records need to be understood before the job starts."
+      description="Waste type, access, restricted materials and disposal records need to be clear before the job starts."
     >
       <template #actions>
         <UiButton href="/quote/" size="lg">Get a quote</UiButton>
@@ -105,7 +105,7 @@ const truckImage = {
           :sizes="truckImage.sizes"
           fetchpriority="high"
           decoding="async"
-          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgba(6,53,31,0.16)]"
+          class="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.16)]"
         />
       </template>
     </UiHero>
@@ -145,7 +145,7 @@ const truckImage = {
       <article
         v-for="item in restrictedItems"
         :key="item.title"
-        class="overflow-hidden rounded-lg border border-border bg-secondary text-secondary-foreground shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+        class="overflow-hidden rounded-lg border border-border bg-secondary text-secondary-foreground shadow-[0_0.75rem_2rem_rgb(var(--shadow-color)/0.08)]"
       >
         <img
           :src="item.image.src"
@@ -185,7 +185,7 @@ const truckImage = {
     <UiTickList :items="disposalHighlights" />
     <template #visual>
       <div
-        class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgba(6,53,31,0.12)]"
+        class="rounded-lg border border-border bg-secondary p-6 text-secondary-foreground shadow-[0_1rem_3rem_rgb(var(--shadow-color)/0.12)]"
       >
         <UiHeading :level="3" size="md">Need collection records?</UiHeading>
         <UiText tone="low" class="mt-2">

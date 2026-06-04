@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const sampleItems = [
-  "Over 2B+ messages sent",
-  "21K businesses supported",
-  "0 missed messages",
-  "Same-day pickup available",
-  "5-star Google rating",
+  "Clear pricing before loading",
+  "No skip permit needed",
+  "Team loads the items",
+  "West London coverage",
+  "Photos accepted for estimates",
 ];
 </script>
 
@@ -75,10 +75,10 @@ const sampleItems = [
         <UiMarquee
           tone="primary"
           :items="[
-            'Free quote within the hour',
+            'Send photos for a faster estimate',
             'No skip permit needed',
-            'Fully insured & licensed waste carriers',
-            'Same-day & next-day availability',
+            'Licensed waste carrier',
+            'Same-day and next-day slots where possible',
           ]"
         />
       </div>

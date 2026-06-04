@@ -227,7 +227,7 @@ const isHorizontal = computed(
     <div
       v-if="ribbon"
       variant="secondary"
-      class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-b-lg border border-t-0 border-border bg-secondary px-5 py-3 text-center text-sm shadow-[0_0.75rem_2rem_rgba(6,53,31,0.08)]"
+      class="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-b-lg border border-t-0 border-border bg-secondary px-5 py-3 text-center text-sm shadow-[0_0.75rem_2rem_rgb(var(--shadow-color)/0.08)]"
     >
       <UiText size="xs" weight="bold" tone="low">
         {{ ribbon.label }}
