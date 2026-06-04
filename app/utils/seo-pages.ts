@@ -201,7 +201,7 @@ export const seoServices: SeoService[] = [
     title: "Office Clearance",
     metaTitle: "Office Clearance",
     metaDescription:
-      "Office clearance for desks, chairs, cabinets, IT clutter and general business waste across West, Central, North and South London.",
+      "Office clearance for desks, chairs, cabinets, IT clutter and general business waste.",
     shortDescription:
       "Clear office furniture, filing cabinets, boxed clutter and redundant workplace items with planned access.",
     description:
@@ -361,7 +361,7 @@ export const seoServices: SeoService[] = [
     title: "Mattress Removal",
     metaTitle: "Mattress Removal",
     metaDescription:
-      "Mattress removal for single, double, king-size and landlord clearance collections across West, Central, North and South London.",
+      "Mattress removal for single, double, king-size and landlord clearance collections.",
     shortDescription:
       "Collect old mattresses, bed frames and bedroom clearance items from homes, flats and rental properties.",
     description:
