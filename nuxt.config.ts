@@ -1,9 +1,15 @@
 import tailwindcss from "@tailwindcss/vite";
 import {
   areaSeoPaths,
+  buildAreaPath,
+  buildServicePath,
+  seoLocations,
+  seoServices,
   serviceLocationSeoPages,
   serviceSeoPaths,
+  type SeoImage,
 } from "./app/utils/seo-pages";
+import type { SitemapUrl } from "@nuxtjs/sitemap";
 import { companyDetails } from "./app/utils/company";
 import { normalizeCanonicalPath } from "./app/utils/seo-url";
 
@@ -60,6 +66,90 @@ const commercialSitemapPaths = [
   ...serviceSeoPaths,
   ...serviceLocationSeoPages.map((page) => page.path),
 ].map(normalizeCanonicalPath);
+
+function sitemapImage(image?: SeoImage) {
+  return image ? [{ loc: image.src, title: image.alt }] : undefined;
+}
+
+const staticSitemapImages = new Map<string, SeoImage>([
+  [
+    "/",
+    {
+      src: "/images/rubbish-removal.webp",
+      alt: "Rubbish removal van loaded with household waste",
+      width: 1200,
+      height: 800,
+    },
+  ],
+  [
+    "/pricing/",
+    {
+      src: "/images/truck.webp",
+      alt: "Waste removal truck ready for collection",
+      width: 1200,
+      height: 800,
+    },
+  ],
+  [
+    "/quote/",
+    {
+      src: "/images/truck.webp",
+      alt: "Waste removal truck ready for collection",
+      width: 1200,
+      height: 800,
+    },
+  ],
+  ["/services/", seoServices[0]!.image],
+  ["/areas/", seoLocations[0]!.image],
+  [
+    "/additional-charges/",
+    {
+      src: "/images/additional-charges/mattress.webp",
+      alt: "Mattress ready for specialist disposal",
+      width: 960,
+      height: 640,
+    },
+  ],
+  [
+    "/recycling-and-disposal/",
+    {
+      src: "/images/truck.webp",
+      alt: "Waste removal truck ready for recycling and disposal",
+      width: 1200,
+      height: 800,
+    },
+  ],
+  [
+    "/terms/",
+    {
+      src: "/images/hero.jpeg",
+      alt: "Waste removal team loading a collection vehicle",
+      width: 1920,
+      height: 1280,
+    },
+  ],
+  [
+    "/privacy/",
+    {
+      src: "/images/hero.jpeg",
+      alt: "Waste removal team loading a collection vehicle",
+      width: 1920,
+      height: 1280,
+    },
+  ],
+]);
+
+const commercialSitemapEntries: SitemapUrl[] = commercialSitemapPaths.map((loc) => {
+  const service = seoServices.find((item) => buildServicePath(item) === loc);
+  const area = seoLocations.find((item) => buildAreaPath(item) === loc);
+  const serviceLocation = serviceLocationSeoPages.find((page) => page.path === loc);
+  const image = staticSitemapImages.get(loc) || service?.image || area?.image || serviceLocation?.image;
+
+  return {
+    loc,
+    images: sitemapImage(image),
+  };
+});
 
 const prerenderRoutes = [
   ...commercialSitemapPaths,
@@ -173,7 +263,7 @@ export default defineNuxtConfig({
   sitemap: {
     excludeAppSources: true,
     discoverImages: false,
-    urls: commercialSitemapPaths.map((loc) => ({ loc })),
+    urls: commercialSitemapEntries,
   },
 
   robots: {
