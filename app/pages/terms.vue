@@ -2,6 +2,12 @@
 const termsPath = "/terms/";
 const lastUpdated = "4 June 2026";
 const companyAddress = formatCompanyAddress(companyDetails.address);
+const termsImage = {
+  src: "/images/hero.jpeg",
+  alt: "DBS Waste rubbish removal team loading waste into a collection van",
+  width: 1200,
+  height: 800,
+};
 const wasteCarrierText = companyDetails.wasteCarrierRegistration
   ? `Environment Agency waste carrier registration ${companyDetails.wasteCarrierRegistration}`
   : "Environment Agency waste carrier registration details can be provided on request where they apply to the booked service";
@@ -116,6 +122,7 @@ usePageSeo({
   description:
     "Terms of Service for DBS Waste rubbish removal, bookings, quotes, access, restricted waste, disposal, payments, cancellations and liability.",
   path: termsPath,
+  image: termsImage,
   structuredData: [
     {
       "@context": "https://schema.org",

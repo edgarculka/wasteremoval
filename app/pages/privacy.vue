@@ -2,6 +2,12 @@
 const privacyPath = "/privacy/";
 const lastUpdated = "4 June 2026";
 const companyAddress = formatCompanyAddress(companyDetails.address);
+const privacyImage = {
+  src: "/images/hero.jpeg",
+  alt: "DBS Waste rubbish removal team loading waste into a collection van",
+  width: 1200,
+  height: 800,
+};
 
 const privacySections = [
   {
@@ -106,6 +112,7 @@ usePageSeo({
   description:
     "Privacy Policy for DBS Waste explaining how enquiry, booking, payment, website analytics and waste collection data is collected, used, shared and retained.",
   path: privacyPath,
+  image: privacyImage,
   structuredData: [
     {
       "@context": "https://schema.org",
