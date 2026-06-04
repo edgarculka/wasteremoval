@@ -12,17 +12,12 @@ service cloud.firestore {
     //
     // Server-created quote fields include customer PII (name, email, phone,
     // addressLine1, postcode), collection details (date, time, load,
-    // additionalItems, photos), estimatedTotalLabel, createdAt, source, and
-    // submissionId. Client admins only read these documents and update the
-    // admin-editable fields:
-    //   - status: string, one of the allowed quote pipeline stages
-    //   - name, email, phone, addressLine1, postcode, date
-    //   - estimatedTotalLabel
-    //   - load: map { id, name, ribbon, price }
-    //   - time: map { id, label, description }
-    //   - updatedAt: timestamp equal to request.time
-    //   - updatedBy: map { uid, email, name } for audit context
-    // Verified domain admins may also delete obsolete quote documents.
+    // additionalItems, photos), estimated totals, createdAt, source, and
+    // submissionId. The browser admin UI is the authority for the admin
+    // workflow, so any signed-in Firebase Auth user can read, update, and
+    // delete booking documents without Firestore field-level restrictions.
+    // Public booking creates remain allowed because the quote form has a direct
+    // Firestore fallback when the HTTPS booking function is unavailable.
     //
     // Collection: mail
     // Documents are written by trusted server code and the
@@ -36,115 +31,8 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isVerifiedDbsWasteAdmin() {
-      return isAuthenticated()
-        && request.auth.token.email_verified == true
-        && request.auth.token.email is string
-        && request.auth.token.email.lower().matches('^[^@]+@dbs-waste\\.co\\.uk$');
-    }
-
-    function isValidBookingStatus(status) {
-      return status in [
-        'new',
-        'quote-received',
-        'quote-sent',
-        'job-booked',
-        'job-completed',
-        'job-paid',
-      ];
-    }
-
-    function isValidUpdatedBy(data) {
-      return data is map
-        && data.keys().hasOnly(['uid', 'email', 'name'])
-        && data.uid is string
-        && data.uid == request.auth.uid
-        && data.email is string
-        && data.email == request.auth.token.email
-        && data.name is string
-        && data.name.size() <= 120;
-    }
-
-    function isValidAdminString(value, minSize, maxSize) {
-      return value is string
-        && value.size() >= minSize
-        && value.size() <= maxSize;
-    }
-
-    function isValidAdminEmail(value) {
-      return value is string
-        && value.size() >= 5
-        && value.size() <= 160
-        && value.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
-    }
-
-    function isValidAdminDate(value) {
-      return value is string
-        && value.matches('^\\d{4}-\\d{2}-\\d{2}$');
-    }
-
-    function isValidAdminLoad(data) {
-      return data is map
-        && data.keys().hasOnly(['id', 'name', 'ribbon', 'price'])
-        && isValidAdminString(data.id, 0, 32)
-        && isValidAdminString(data.name, 1, 80)
-        && isValidAdminString(data.ribbon, 0, 80)
-        && isValidAdminString(data.price, 0, 32);
-    }
-
-    function isValidAdminTime(data) {
-      return data is map
-        && data.keys().hasOnly(['id', 'label', 'description'])
-        && isValidAdminString(data.id, 0, 32)
-        && isValidAdminString(data.label, 1, 80)
-        && isValidAdminString(data.description, 0, 80);
-    }
-
-    function hasValidAdminEditableBookingData() {
-      return isValidBookingStatus(request.resource.data.status)
-        && isValidAdminString(request.resource.data.name, 1, 120)
-        && isValidAdminEmail(request.resource.data.email)
-        && isValidAdminString(request.resource.data.phone, 6, 40)
-        && isValidAdminString(request.resource.data.addressLine1, 3, 160)
-        && isValidAdminString(request.resource.data.postcode, 3, 16)
-        && isValidAdminDate(request.resource.data.date)
-        && isValidAdminString(request.resource.data.estimatedTotalLabel, 0, 32)
-        && isValidAdminLoad(request.resource.data.load)
-        && isValidAdminTime(request.resource.data.time);
-    }
-
-    function isValidBookingAdminUpdate() {
-      let changed = request.resource.data.diff(resource.data).affectedKeys();
-
-      return changed.hasOnly([
-          'status',
-          'name',
-          'email',
-          'phone',
-          'addressLine1',
-          'postcode',
-          'date',
-          'estimatedTotalLabel',
-          'load',
-          'time',
-          'updatedAt',
-          'updatedBy',
-        ])
-        && (
-          (
-            changed.hasOnly(['status', 'updatedAt', 'updatedBy'])
-            && isValidBookingStatus(request.resource.data.status)
-          )
-          || hasValidAdminEditableBookingData()
-        )
-        && request.resource.data.updatedAt == request.time
-        && isValidUpdatedBy(request.resource.data.updatedBy);
-    }
-
     match /bookings/{bookingId} {
-      allow read: if isVerifiedDbsWasteAdmin();
-      allow update: if isVerifiedDbsWasteAdmin() && isValidBookingAdminUpdate();
-      allow delete: if isVerifiedDbsWasteAdmin();
+      allow read, update, delete: if isAuthenticated();
       allow create: if true;
     }
 
