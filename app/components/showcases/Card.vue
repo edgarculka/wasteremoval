@@ -14,6 +14,7 @@ const loads = [
     id: "min",
     name: "Min Job",
     ribbon: "Single item",
+    weightLimit: "Up to 50kg",
     price: "£40",
     pricePence: 4000,
     imageSrc: "/images/0van.svg",
@@ -23,6 +24,7 @@ const loads = [
     id: "mini",
     name: "Mini Load",
     ribbon: "1/4 van",
+    weightLimit: "Up to 250kg",
     price: "£100",
     pricePence: 10000,
     imageSrc: "/images/1van.svg",
@@ -32,6 +34,7 @@ const loads = [
     id: "small",
     name: "Small Load",
     ribbon: "1/2 van",
+    weightLimit: "Up to 500kg",
     price: "£180",
     pricePence: 18000,
     imageSrc: "/images/2van.svg",
@@ -126,6 +129,7 @@ const contactCards = [
           :selected="selectedLoad === load.id"
           :title="load.name"
           :description="load.ribbon"
+          :detail="load.weightLimit"
           :price="load.price"
           :tag="load.id === 'min' ? 'Minimum price' : undefined"
           :image-src="load.imageSrc"

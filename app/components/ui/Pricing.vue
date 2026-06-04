@@ -57,6 +57,7 @@ const emit = defineEmits<{
         :selected="selectedTierId === tier.id"
         :title="tier.name"
         :description="tier.ribbon"
+        :detail="tier.weightLimit"
         :price="tier.price"
         :tag="tier.tag"
         :icon="tier.icon"

@@ -129,7 +129,7 @@ const selectedPricingLoadId = ref<string | null>("small");
 
 const trustItems = [
   { value: "No hidden fees", label: "Standard waste" },
-  { value: "Photos accepted", label: "Fast estimates" },
+  { value: "Weight limits", label: "Shown by load" },
   { value: "Loaded for you", label: "No skip hire" },
 ];
 
@@ -145,7 +145,7 @@ function openBookingWithPricingSelection() {
       lead="From"
       accent="GBP 40"
       trailing="per clearance"
-      subhead="Pick the load size closest to your job. The team confirms the final tier before loading."
+      subhead="Pick the load size closest to your job. Heavy waste is capped by weight as well as volume, and specialist items can be added before booking."
       selectable
       :tiers="bookingLoads"
       :selected-tier-id="selectedPricingLoadId"

@@ -7,6 +7,7 @@ const tiers: PricingTier[] = [
   {
     id: "min",
     ribbon: "Single item",
+    weightLimit: "Up to 50kg",
     name: "Min Job",
     price: "£40",
     pricePence: 4000,
@@ -16,6 +17,7 @@ const tiers: PricingTier[] = [
   {
     id: "mini",
     ribbon: "1/4 van",
+    weightLimit: "Up to 250kg",
     name: "Mini Load",
     price: "£100",
     pricePence: 10000,
@@ -25,6 +27,7 @@ const tiers: PricingTier[] = [
   {
     id: "small",
     ribbon: "1/2 van",
+    weightLimit: "Up to 500kg",
     name: "Small Load",
     price: "£180",
     pricePence: 18000,
@@ -35,6 +38,7 @@ const tiers: PricingTier[] = [
   {
     id: "large",
     ribbon: "3/4 van",
+    weightLimit: "Up to 750kg",
     name: "Large Load",
     price: "£240",
     pricePence: 24000,
@@ -44,6 +48,7 @@ const tiers: PricingTier[] = [
   {
     id: "full",
     ribbon: "Full van",
+    weightLimit: "Up to 1,000kg",
     name: "Full Load",
     price: "£300",
     pricePence: 30000,
@@ -93,12 +98,14 @@ const tiers: PricingTier[] = [
           layout="option"
           title="Mini Load"
           description="1/4 van"
+          detail="Up to 250kg"
           price="£100"
         />
         <UiCard
           layout="option"
           title="Small Load"
           description="1/2 van"
+          detail="Up to 500kg"
           price="£180"
           tag="Most popular"
         />
@@ -106,6 +113,7 @@ const tiers: PricingTier[] = [
           layout="option"
           title="Full Load"
           description="Full van"
+          detail="Up to 1,000kg"
           price="£300"
         />
       </div>

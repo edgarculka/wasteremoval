@@ -1,13 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  serverTimestamp,
-  updateDoc,
-  type Timestamp,
-} from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 import type { User } from "firebase/auth";
 import type { AdminQuoteStatus } from "~/utils/admin";
 
@@ -15,6 +6,7 @@ interface BookingLoadSummary {
   id?: string;
   name?: string;
   ribbon?: string;
+  weightLimit?: string;
   price?: string;
 }
 
@@ -101,6 +93,7 @@ export interface AdminBookingDetailsUpdate {
   load: {
     name: string;
     ribbon: string;
+    weightLimit?: string;
     price: string;
   };
   time: {
@@ -191,67 +184,88 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
   watchEffect((onCleanup) => {
     if (!import.meta.client || !enabled.value) return;
 
-    const services = useFirebaseClient();
-    if (!services) return;
+    let isActive = true;
+    let unsubscribe: (() => void) | null = null;
+
+    onCleanup(() => {
+      isActive = false;
+      unsubscribe?.();
+    });
 
     isLoading.value = true;
     bookingsError.value = "";
 
-    const bookingsQuery = query(collection(services.db, "bookings"));
+    void Promise.all([useFirebaseClient(), import("firebase/firestore")]).then(
+      ([services, firestore]) => {
+        if (!services || !isActive) return;
 
-    const unsubscribe = onSnapshot(
-      bookingsQuery,
-      (snapshot) => {
-        bookings.value = snapshot.docs
-          .map((bookingDoc) => {
-            const data = bookingDoc.data() as BookingDocument;
+        const bookingsQuery = firestore.query(
+          firestore.collection(services.db, "bookings"),
+        );
 
-            return {
-              id: data.bookingId || bookingDoc.id,
-              status: normalizeAdminQuoteStatus(data.status),
-              createdAt: toDate(data.createdAt),
-              updatedAt: toDate(data.updatedAt),
-              load: data.load ?? {},
-              date: data.date ?? "",
-              time: data.time ?? {},
-              postcode: data.postcode ?? "",
-              addressLine1: data.addressLine1 ?? "",
-              name: data.name ?? "",
-              phone: data.phone ?? "",
-              email: data.email ?? "",
-              estimatedTotalLabel:
-                data.estimatedTotalLabel ?? data.load?.price ?? "",
-              additionalItems: Array.isArray(data.additionalItems)
-                ? data.additionalItems
-                : [],
-              photos: Array.isArray(data.photos) ? data.photos : [],
-            };
-          })
-          .sort(sortBookingsByCollection);
-        isLoading.value = false;
+        unsubscribe = firestore.onSnapshot(
+          bookingsQuery,
+          (snapshot) => {
+            bookings.value = snapshot.docs
+              .map((bookingDoc) => {
+                const data = bookingDoc.data() as BookingDocument;
+
+                return {
+                  id: data.bookingId || bookingDoc.id,
+                  status: normalizeAdminQuoteStatus(data.status),
+                  createdAt: toDate(data.createdAt),
+                  updatedAt: toDate(data.updatedAt),
+                  load: data.load ?? {},
+                  date: data.date ?? "",
+                  time: data.time ?? {},
+                  postcode: data.postcode ?? "",
+                  addressLine1: data.addressLine1 ?? "",
+                  name: data.name ?? "",
+                  phone: data.phone ?? "",
+                  email: data.email ?? "",
+                  estimatedTotalLabel:
+                    data.estimatedTotalLabel ?? data.load?.price ?? "",
+                  additionalItems: Array.isArray(data.additionalItems)
+                    ? data.additionalItems
+                    : [],
+                  photos: Array.isArray(data.photos) ? data.photos : [],
+                };
+              })
+              .sort(sortBookingsByCollection);
+            isLoading.value = false;
+          },
+          (error) => {
+            bookingsError.value = error.message;
+            isLoading.value = false;
+          },
+        );
+
+        if (!isActive) unsubscribe();
       },
-      (error) => {
-        bookingsError.value = error.message;
-        isLoading.value = false;
-      },
-    );
-
-    onCleanup(unsubscribe);
+    ).catch((error) => {
+      if (!isActive) return;
+      bookingsError.value =
+        error instanceof Error ? error.message : "Could not load bookings.";
+      isLoading.value = false;
+    });
   });
 
   async function moveBooking(bookingId: string, status: AdminQuoteStatus) {
     if (!user.value) return;
 
-    const services = useFirebaseClient();
+    const [services, firestore] = await Promise.all([
+      useFirebaseClient(),
+      import("firebase/firestore"),
+    ]);
     if (!services) return;
 
     movingBookingId.value = bookingId;
     bookingsError.value = "";
 
     try {
-      await updateDoc(doc(services.db, "bookings", bookingId), {
+      await firestore.updateDoc(firestore.doc(services.db, "bookings", bookingId), {
         status,
-        updatedAt: serverTimestamp(),
+        updatedAt: firestore.serverTimestamp(),
         updatedBy: {
           uid: user.value.uid,
           email: user.value.email,
@@ -272,7 +286,10 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
   ) {
     if (!user.value) return;
 
-    const services = useFirebaseClient();
+    const [services, firestore] = await Promise.all([
+      useFirebaseClient(),
+      import("firebase/firestore"),
+    ]);
     if (!services) return;
 
     savingBookingId.value = bookingId;
@@ -281,7 +298,7 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
     try {
       const existingBooking = bookings.value.find((booking) => booking.id === bookingId);
 
-      await updateDoc(doc(services.db, "bookings", bookingId), {
+      await firestore.updateDoc(firestore.doc(services.db, "bookings", bookingId), {
         name: details.name.trim(),
         email: details.email.trim().toLowerCase(),
         phone: details.phone.trim(),
@@ -293,6 +310,10 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
           id: existingBooking?.load.id ?? "",
           name: details.load.name.trim(),
           ribbon: details.load.ribbon.trim(),
+          weightLimit:
+            details.load.weightLimit?.trim() ??
+            existingBooking?.load.weightLimit ??
+            "",
           price: details.load.price.trim(),
         },
         time: {
@@ -300,7 +321,7 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
           label: details.time.label.trim(),
           description: details.time.description.trim(),
         },
-        updatedAt: serverTimestamp(),
+        updatedAt: firestore.serverTimestamp(),
         updatedBy: {
           uid: user.value.uid,
           email: user.value.email,
@@ -318,14 +339,17 @@ export function useAdminBookings(user: Ref<User | null>, enabled: Ref<boolean>) 
   async function deleteBooking(bookingId: string) {
     if (!user.value) return;
 
-    const services = useFirebaseClient();
+    const [services, firestore] = await Promise.all([
+      useFirebaseClient(),
+      import("firebase/firestore"),
+    ]);
     if (!services) return;
 
     deletingBookingId.value = bookingId;
     bookingsError.value = "";
 
     try {
-      await deleteDoc(doc(services.db, "bookings", bookingId));
+      await firestore.deleteDoc(firestore.doc(services.db, "bookings", bookingId));
     } catch (error) {
       bookingsError.value =
         error instanceof Error ? error.message : "Could not delete quote.";

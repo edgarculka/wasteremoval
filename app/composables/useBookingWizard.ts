@@ -1,73 +1,14 @@
 import type {
   BookingFormData,
   BookingSubmitControls,
-  BookingLoad,
   BookingTimeSlot,
 } from "~/components/ui/BookingWizard.vue";
+import { bookingLoads } from "~/utils/booking-form";
 import IconsAfternoon from "~/components/icons/Afternoon.vue";
 import IconsEvening from "~/components/icons/Evening.vue";
 import IconsMorning from "~/components/icons/Morning.vue";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import type { FirebaseOptions } from "firebase/app";
 
-const bookingLoads: BookingLoad[] = [
-  {
-    id: "min",
-    name: "Min Job",
-    ribbon: "Single item",
-    price: "£40",
-    pricePence: 4000,
-    tag: "Minimum price",
-    imageSrc: "/images/0van.svg",
-    imageAlt: "Single item",
-    imageWidth: 88,
-    imageHeight: 41,
-  },
-  {
-    id: "mini",
-    name: "Mini Load",
-    ribbon: "1/4 van",
-    price: "£100",
-    pricePence: 10000,
-    imageSrc: "/images/1van.svg",
-    imageAlt: "Quarter-load van",
-    imageWidth: 88,
-    imageHeight: 41,
-  },
-  {
-    id: "small",
-    name: "Small Load",
-    ribbon: "1/2 van",
-    price: "£180",
-    pricePence: 18000,
-    tag: "Most popular",
-    imageSrc: "/images/2van.svg",
-    imageAlt: "Half-load van",
-    imageWidth: 88,
-    imageHeight: 41,
-  },
-  {
-    id: "large",
-    name: "Large Load",
-    ribbon: "3/4 van",
-    price: "£240",
-    pricePence: 24000,
-    imageSrc: "/images/3van.svg",
-    imageAlt: "Three-quarter-load van",
-    imageWidth: 88,
-    imageHeight: 41,
-  },
-  {
-    id: "full",
-    name: "Full Load",
-    ribbon: "Full van",
-    price: "£300",
-    pricePence: 30000,
-    imageSrc: "/images/4van.svg",
-    imageAlt: "Full-load van",
-    imageWidth: 88,
-    imageHeight: 41,
-  },
-];
 
 const bookingTimes: BookingTimeSlot[] = [
   {
@@ -140,15 +81,24 @@ function stripPhotoData(data: BookingFormData) {
 }
 
 async function createFallbackBooking(data: BookingFormData) {
-  const services = useFirebaseClient();
-  if (!services) throw new Error("Firebase is unavailable.");
+  if (!import.meta.client) throw new Error("Firebase is unavailable.");
 
-  const docRef = await addDoc(collection(services.db, "bookings"), {
+  const [{ getApp, getApps, initializeApp }, { getFirestore, addDoc, collection, serverTimestamp }] =
+    await Promise.all([import("firebase/app"), import("firebase/firestore")]);
+  const runtimeConfig = useRuntimeConfig();
+  const firebaseConfig = runtimeConfig.public.firebase as FirebaseOptions;
+  const app = getApps().length
+    ? getApp()
+    : initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const docRef = await addDoc(collection(db, "bookings"), {
     submissionId: data.submissionId,
     load: {
       id: data.load.id,
       name: data.load.name,
       ribbon: data.load.ribbon,
+      weightLimit: data.load.weightLimit,
       price: data.load.price,
     },
     date: data.date,

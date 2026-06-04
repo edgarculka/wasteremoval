@@ -169,6 +169,21 @@ export const additionalChargeItems: AdditionalChargeItem[] = [
     quoteSelectable: true,
   },
   {
+    id: "rubble-plasterboard",
+    name: "Rubble or plasterboard bag",
+    shortName: "Rubble bag",
+    category: "Heavy building waste",
+    pricePence: 3000,
+    unit: "bag",
+    note: "Rubble, tiles, soil, hardcore or plasterboard should be declared because weight and disposal routes are limited.",
+    image: chargeImage(
+      "rubble-plasterboard",
+      "Rubble bags and plasterboard ready for separate disposal",
+    ),
+    sourceIds: ["Skip It London"],
+    quoteSelectable: true,
+  },
+  {
     id: "adhesive-tin",
     name: "Adhesive tin or tube",
     shortName: "Adhesive tin",
@@ -179,6 +194,21 @@ export const additionalChargeItems: AdditionalChargeItem[] = [
     image: chargeImage(
       "adhesive-tin",
       "Sealed tins ready for specialist disposal",
+    ),
+    sourceIds: ["Skip It London"],
+    quoteSelectable: true,
+  },
+  {
+    id: "fluorescent-tubes",
+    name: "Fluorescent tube",
+    shortName: "Light tube",
+    category: "Electrical items",
+    pricePence: 1500,
+    unit: "each",
+    note: "Fluorescent tubes and lamps need separate WEEE handling and should not be mixed with standard waste.",
+    image: chargeImage(
+      "fluorescent-tubes",
+      "Fluorescent light tubes ready for WEEE disposal",
     ),
     sourceIds: ["Skip It London"],
     quoteSelectable: true,

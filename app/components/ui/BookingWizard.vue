@@ -740,6 +740,7 @@ onScopeDispose(() => {
               :selected="selectedLoadId === load.id"
               :title="load.name"
               :description="load.ribbon"
+              :detail="load.weightLimit"
               :price="load.price"
               :tag="load.tag"
               :image-src="load.imageSrc"
@@ -981,6 +982,9 @@ onScopeDispose(() => {
               </UiText>
               <UiText as="dd" size="md" weight="semibold" class="text-right">
                 {{ selectedLoad?.name }} — {{ selectedLoad?.price }}
+                <template v-if="selectedLoad?.weightLimit">
+                  <br />{{ selectedLoad.weightLimit }}
+                </template>
               </UiText>
             </div>
             <div class="flex flex-col gap-4 p-5 sm:flex-row sm:justify-between sm:gap-6">

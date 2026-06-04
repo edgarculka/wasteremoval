@@ -4,6 +4,7 @@ export interface BookingLoad {
   id: string;
   name: string;
   ribbon: string;
+  weightLimit: string;
   price: string;
   pricePence: number;
   tag?: string;
@@ -20,6 +21,71 @@ export interface BookingTimeSlot {
   icon?: Component;
   iconLabel?: string;
 }
+
+export const bookingLoads: BookingLoad[] = [
+  {
+    id: "min",
+    name: "Min Job",
+    ribbon: "Single item",
+    weightLimit: "Up to 50kg",
+    price: "£40",
+    pricePence: 4000,
+    tag: "Minimum price",
+    imageSrc: "/images/0van.svg",
+    imageAlt: "Single item",
+    imageWidth: 88,
+    imageHeight: 41,
+  },
+  {
+    id: "mini",
+    name: "Mini Load",
+    ribbon: "1/4 van",
+    weightLimit: "Up to 250kg",
+    price: "£100",
+    pricePence: 10000,
+    imageSrc: "/images/1van.svg",
+    imageAlt: "Quarter-load van",
+    imageWidth: 88,
+    imageHeight: 41,
+  },
+  {
+    id: "small",
+    name: "Small Load",
+    ribbon: "1/2 van",
+    weightLimit: "Up to 500kg",
+    price: "£180",
+    pricePence: 18000,
+    tag: "Most popular",
+    imageSrc: "/images/2van.svg",
+    imageAlt: "Half-load van",
+    imageWidth: 88,
+    imageHeight: 41,
+  },
+  {
+    id: "large",
+    name: "Large Load",
+    ribbon: "3/4 van",
+    weightLimit: "Up to 750kg",
+    price: "£240",
+    pricePence: 24000,
+    imageSrc: "/images/3van.svg",
+    imageAlt: "Three-quarter-load van",
+    imageWidth: 88,
+    imageHeight: 41,
+  },
+  {
+    id: "full",
+    name: "Full Load",
+    ribbon: "Full van",
+    weightLimit: "Up to 1,000kg",
+    price: "£300",
+    pricePence: 30000,
+    imageSrc: "/images/4van.svg",
+    imageAlt: "Full-load van",
+    imageWidth: 88,
+    imageHeight: 41,
+  },
+];
 
 export type BookingFieldValidator =
   | "postcode"
@@ -96,7 +162,8 @@ export const bookingFormConfig: BookingFormConfig = {
       id: "load",
       type: "load",
       title: "Choose your load size",
-      description: "How much do we need to clear?",
+      description:
+        "Choose by volume first, then check the weight limit for heavy waste.",
     },
     {
       id: "additionalCharges",

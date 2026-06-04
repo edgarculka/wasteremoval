@@ -8,6 +8,7 @@ export type CardLayout = "row" | "option";
 interface Props {
   title?: string;
   description?: string;
+  detail?: string;
   price?: string;
   tag?: string;
   imageSrc?: string;
@@ -102,6 +103,7 @@ const hasBuiltInContent = computed(
     props.imageSrc ||
     props.title ||
     props.description ||
+    props.detail ||
     props.price,
 );
 
@@ -164,6 +166,15 @@ function handleClick() {
           >
             {{ description }}
           </UiText>
+          <UiText
+            v-if="detail"
+            as="span"
+            size="xs"
+            weight="semibold"
+            tone="low"
+          >
+            {{ detail }}
+          </UiText>
         </div>
         <UiHeading v-if="price" :level="3" size="lg">{{ price }}</UiHeading>
       </div>
@@ -189,6 +200,16 @@ function handleClick() {
             class="block"
           >
             {{ description }}
+          </UiText>
+          <UiText
+            v-if="detail"
+            as="span"
+            size="xs"
+            weight="semibold"
+            tone="low"
+            class="mt-1 block"
+          >
+            {{ detail }}
           </UiText>
         </span>
       </div>
