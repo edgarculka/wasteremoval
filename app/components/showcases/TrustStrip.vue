@@ -2,7 +2,7 @@
 const items = [
   { value: "21K+", label: "Properties cleared" },
   { value: "4.9/5", label: "Customer rating" },
-  { value: "Local", label: "West London slots" },
+  { value: "Local", label: "London slots" },
 ];
 </script>
 

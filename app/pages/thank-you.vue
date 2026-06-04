@@ -24,7 +24,7 @@ usePageSeo({
 const contactCards: ContactCardLink[] = [
   {
     title: companyDetails.contact.primaryPhoneDisplay,
-    description: "Mon-Fri, 7am-7pm",
+    description: companyDetails.openingHoursDisplay,
     href: companyDetails.contact.primaryPhoneHref,
     icon: IconsPhone,
     iconLabel: "Phone",

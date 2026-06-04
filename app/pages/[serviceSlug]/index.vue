@@ -9,8 +9,9 @@ if (!service) {
 
 const servicePath = buildServicePath(service);
 const serviceAreaNames = seoLocations.map((location) => location.name);
-const serviceHubTitle = `${service.metaTitle} Services in West London`;
-const serviceHubDescription = `${service.metaDescription} Available across London, West London and nearby service areas.`;
+const serviceCoverageLabel = "West, Central, North and South London";
+const serviceHubTitle = `${service.metaTitle} Services in London`;
+const serviceHubDescription = `${service.metaDescription} Available across ${serviceCoverageLabel}.`;
 const serviceFaqs = buildServiceFaqs(service);
 
 usePageSeo({
@@ -99,7 +100,7 @@ const locationLinks = seoLocations.map((location) => ({
 const marqueeItems = [
   ...service.sellingPoints,
   ...service.searchTerms,
-  "West London coverage",
+  `${serviceCoverageLabel} coverage`,
 ];
 
 const coverageNotes = [
@@ -121,7 +122,7 @@ const workerSrcset =
 <template>
   <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
-      :heading="`${service.title} in West London`"
+      :heading="`${service.title} in London`"
       :description="service.description"
     >
       <template #actions>
@@ -188,7 +189,7 @@ const workerSrcset =
       :notes="coverageNotes"
       :image="service.image"
       meta-label="Service area"
-      meta-value="West London"
+      :meta-value="serviceCoverageLabel"
     />
   </UiSection>
 
@@ -196,7 +197,7 @@ const workerSrcset =
     <UiServiceProcess
       eyebrow="How it works"
       :heading="`${service.name} without hiring a skip`"
-      description="A simple collection flow for West London homes, landlords and businesses."
+      :description="`A simple collection flow for ${serviceCoverageLabel} homes, landlords and businesses.`"
       :steps="serviceProcessSteps"
     />
   </UiSection>
@@ -209,7 +210,7 @@ const workerSrcset =
   >
     <UiText size="lg" tone="low" class="max-w-3xl">
       {{ service.shortDescription }} {{ companyDetails.tradingName }} covers
-      this service across West London, including
+      this service across West, Central, North and South London, including
       {{ serviceAreaNames.join(", ") }}.
     </UiText>
     <UiTickList :items="service.sellingPoints" />
@@ -252,7 +253,7 @@ const workerSrcset =
   >
     <UiServices
       heading="Other clearance services"
-      description="Other rubbish removal options available across West London."
+      :description="`Other rubbish removal options available across ${serviceCoverageLabel}.`"
       :services="relatedServices"
       :locations="locationLinks"
       location-label="Available in"
@@ -262,7 +263,7 @@ const workerSrcset =
 
   <UiSection tone="secondary" spacing="md">
     <UiCallToAction
-      :heading="`Book ${service.name.toLowerCase()} in West London`"
+      :heading="`Book ${service.name.toLowerCase()} in London`"
       :points="service.sellingPoints"
       image-src="/images/waste-removal-service-worker.webp"
       image-width="1200"

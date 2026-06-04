@@ -45,7 +45,7 @@ export const homeFaqs: SeoFaq[] = [
   },
   {
     question: "What areas do you cover?",
-    answer: `${companyDetails.tradingName} covers London and West London service areas including Brentford, Chiswick, Ealing, Acton, Hammersmith, Fulham, Richmond, Hounslow and nearby locations.`,
+    answer: `${companyDetails.tradingName} covers West, Central, North and South London service areas including Ealing, Hammersmith, Westminster, Camden, Clapham, Wandsworth and nearby locations.`,
   },
   {
     question: "Do I need to hire a skip?",

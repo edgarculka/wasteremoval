@@ -63,7 +63,7 @@ const times = [
 const contactCards = [
   {
     title: "+44 7747 251550",
-    description: "Mon-Fri, 7am-7pm",
+    description: "Mon-Fri, 8am-6pm",
     href: "tel:+447747251550",
     icon: IconsPhone,
     iconLabel: "Phone",

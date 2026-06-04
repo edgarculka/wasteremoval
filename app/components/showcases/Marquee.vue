@@ -3,7 +3,7 @@ const sampleItems = [
   "Clear pricing before loading",
   "No skip permit needed",
   "Team loads the items",
-  "West London coverage",
+  "West, Central, North and South London coverage",
   "Photos accepted for estimates",
 ];
 </script>

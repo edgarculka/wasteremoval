@@ -28,9 +28,9 @@ const halfWidthImageSizes =
 const ctaImageSizes = "(min-width: 1024px) 20rem, calc(100vw - 96px)";
 
 usePageSeo({
-  title: "Same-Day Rubbish Removal in West London",
+  title: "Same-Day Rubbish Removal in London",
   description:
-    "Book rubbish removal and property clearance across West London with clear load-size pricing and responsible disposal routes.",
+    "Book rubbish removal and property clearance across West, Central, North and South London with clear load-size pricing and responsible disposal routes.",
   path: "/",
   image: {
     src: "/images/rubbish-removal.webp",
@@ -88,7 +88,7 @@ const sellingPoints = [
 const trustItems = [
   { value: "Fixed tiers", label: "Pricing" },
   { value: "Photos", label: "Fast estimates" },
-  { value: "Local", label: "West London slots" },
+  { value: "Local", label: "London slots" },
 ];
 
 const marqueeItems = [
@@ -96,7 +96,7 @@ const marqueeItems = [
   "Clear pricing before loading",
   "No skip permit needed",
   "Team loads the items",
-  "West London coverage",
+  "West, Central, North and South London coverage",
   "Photo estimates accepted",
 ];
 
@@ -143,7 +143,7 @@ const reviews: ReviewItem[] = [
 const contactCards: ContactCardLink[] = [
   {
     title: companyDetails.contact.primaryPhoneDisplay,
-    description: "Mon–Fri, 7am–7pm",
+    description: companyDetails.openingHoursDisplay,
     href: companyDetails.contact.primaryPhoneHref,
     icon: IconsPhone,
     iconLabel: "Phone",
@@ -192,7 +192,7 @@ function openBookingWithPricingSelection() {
   <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
       heading="Waste removal, on your schedule."
-      description="Rubbish removal and property clearance for tenants, landlords, and businesses across West London. No skip permit needed."
+      description="Rubbish removal and property clearance for tenants, landlords, and businesses across West, Central, North and South London. No skip permit needed."
     >
       <template #actions>
         <UiButton size="lg" @click="openBookingWizard">Get a quote</UiButton>
@@ -302,7 +302,7 @@ function openBookingWithPricingSelection() {
   <UiSection tone="background" spacing="md" alignment="center" wide>
     <UiServices
       heading="Waste removal services"
-      :description="`From single items to full property clearances, ${companyDetails.tradingName} covers common rubbish removal jobs across West London.`"
+      :description="`From single items to full property clearances, ${companyDetails.tradingName} covers common rubbish removal jobs across West, Central, North and South London.`"
       :services="homeServices"
       :locations="homeServiceLocations"
       location-label="Popular service areas"

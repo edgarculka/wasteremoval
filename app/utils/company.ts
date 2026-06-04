@@ -42,6 +42,7 @@ export interface CompanyDetails {
   contact: CompanyContactDetails;
   serviceAreas: string[];
   openingHours: string[];
+  openingHoursDisplay: string;
   priceRange: string;
   wasteCarrier: WasteCarrierDetails;
 }
@@ -75,28 +76,13 @@ export const companyDetails: CompanyDetails = {
     website: "https://dbs-waste.co.uk",
   },
   serviceAreas: [
-    "London",
-    "Brentford",
-    "Chiswick",
-    "Ealing",
-    "Acton",
-    "Hammersmith",
-    "Fulham",
-    "Shepherd's Bush",
-    "Kensington",
-    "Chelsea",
-    "Notting Hill",
-    "Kew",
-    "Richmond",
-    "Twickenham",
-    "Isleworth",
-    "Hounslow",
-    "Hanwell",
-    "Greenford",
-    "Southall",
-    "Hayes",
+    "West London",
+    "Central London",
+    "North London",
+    "South London",
   ],
-  openingHours: ["Mo-Fr 07:00-19:00"],
+  openingHours: ["Mo-Fr 08:00-18:00"],
+  openingHoursDisplay: "Mon-Fri, 8am-6pm",
   priceRange: "GBP 40+",
   wasteCarrier: {
     registrationNumber: "CBDU595600",

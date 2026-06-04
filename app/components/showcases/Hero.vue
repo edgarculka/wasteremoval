@@ -18,7 +18,7 @@
           </template>
           <UiHero
             heading="Waste removal, on your schedule."
-            description="Rubbish removal and property clearance for tenants, landlords and businesses across West London."
+            description="Rubbish removal and property clearance for tenants, landlords and businesses across West, Central, North and South London."
           >
             <template #actions>
               <UiButton size="lg">Get a quote</UiButton>

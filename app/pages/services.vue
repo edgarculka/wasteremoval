@@ -23,9 +23,9 @@ const serviceGroups = seoServices.map((service) => ({
 }));
 
 usePageSeo({
-  title: "Waste Removal Services in West London",
+  title: "Waste Removal Services in London",
   description:
-    "Browse eight rubbish removal and clearance services for homes, landlords and businesses across West London.",
+    "Browse rubbish removal and clearance services for homes, landlords and businesses across West, Central, North and South London.",
   path: "/services/",
   image: seoServices[0]?.image,
   structuredData: [
@@ -36,7 +36,7 @@ usePageSeo({
       name: "Waste Removal Services",
       url: "/services/",
       description:
-        "Waste removal service pages for West London homes, landlords and businesses.",
+        "Waste removal service pages for West, Central, North and South London homes, landlords and businesses.",
       hasPart: seoServices.map((service) => ({
         "@type": "Service",
         name: service.name,
@@ -72,7 +72,7 @@ usePageSeo({
     <UiServices
       eyebrow="Services"
       :heading-level="1"
-      heading="Waste removal services across West London"
+      heading="Waste removal services across West, Central, North and South London"
       description="Choose a clearance service, then pick the local area page that matches where the job is. Each page has service-specific details for that location."
       :services="services"
       :locations="serviceJumpLinks"

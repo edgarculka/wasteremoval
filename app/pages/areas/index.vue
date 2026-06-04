@@ -20,8 +20,8 @@ const services: ServicesService[] = seoServices.map((service) => ({
 }));
 
 usePageSeo({
-  title: "Waste Removal Areas in West London",
-  description: `Find twenty rubbish removal and clearance service areas for ${companyDetails.tradingName} across London and West London.`,
+  title: "Waste Removal Areas in London",
+  description: `Find rubbish removal and clearance service areas for ${companyDetails.tradingName} across West, Central, North and South London.`,
   path: "/areas/",
   image: primaryImage,
   structuredData: [
@@ -73,7 +73,7 @@ usePageSeo({
 <template>
   <UiSection tone="background" spacing="md" alignment="left" wide>
     <UiHero
-      heading="Waste removal areas across West London"
+      heading="Waste removal areas across West, Central, North and South London"
       description="Choose the area closest to your collection address, then view service pages for local house, tenancy, garden, office, garage, builders, furniture and mattress clearances."
     >
       <template #actions>
